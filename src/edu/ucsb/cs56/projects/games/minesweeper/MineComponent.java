@@ -1,13 +1,11 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 import java.awt.GridLayout;
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -15,13 +13,11 @@ import java.awt.event. ActionEvent;
 import java.awt.Font;
 import java.awt.Color;
 import java.util.ArrayList;
-import javax.swing.JTextArea;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.awt.Component;
-import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicComboPopup;
 
 /**
@@ -144,6 +140,8 @@ public class MineComponent extends JComponent
 		String soundName;  
 		AudioInputStream audioInputStream;
 	    if(game.gameStatus(status) == 0){
+
+			//if you left click and the button is available (not a flag and not already opened)
 	    	if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num)){
 	    		char box=game.searchBox(num);
 	    		if (box=='X'){
@@ -156,24 +154,66 @@ public class MineComponent extends JComponent
                 refresh();
 	    		
 	    		status = game.gameStatus(status);
-	    		if (status == -1){
-	    			JOptionPane.showMessageDialog(MineComponent.this, 
-	    					"You lose! Press 'Reset Game' to start a new game.", "Defeat!", JOptionPane.ERROR_MESSAGE);
-	    			System.out.println("You lose!!");
-	    		}
-	    		else if (status == 1){
-	    			soundName= "resources/sounds/win.wav";
-                    playSound(soundName);
-                    JOptionPane.showMessageDialog(MineComponent.this, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.INFORMATION_MESSAGE);
-	    			System.out.println("You win!\n");
-	    		}
+
+				if (status == -1){
+					start.stopTimer();
+
+					int response = JOptionPane.showOptionDialog(null,
+							"You lose! Press 'Reset Game' to start a new game.",
+							"Defeat!",
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.INFORMATION_MESSAGE,
+							null,
+							new String[]{"Main Menu", "Reset Game"},
+							"default");
+
+					if (response == JOptionPane.YES_OPTION)
+					{
+						start.goToMainMenu();
+					}
+					else
+					{
+						start.resetGame();
+					}
+
+				}
+
+				else if (status == 1){
+					soundName= "resources/sounds/win.wav";
+					playSound(soundName);
+
+					start.stopTimer();
+
+					int response = JOptionPane.showOptionDialog(null,
+							"You win! Press 'Reset Game' to start a new game.",
+							"Victory!",
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.INFORMATION_MESSAGE,
+							null,
+							new String[]{"Main Menu", "Reset Game"},
+							"default");
+
+					if (response == JOptionPane.YES_OPTION)
+					{
+						start.goToMainMenu();
+					}
+					else
+					{
+						start.resetGame();
+					}
+				}
+
 	    	}
+
+	    	// If you left click and the button is a flag or has been opened
             else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num))){
                 game.searchBox(num);
                 soundName = "resources/sounds/userError.wav";
                 playSound(soundName);
 
             }
+
+            // If you right click
 	    	else if(event.getButton() == MouseEvent.BUTTON3){
 	    		if(game.isFlag(num)){
 	    			game.deflagBox(num);
@@ -197,10 +237,33 @@ public class MineComponent extends JComponent
                     playSound(soundName);
                 }
 	    		int status = game.gameStatus(0);
-	    		if (status == 1){		
-	    			System.out.println("You win!\n");
-                    JOptionPane.showMessageDialog(MineComponent.this, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.INFORMATION_MESSAGE);
-                }
+
+	    		if (status == 1){
+					soundName= "resources/sounds/win.wav";
+					playSound(soundName);
+
+					start.stopTimer();
+
+					//TODO: Expose Mines if unopened & not a flag
+
+					int response = JOptionPane.showOptionDialog(null,
+							"You win! Press 'Reset Game' to start a new game.",
+							"Victory!",
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.INFORMATION_MESSAGE,
+							null,
+							new String[]{"Main Menu", "Reset Game"},
+							"default");
+
+					if (response == JOptionPane.YES_OPTION)
+					{
+						start.goToMainMenu();
+					}
+					else
+					{
+						start.resetGame();
+					}
+	    		}
 	    	}
             else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(num)){
                 
@@ -250,11 +313,24 @@ public class MineComponent extends JComponent
 			}
 		}
     }
-	int getStatus(){
+
+//    void exposeMines(){
+////		for each grid
+////				if not a flag and not opened and is an X
+////					show itself
+//		for (int i = 0; i < size; i++){
+//			if (game
+//			}
+//		}
+//	}
+
+    int getStatus(){
 		return status;
 	}
+
 	Grid getGrid(){
 		return game;
 	}
+
 }
 

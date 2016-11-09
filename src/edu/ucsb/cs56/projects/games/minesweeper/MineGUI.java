@@ -80,6 +80,8 @@ public class MineGUI {
 	/** 
 	 *  Starts a new Minesweeper game from the main menu
 	 */
+
+	//TODO: should we delete this? Looks useless
 	public void newGame() {
         
         globalTE = "0";
@@ -225,19 +227,11 @@ public class MineGUI {
 		}
 		else if(action == "Main Menu")
 			{
-				button.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						timer.cancel();
-                        timer.purge();
-                        save();
-                        game.setVisible(false);
-                        inUse = false;
-                        refreshFrame(frame);
-                        createMainMenu();
-                        gClock.pauseClock();
-                        menu.setVisible(true);
-			}
-		});
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        goToMainMenu();
+                    }
+		    });
         
         }
         else if(action == "Quit Minesweeper")
@@ -256,24 +250,7 @@ public class MineGUI {
                     public void actionPerformed(ActionEvent e) {
                         //if (grid.gameStatus(0) == 0){
                             if (overwriteSavePrompt(frame)){
-                                createMainMenu();
-                                timer.cancel();
-                                timer.purge();
-                                menu.setVisible(false);
-                                refreshFrame(frame);
-                                int diff = mc.getGrid().getSize();
-                                if (diff ==10)
-                                {
-                                    newGame(0);
-                                }
-                                else if (diff ==15)
-                                {
-                                    newGame(1);
-                                }
-                                else if (diff ==20)
-                                {
-                                    newGame(2);
-                                }
+                                resetGame();
                             }
                             else {};
                         //}
@@ -380,24 +357,64 @@ public class MineGUI {
 		}
 	}
 	public void save(){
-
-        if (mc!=null){
-            System.out.println("Saving...");
-            mc.getGrid().saveTime = globalTE;
-            try{
-                FileOutputStream fileStream=new FileOutputStream("MyGame.ser");
-                ObjectOutputStream os = new ObjectOutputStream(fileStream);
-                os.writeObject(mc.getGrid());
-                os.close();
+        if (inUse) {
+            if (mc != null) {
+                System.out.println("Saving...");
+                mc.getGrid().saveTime = globalTE;
+                try {
+                    FileOutputStream fileStream = new FileOutputStream("MyGame.ser");
+                    ObjectOutputStream os = new ObjectOutputStream(fileStream);
+                    os.writeObject(mc.getGrid());
+                    os.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                System.exit(0);
             }
-            catch(Exception ex){
-                ex.printStackTrace();
-            }
-        }
-        else {
-            System.exit(0);
         }
 	}
+
+
+	public void resetGame() {
+        stopTimer();
+        menu.setVisible(false);
+        refreshFrame(frame);
+        int diff = mc.getGrid().getSize();
+        if (diff ==10)
+        {
+            newGame(0);
+        }
+        else if (diff ==15)
+        {
+            newGame(1);
+        }
+        else if (diff ==20)
+        {
+            newGame(2);
+        }
+    }
+
+    public void goToMainMenu() {
+        stopTimer();
+        Grid g = mc.getGrid();
+        int stat = mc.getStatus();
+        if (g.gameStatus(stat) == 0) {
+                    save();
+        }
+        game.setVisible(false);
+        inUse = false;
+        refreshFrame(frame);
+        createMainMenu();
+        gClock.pauseClock();
+        menu.setVisible(true);
+    }
+
+    public void stopTimer() {
+        timer.cancel();
+        timer.purge();
+    }
+
     public static void main (String[] args) {
 	MineGUI frame = new MineGUI();
     }
