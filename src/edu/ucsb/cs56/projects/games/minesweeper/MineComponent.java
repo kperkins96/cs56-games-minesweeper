@@ -156,6 +156,10 @@ public class MineComponent extends JComponent
 	    		status = game.gameStatus(status);
 
 				if (status == -1){
+					// TODO: display mines
+
+					exposeMines();
+
 					start.stopTimer();
 
 					int response = JOptionPane.showOptionDialog(null,
@@ -169,10 +173,12 @@ public class MineComponent extends JComponent
 
 					if (response == JOptionPane.YES_OPTION)
 					{
+						start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 						start.goToMainMenu();
 					}
 					else
 					{
+						start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 						start.resetGame();
 					}
 
@@ -185,22 +191,28 @@ public class MineComponent extends JComponent
 					start.stopTimer();
 
 					int response = JOptionPane.showOptionDialog(null,
-							"You win! Press 'Reset Game' to start a new game.",
-							"Victory!",
-							JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.INFORMATION_MESSAGE,
-							null,
-							new String[]{"Main Menu", "Reset Game"},
-							"default");
+                            "You win! Press 'Reset Game' to start a new game.",
+                            "Victory!",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE,
+                            //JOptionPane.WRITE,
+                            null,
+                            new String[]{"Main Menu", "Reset Game"},
+                            "default");
 
 					if (response == JOptionPane.YES_OPTION)
 					{
+                        start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 						start.goToMainMenu();
 					}
-					else
+					else if (response == JOptionPane.INFORMATION_MESSAGE)
 					{
+                        start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 						start.resetGame();
 					}
+					else{
+                        //do nothing
+                    }
 				}
 
 	    	}
@@ -242,9 +254,9 @@ public class MineComponent extends JComponent
 					soundName= "resources/sounds/win.wav";
 					playSound(soundName);
 
-					start.stopTimer();
+					exposeMines();
 
-					//TODO: Expose Mines if unopened & not a flag
+					start.stopTimer();
 
 					int response = JOptionPane.showOptionDialog(null,
 							"You win! Press 'Reset Game' to start a new game.",
@@ -257,12 +269,18 @@ public class MineComponent extends JComponent
 
 					if (response == JOptionPane.YES_OPTION)
 					{
+						start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 						start.goToMainMenu();
 					}
-					else
+                    else if (response == JOptionPane.INFORMATION_MESSAGE)
 					{
+                        start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 						start.resetGame();
 					}
+					else{
+                        // do nothing
+
+                    }
 	    		}
 	    	}
             else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(num)){
@@ -314,15 +332,20 @@ public class MineComponent extends JComponent
 		}
     }
 
-//    void exposeMines(){
-////		for each grid
-////				if not a flag and not opened and is an X
-////					show itself
-//		for (int i = 0; i < size; i++){
-//			if (game
-//			}
-//		}
-//	}
+	void exposeMines() {
+		Component[] listOfButtons = start.mc.getComponents();
+
+		for (int i=0; i < listOfButtons.length; i++) {
+			if (game.isMine(i)) {
+				JButton mineButton = (JButton) listOfButtons[i];
+				mineButton.setFont(new Font("sansserif", Font.BOLD, 10));
+				mineButton.setText("X");
+			}
+		}
+
+		start.mc.revalidate();
+		start.mc.repaint();
+	}
 
     int getStatus(){
 		return status;

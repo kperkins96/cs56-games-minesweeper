@@ -355,8 +355,11 @@ public class Grid implements Serializable{
     }
 
 	/**
-	 * displays the value of the grid on the GUI
+	 * displays the value of the grid (grid contains all the mines only) on the GUI
 	 */
+
+
+	/*
 	public char[][] displayMines(int size) {
 		for (int i = size - 1; i <= size + 1; i++) {
 			for (int j = size - 1; j <= size + 1; j++) {
@@ -366,6 +369,7 @@ public class Grid implements Serializable{
 		}
 		return map;
 	}
+	*/
 
 
 	/**
