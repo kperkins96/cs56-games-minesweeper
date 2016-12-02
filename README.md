@@ -49,3 +49,15 @@ The coding style was not what I was accustom to so when I was reading through th
 M16 Final Remarks
 =============================================================================
 Depending on the issue being addressed, it was helpful to identify which classes needed changes (adding/removing features). There are a handful of files (some that deal with GUI, another that sets up and modifies the grid/map, etc.) so reading through the code multiple times line by line while running the program will help you to understand what each part of the code is doing and how it needs to be changed to accomodate the issue. Possible features to be added along with potential bugs are listed in the "Issues" of the master repo, these include but are not limited to (#30)adding a highscore feature and (#34)exposing all mines on the display when the player loses.
+
+==============================================================================
+F16 Final Remarks
+=============================================================================
+At first there is a lot going on and hard to understand, Recommend looking at Grid.java and MineComponent.java first. Would be a good idea to refactor code and split up into more than three classes. 
+
+Know that:
+1. Grid is the 2D array that holds ONLY mines.
+2. Map is the 2D array that holds what the user puts down (whether an entry has been "opened" aka clicked on by the user, whether an entry is a flag, etc...)
+3. Thus grid and Map interactions make up the game.
+
+The way that the code is written is kind of messy because the naming of the variables is inconsistent from file to file. The functions are scattered. So refactoring would be good. Also remove the commented out code if it doesn't help you. 
