@@ -45,7 +45,7 @@ public class Grid implements Serializable{
 	}
     
     public Grid(boolean isGUI, int difficulty) {
-        saveTime = new String("0")
+        saveTime = new String("0");
 		this.isGUI=isGUI;
 		switch (difficulty){
     	    case -1: //for known grid testing
