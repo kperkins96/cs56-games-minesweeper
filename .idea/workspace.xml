@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b64db8db-da61-4d8e-9342-97c72f564a3d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/GUIGame.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/GUIGame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/Grid.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/Grid.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/HelpScreen.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/HelpScreen.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/MineComponent.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/MineComponent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/MineGUI.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/MineGUI.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/TextGame.java" afterPath="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/TextGame.java" />
     </list>
     <ignored path="cs56-games-minesweeper.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,12 +43,12 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/Grid.java" />
         <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/GUIGame.java" />
         <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/HelpScreen.java" />
         <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/MineGUI.java" />
         <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/TextGame.java" />
         <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/MineComponent.java" />
+        <option value="$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/Grid.java" />
       </list>
     </option>
   </component>
@@ -358,16 +354,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/edu/ucsb/cs56/projects/games/minesweeper/Grid.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2355#2356#0" expanded="true" />
-            <element signature="e#2374#2375#0" expanded="true" />
-            <element signature="e#8123#8124#0" expanded="true" />
-            <element signature="e#8162#8163#0" expanded="true" />
-            <element signature="e#8184#8185#0" expanded="true" />
-            <element signature="e#8205#8206#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="561">
+          <caret line="33" column="34" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="34" />
+          <folding />
         </state>
       </provider>
     </entry>

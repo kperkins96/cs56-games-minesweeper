@@ -31,7 +31,7 @@ public class Grid implements Serializable{
      * Default constructor for objects of class GUIGrid
      */
     public Grid(boolean isGUI) {
-		saveTime = new String("0")
+		saveTime = new String("0");
 		this.isGUI = isGUI;
 		size = EASY_SIZE;
 		grid = new char[size][size];
