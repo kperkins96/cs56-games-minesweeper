@@ -33,44 +33,49 @@ import javax.swing.*;
 
 
 public class MineGUI {
-    JToolBar toolbar;
-    JButton mainMenu;
-    JButton quitMine;
-    JButton inGameHelp;
-    JButton refresh;
-    JButton easyGame;
-    JButton medGame;
-    JButton hardGame;
-    JButton load; //loads game
-    JButton help;    //Main Menu Help Button
-    JButton save;
-    JFrame frame;    //The frame is where all the good stuff is displayed e.g. Everything
-    JPanel menu;    //Menu Panel, initial panel at initial creation of the game e.g. Main Menu
-    JPanel game;    //Game Panel, where the game is played
-    boolean inUse; //if game is started and in use
-    Clock gClock;
-    JTextField Time;
-    int timeTBPos;
-    Timer timer;
-    String globalTE = new String("0");
+    private JToolBar toolbar;
+    private JButton mainMenu;
+    private JButton quitMine;
+    private JButton inGameHelp;
+    private JButton refresh;
+    private JButton easyGame;
+    private JButton medGame;
+    private JButton hardGame;
+    private JButton load; //loads game
+    private JButton help;    //Main Menu Help Button
+    private JButton save;
+    private JFrame frame;    //The frame is where all the good stuff is displayed e.g. Everything
+    private JPanel menu;    //Menu Panel, initial panel at initial creation of the game e.g. Main Menu
+    private JPanel game;    //Game Panel, where the game is played
+    private boolean inUse; //if game is started and in use
+    private Clock gClock;
+    private JTextField Time;
+    private int timeTBPos;
+    private Timer timer;
+    private String globalTE;
 
-    JScrollPane scroller;
-    JLabel highScore; // this label status displays the local high score.
-    JTextArea highScoreList;
-    JTextField Username;
-    String User = "";
+    private JScrollPane scroller;
+    private JLabel highScore; // this label status displays the local high score.
+    private JTextArea highScoreList;
+    private JTextField Username;
+    private String User;
 
+    private int count;
 
-    MineComponent mc; //MineComponent is the actual layout of the game, and what makes the game function
-    JLabel status;        //the game status label that is displayed during the game
+    private MineComponent mc; //MineComponent is the actual layout of the game, and what makes the game function
+    private JLabel status;        //the game status label that is displayed during the game
 
 
     /**
-     * no-arg constructor which creates the GUI of the Main Menu for Minesweeper
-     * This menu includes a start and help button
+     no-arg constructor which creates the GUI of the Main Menu for Minesweeper
+     This menu includes a start and help button
      */
+
     public MineGUI() {
+        globalTE = new String("0");
         frame = new JFrame();
+        count = 1;
+        User = "";
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
@@ -80,15 +85,12 @@ public class MineGUI {
                 } else {
                     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 }
-
             }
         });
         createMainMenu();
-
         frame.applyComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         frame.setSize(650, 600);
         frame.setVisible(true);
-
         frame.setName("testframe");
     }
 
@@ -98,17 +100,12 @@ public class MineGUI {
 
     //TODO: should we delete this? Looks useless
     public void newGame() {
-
         globalTE = "0";
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         game = new JPanel(new BorderLayout());            //our game panel e.g. where everything will be put in for this display
         Grid grid = new Grid(true);
         mc = new MineComponent(grid, this);    //creates our game interface
-        frame.setSize((65 * mc.getGrid().getSize() > screenSize.width
-                        ? screenSize.width : 65 * mc.getGrid().getSize()),
-                (60 * mc.getGrid().getSize() > screenSize.height - 40
-                        ? screenSize.height - 40 : 60 * mc.getGrid().getSize()));
-
+        frame.setSize((65 * mc.getGrid().getSize() > screenSize.width ? screenSize.width : 65 * mc.getGrid().getSize()), (60 * mc.getGrid().getSize() > screenSize.height - 40 ? screenSize.height - 40 : 60 * mc.getGrid().getSize()));
         JToolBar toolbar = new JToolBar("In-game toolbar");
         createToolbar(toolbar);
         game.add(mc);                            //puts the game in the jPanel
@@ -118,7 +115,6 @@ public class MineGUI {
         inUse = true;
         timer = new Timer();
         timer.schedule(new Clock(), 0, 1000);
-
     }
 
     public void newGame(int difficulty) {
@@ -127,11 +123,7 @@ public class MineGUI {
         game = new JPanel(new BorderLayout());      //our game panel e.g. where everything will be put in for this display
         Grid grid = new Grid(true, difficulty);
         mc = new MineComponent(grid, this);         //creates our game interface
-        frame.setSize((65 * mc.getGrid().getSize() > screenSize.width
-                        ? screenSize.width : 65 * mc.getGrid().getSize()),
-                (60 * mc.getGrid().getSize() > screenSize.height - 30
-                        ? screenSize.height - 30 : 60 * mc.getGrid().getSize()));
-
+        frame.setSize((65 * mc.getGrid().getSize() > screenSize.width ? screenSize.width : 65 * mc.getGrid().getSize()), (60 * mc.getGrid().getSize() > screenSize.height - 30 ? screenSize.height - 30 : 60 * mc.getGrid().getSize()));
         JToolBar toolbar = new JToolBar("In-game toolbar");
         createToolbar(toolbar);
         game.add(mc);               //puts the game in the jPanel
@@ -141,8 +133,6 @@ public class MineGUI {
         inUse = true;
         timer = new Timer();
         timer.schedule(new Clock(), 0, 1000);
-
-
     }
 
     /**
@@ -157,19 +147,14 @@ public class MineGUI {
         hardGame = new JButton("New Hard Game");
         help = new JButton("Help");
         load = new JButton("Load Last Game");
-
         Username = new JTextField("Name: ");
         highScore = new JLabel("Leaderboards: "); // added another JLabel
         highScoreList = new JTextArea(10, 20);
         scroller = new JScrollPane(highScoreList);
-
         highScoreList.setLineWrap(true);
-
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         highScoreList.append(getHighScores());
-
-
         addActionListener(Username);
         addActionListener(easyGame, "New Easy Game");
         addActionListener(medGame, "New Medium Game");
@@ -183,12 +168,10 @@ public class MineGUI {
         menu.add(load);
         menu.add(help);
         menu.add(quitMine);
-
         menu.add(highScore); // add new highScore feature to frame.
         //menu.add(highScoreList);
         menu.add(scroller);
         menu.add(Username);
-
         frame.getContentPane().add(menu);
         inUse = false;
     }
@@ -204,7 +187,6 @@ public class MineGUI {
 
     public void createToolbar(JToolBar toolbar) {
         //make buttons
-
         refresh = new JButton("Reset Game");
         mainMenu = new JButton("Main Menu");
         quitMine = new JButton("Quit Minesweeper");
@@ -246,28 +228,18 @@ public class MineGUI {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (overwriteSavePrompt(frame)) newGame(0);
-                    else {
-                    }
-                    ;
-
                 }
             });
         } else if (action == "New Medium Game") {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (overwriteSavePrompt(frame)) newGame(1);
-                    else {
-                    }
-                    ;
                 }
             });
         } else if (action == "New Hard Game") {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     if (overwriteSavePrompt(frame)) newGame(2);
-                    else {
-                    }
-                    ;
                 }
             });
         } else if (action == "Main Menu") {
@@ -283,18 +255,13 @@ public class MineGUI {
                     quitPrompt(frame);
                 }
             });
-
         } else if (action == "Reset Game") {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     //if (grid.gameStatus(0) == 0){
                     if (overwriteSavePrompt(frame)) {
                         resetGame();
-                    } else {
                     }
-                    ;
-                    //}
-
                 }
             });
         } else if (action == "Help") {
@@ -331,7 +298,6 @@ public class MineGUI {
         } else {
             frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         }
-
     }
 
     public boolean overwriteSavePrompt(JFrame frame) {
@@ -342,7 +308,6 @@ public class MineGUI {
             frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             return false;
         }
-
     }
 
     public void load() {
@@ -358,10 +323,7 @@ public class MineGUI {
                 game = new JPanel(new BorderLayout());            //our game panel e.g. where everything will be put in for this display
                 mc = new MineComponent(grid, this);//creates our game interface
                 int gridSize = mc.getGrid().getSize();
-                frame.setSize((65 * gridSize > screenSize.width
-                                ? screenSize.width : 65 * gridSize),
-                        (60 * gridSize > screenSize.height - 30
-                                ? screenSize.height - 30 : 60 * gridSize));
+                frame.setSize((65 * gridSize > screenSize.width ? screenSize.width : 65 * gridSize), (60 * gridSize > screenSize.height - 30 ? screenSize.height - 30 : 60 * gridSize));
                 game.add(mc);                            //puts the game in the jPanel
                 JToolBar toolbar = new JToolBar("In-game toolbar");
                 createToolbar(toolbar);
@@ -371,14 +333,12 @@ public class MineGUI {
                 mc.refresh();
                 inUse = true;
                 globalTE = grid.saveTime;
-
                 timer = new Timer();
                 timer.schedule(new Clock(), 0, 1000);
             } catch (ClassNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
             os.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -386,10 +346,9 @@ public class MineGUI {
         }
     }
 
-
     public void displayMines() {
-       Grid g = mc.getGrid();
-       g.getG()[1][1]  = 'W';
+        Grid g = mc.getGrid();
+        g.getG()[1][1]  = 'W';
         game.add(mc);
         frame.getContentPane().add(game);
         mc.refresh();
@@ -416,12 +375,12 @@ public class MineGUI {
     }
 
 
-    int lowestTime=1000;
-    int count=1;
+    //int lowestTime=1000;
     public void saveHighest(String name, String time, int difficulty) { //will throw an exception if highscore.txt doesn't exist, but will create one when you win the game.
         int t = Integer.parseInt(time);
         String line="";
-        /*//initialize count first.
+        /*
+        //initialize count first.
         try {
             File myFile = new File("HighScore.txt");
             FileReader filereader = new FileReader(myFile);
@@ -438,13 +397,14 @@ public class MineGUI {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-*/
+        */
         // write to a file if the game is won, include timer for highest score.
         System.out.println("Saving high score only if you WIN game");
         //if (t < lowestTime) {
-        try (FileWriter fw = new FileWriter("HighScore.txt", true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
+        try (
+            FileWriter fw = new FileWriter("HighScore.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw)) {
             String countString = Integer.toString(count);
             // out.println(countString);
             out.println(name + " finished " + difToString(difficulty) + " difficulty in " + time + " seconds!");
@@ -453,7 +413,6 @@ public class MineGUI {
         } catch (IOException e) {
             //exception handling left as an exercise for the reader
         }
-        // }
     }
 
     public String getHighScores() {
@@ -472,16 +431,14 @@ public class MineGUI {
                 //}
             }
             reader.close();
-        } catch(IOException e)
-        {
+        } catch(IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         // sort scores by smallest time
-
-
         return score;
     }
+
     public String difToString(int difficulty){
         if (difficulty ==10)
         {
@@ -497,7 +454,6 @@ public class MineGUI {
         }
         return "";
     }
-
 
 	public void resetGame() {
         stopTimer();
@@ -538,9 +494,6 @@ public class MineGUI {
         menu.setVisible(true);
     }
 
-
-
-
     public static void main (String[] args) {
 	MineGUI frame = new MineGUI();
     }
@@ -551,35 +504,29 @@ public class MineGUI {
         frame.getContentPane().repaint();
     }
 
-
-
-
-
-    
     public class Clock extends TimerTask{
-        
-        long currClock;
-        long pClock=0;
-        long endClock;
-        long elapse;
-        final long nano = 1000000000;
-        long sec;
-        long resClock;
-        String timeElapsed;
-        String leftOver = new String("");
+        private long currClock;
+        private long pClock;
+        private long endClock;
+        private long elapse;
+        private final long nano;
+        private long sec;
+        private long resClock;
+        private String timeElapsed;
+        private String leftOver;
 
         
         public Clock(){
-            
+            nano = 1000000000;
             leftOver = globalTE;
             globalTE = "0";
             currClock = System.nanoTime();
-            
+            pClock = 0;
+            leftOver = new String("");
         }
         
         
         public void updateTE(){
-        
             endClock = System.nanoTime();
             elapse = endClock - currClock;
             sec = Math.floorDiv(elapse, nano);
@@ -587,20 +534,13 @@ public class MineGUI {
         }
         
         public void pauseClock(){
-            
-            
             mc.getGrid().saveTime = globalTE;
-            
         }
         
         public void run(){
             this.updateTE();
-            
             Time.setText(globalTE);
             Time.repaint();
         }
-
-
     } // class Clock
-
 } // class MineGUI

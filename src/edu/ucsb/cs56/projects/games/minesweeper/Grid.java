@@ -16,12 +16,11 @@ import java.io.Serializable;
 
 */
 public class Grid implements Serializable{
-    //
-    String saveTime = new String("0");
-    //
-    final int EASY_SIZE = 10;
-    final int MED_SIZE = 15;
-    final int HARD_SIZE = 20;
+
+    private String saveTime;
+    private final int EASY_SIZE = 10;
+    private final int MED_SIZE = 15;
+    private final int HARD_SIZE = 20;
 
     // instance variables
     private int size;
@@ -31,14 +30,62 @@ public class Grid implements Serializable{
     /**
      * Default constructor for objects of class GUIGrid
      */
-    public Grid(boolean isGUI){
-		this.isGUI=isGUI;
+    public Grid(boolean isGUI) {
+		saveTime = new String("0")
+		this.isGUI = isGUI;
 		size = EASY_SIZE;
 		grid = new char[size][size];
 		map = new char[size][size];
 		setZero();
-		for(int i = 0; i < size; i++){
+		for (int i = 0; i < size; i++) {
 			blankToMine();
+		}
+		insertNums();
+		mapMaker(map);
+	}
+    
+    public Grid(boolean isGUI, int difficulty) {
+        saveTime = new String("0")
+		this.isGUI=isGUI;
+		switch (difficulty){
+    	    case -1: //for known grid testing
+    	        size = 4;
+    	        break;
+    	    case 0:
+				size = EASY_SIZE;
+				break;
+			case 1:
+				size = MED_SIZE;
+				break;
+			case 2:
+				size = HARD_SIZE;
+				break;
+			default:
+				throw new IllegalArgumentException("Difficulty needs to be an integer between 0 and 2 inclusive.");
+		}
+		grid = new char[size][size];
+		map = new char[size][size];
+		setZero();
+		switch (difficulty){
+    	    case -1:
+    	        break;
+    	    case 0:
+				for(int i = 0; i < size; i++){
+		    		blankToMine();
+				}
+				break;
+			case 1:
+				for(int i = 0; i < 2*size; i++){
+		    		blankToMine();
+				}
+				break;
+			case 2:
+				for(int i = 0; i < 3*size; i++){
+		    		blankToMine();
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("Difficulty needs to be an integer between 0 and 2 inclusive.");
 		}
 		insertNums();
 		mapMaker(map);
@@ -47,53 +94,6 @@ public class Grid implements Serializable{
     public void setGrid(char[][] input){ //method that creates a known grid for testing various Grid methods
         grid = input;
         size = 4;
-    }
-
-    
-    public Grid(boolean isGUI, int difficulty) {
-	this.isGUI=isGUI;
-	switch (difficulty){
-        case -1: //for known grid testing
-            size = 4;
-            break;
-        case 0:
-			size = EASY_SIZE;
-			break;
-		case 1:
-			size = MED_SIZE;
-			break;
-		case 2:
-			size = HARD_SIZE;
-			break;
-		default:
-			throw new IllegalArgumentException("Difficulty needs to be an integer between 0 and 2 inclusive.");
-	}
-	grid = new char[size][size];
-	map = new char[size][size];
-	setZero();
-	switch (difficulty){
-        case -1:
-            break;
-        case 0:
-			for(int i = 0; i < size; i++){
-	    		blankToMine();
-			}
-			break;
-		case 1:
-			for(int i = 0; i < 2*size; i++){
-	    		blankToMine();
-			}
-			break;
-		case 2:
-			for(int i = 0; i < 3*size; i++){
-	    		blankToMine();
-			}
-			break;
-		default:
-			throw new IllegalArgumentException("Difficulty needs to be an integer between 0 and 2 inclusive.");
-	}
-	insertNums();
-	mapMaker(map);
     }
 	
 	/**
@@ -115,12 +115,12 @@ public class Grid implements Serializable{
      */
 
     public void setZero(){ 
-	for(int i = 0;i < size;i++){
-	    for(int j = 0; j < size;j++){
-		grid[i][j] = '0';
-	    }
-	}
-	return;
+		for(int i = 0;i < size;i++){
+		    for(int j = 0; j < size;j++){
+			grid[i][j] = '0';
+		    }
+		}
+		return;
     }
 
     /**
@@ -128,16 +128,16 @@ public class Grid implements Serializable{
      */
 
     public void blankToMine(){ 
-	int spotX = (int) (size*size * Math.random());
-	int a = spotX/size;
-	int b = spotX%size;
-	if(grid[a][b] != 'X'){
-	    grid[a][b] = 'X';
-		if(isGUI == true)
-			System.out.println(a*size+b);}
-	else
-	    blankToMine(); 
-	return;
+		int spotX = (int) (size*size * Math.random());
+		int a = spotX/size;
+		int b = spotX%size;
+		if(grid[a][b] != 'X'){
+		    grid[a][b] = 'X';
+			if(isGUI == true)
+				System.out.println(a * size + b);}
+		else
+		    blankToMine();
+		return;
     }
 
     /**
@@ -145,19 +145,19 @@ public class Grid implements Serializable{
      */
 
     public void insertNums(){ 
-	for(int i = 0;i < size;i++){
-	    for(int j = 0; j < size;j++){
-		if(isMine(i*size+j)){
-		    for(int k = i-1; k <= i+1; k++){
-			for(int l = j-1; l <= j+1; l++){
-			    if(k >= 0 && k <= size-1 && l >= 0 && l <= size-1 && !(isMine(k*size+l))){
-				grid[k][l]++;}
-			}
+		for(int i = 0;i < size;i++){
+		    for(int j = 0; j < size;j++){
+			if(isMine(i*size+j)){
+			    for(int k = i-1; k <= i+1; k++){
+					for(int l = j-1; l <= j+1; l++){
+					    if(k >= 0 && k <= size-1 && l >= 0 && l <= size-1 && !(isMine(k*size+l))){
+							grid[k][l]++;}
+						}
+				    }
+				}
 		    }
 		}
-	    }
-	}
-	return;
+		return;
     }
 
     /**
@@ -165,12 +165,12 @@ public class Grid implements Serializable{
      */
 
     public void mapMaker(char map[][]){ 
-	for(int i = 0;i < size;i++){
-	    for(int j = 0; j < size;j++){
-		map[i][j] = '?';
-	    }
-	}
-	return;
+		for(int i = 0;i < size;i++){
+		    for(int j = 0; j < size;j++){
+			map[i][j] = '?';
+		    }
+		}
+		return;
     }
 
     /**
@@ -178,30 +178,30 @@ public class Grid implements Serializable{
      */
 
     public String toString() {
-	final String borders = " ---------------------";
-	final String line = "|";
-	
-	String game = "";
+		final String borders = " ---------------------";
+		final String line = "|";
 
-	game += "\n  ";
-	for(int i = 0;i < size; i++){
-		game += i;
-		game += " ";
-	}
-	game += "\n";
-	game += borders;
-	game += "\n";
-	for(int i = 0;i < size;i++){
-	    game += i + line;
-	    for(int j = 0; j < size;j++){
-		game += map[i][j];
-		game += line;
-	    }
-	    game += "\n";
-	}
-	game += borders;
+		String game = "";
 
-	return game;  
+		game += "\n  ";
+		for(int i = 0;i < size; i++){
+			game += i;
+			game += " ";
+		}
+		game += "\n";
+		game += borders;
+		game += "\n";
+		for(int i = 0;i < size;i++){
+		    game += i + line;
+		    for(int j = 0; j < size;j++){
+			game += map[i][j];
+			game += line;
+		    }
+		    game += "\n";
+		}
+		game += borders;
+
+		return game;
     }
 
     /**
@@ -209,14 +209,14 @@ public class Grid implements Serializable{
      */
 
     public boolean isOpen(int i) throws IllegalArgumentException {
-	if( i >= 0 && i <= (size*size)-1){
-	    if(map[i/size][i%size]  != '?' && map[i/size][i%size] != 'F')
-		return true;
-	    else
-		return false;
-    }
-	else
-	    throw new IllegalArgumentException("I don't know where this exists :(");
+		if( i >= 0 && i <= (size*size)-1){
+		    if(map[i/size][i%size]  != '?' && map[i/size][i%size] != 'F')
+			return true;
+		    else
+			return false;
+    	}
+		else
+		    throw new IllegalArgumentException("I don't know where this exists :(");
     }
 
     /**
@@ -224,14 +224,13 @@ public class Grid implements Serializable{
      */
 
     public boolean isMine(int i) throws IllegalArgumentException {
-	if( i >= 0 && i <= (size*size)-1){
-	    if(grid[i/size][i%size]  == 'X')
-		return true;
-	    else
-		return false;
-    }
-	else
-	    throw new IllegalArgumentException("I don't know where this exists :(");
+		if( i >= 0 && i <= (size*size)-1){
+		    if(grid[i/size][i%size]  == 'X')
+			return true;
+		    else
+			return false;
+    	} else
+		    throw new IllegalArgumentException("I don't know where this exists :(");
     }
 
     /**
@@ -239,14 +238,13 @@ public class Grid implements Serializable{
      */
 
     public boolean isFlag(int i) throws IllegalArgumentException{
-	if( i >= 0 && i <= (size*size)-1){
-	    if(map[i/size][i%size]  == 'F')
-		return true;
-	    else
-		return false;
-    }
-	else
-	    throw new IllegalArgumentException("I don't know where this exists :(");
+		if( i >= 0 && i <= (size*size)-1){
+		    if(map[i/size][i%size]  == 'F')
+			return true;
+		    else
+			return false;
+    	} else
+		    throw new IllegalArgumentException("I don't know where this exists :(");
     }
 
     /**
@@ -261,20 +259,17 @@ public class Grid implements Serializable{
 
 	    	if(isFlag(box)){
 				System.out.println("You cannot search a flaged box!");
-	    	}
-	    	else if(isOpen(box)){
+	    	} else if(isOpen(box)){
 				System.out.println("You cannot search an opened box!");
-	    	}
-			else{
+	    	} else{
 				if(spot == '0') {
 					findAllZeros(box / size, box % size);
-				}
-				else {
+				} else {
 					map[box / size][box % size] = spot;
 				}
 			}
 		}
-	return spot;
+		return spot;
     }
 
      /**
@@ -282,19 +277,14 @@ public class Grid implements Serializable{
      */
  
     public void flagBox(int box){ 
-	if(isFlag(box)){
-	    System.out.println("This box is already flagged!");
-	    return;
-	}
-	else if(isOpen(box)){
-        System.out.println("You cannot put a flag on an opened box!");
-	    return;
-	}
-	else{
-		// TODO: places 'F' only after a left click on a nonflag occurs?
-        map[box/size][box%size] = 'F';
-	    return;
-	}
+		if (isFlag(box)) {
+		    System.out.println("This box is already flagged!");
+		} else if (isOpen(box)) {
+    	    System.out.println("You cannot put a flag on an opened box!");
+		} else {
+			// TODO: places 'F' only after a left click on a nonflag occurs?
+    	    map[box/size][box%size] = 'F';
+		}
     }
 
     /**
@@ -302,29 +292,25 @@ public class Grid implements Serializable{
      */
 
     public void deflagBox(int box){
-	if(!(isFlag(box))){
-	    System.out.println("That box does not have a flag on it!");
-	    return;
-	}
-	else{
-	    map[box/size][box%size] = '?';
-	}
-	return;
+		if (!(isFlag(box))) {
+		    System.out.println("That box does not have a flag on it!");
+		} else {
+		    map[box/size][box%size] = '?';
+		}
     }
 
     /**
      * Looks for surrounding numbers near the cell and opens them, repeats when find another zero
      */
 
-    public void findAllZeros(int row, int col){ //TODO: throw exception
-		for(int i = row-1; i <= row+1; i++){
-			for(int j = col-1; j <= col+1; j++){
-				if(i >= 0 && i <= size-1 && j >= 0 && j <= size-1 && !(isMine(i*size+j)) && !(isOpen(i*size+j))){
+    public void findAllZeros(int row, int col) { //TODO: throw exception
+		for (int i = row-1; i <= row+1; i++) {
+			for (int j = col-1; j <= col+1; j++) {
+				if (i >= 0 && i <= size-1 && j >= 0 && j <= size-1 && !(isMine(i*size+j)) && !(isOpen(i*size+j))) {
 					map[i][j] = grid[i][j];
-					if(grid[i][j] == '0')
-					findAllZeros(i,j);
+					if (grid[i][j] == '0')
+						findAllZeros(i,j);
 				}
-
 			}
 		}
     }
@@ -334,24 +320,24 @@ public class Grid implements Serializable{
      */
 
     public int gameStatus(int stat){ 
-    	if(stat == 0){ // runs only if player hasn't hit a mine
+    	if (stat == 0) { // runs only if player hasn't hit a mine
     		int correctBoxes = 0;
-    		for(int i = 0; i < size;i++){
-    			for(int j = 0; j < size; j++){
-    				if(( isMine(i*size+j) && isFlag(i*size+j))||(grid[i][j] == map[i][j]))
+    		for (int i = 0; i < size; i++) {
+    			for (int j = 0; j < size; j++) {
+    				if ((isMine(i * size + j) && isFlag(i * size + j)) || (grid[i][j] == map[i][j]))
     					correctBoxes++; //the map has the correct move for that cell
-    				if (map[i][j]=='X'){
-    					stat=-1;
+    				if (map[i][j] == 'X') {
+    					stat = -1;
     					break;
     				}
     			}
     		}
-    		if(stat==0){
-    			if(correctBoxes == size*size) //all correct moves have been made
-    				stat=1;
+    		if(stat == 0){
+    			if(correctBoxes == size * size) //all correct moves have been made
+    				stat = 1;
     		}
     	}
-	return stat;
+		return stat;
     }
 
 	/**
@@ -376,11 +362,11 @@ public class Grid implements Serializable{
      * Finds the current condition of a cell
      */
 
-     public char getCell(int cell){
-	 return map[cell/size][cell%size];   
-     }
-    char[][] getG(){
-        return grid;
+	public char getCell (int cell) {
+		return map[cell/size][cell%size];
+	}
+    char[][] getG() {
+		return grid;
     }
     char[][] getM(){
         return map;
