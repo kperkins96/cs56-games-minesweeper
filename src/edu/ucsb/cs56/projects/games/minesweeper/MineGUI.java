@@ -44,7 +44,7 @@ public class MineGUI {
     private JButton load; //loads game
     private JButton help;    //Main Menu Help Button
     private JButton save;
-    private JFrame frame;    //The frame is where all the good stuff is displayed e.g. Everything
+    public JFrame frame;    //The frame is where all the good stuff is displayed e.g. Everything
     private JPanel menu;    //Menu Panel, initial panel at initial creation of the game e.g. Main Menu
     private JPanel game;    //Game Panel, where the game is played
     private boolean inUse; //if game is started and in use
@@ -52,17 +52,17 @@ public class MineGUI {
     private JTextField Time;
     private int timeTBPos;
     private Timer timer;
-    private String globalTE;
+    public String globalTE;
 
     private JScrollPane scroller;
     private JLabel highScore; // this label status displays the local high score.
     private JTextArea highScoreList;
     private JTextField Username;
-    private String User;
+    public String User;
 
     private int count;
 
-    private MineComponent mc; //MineComponent is the actual layout of the game, and what makes the game function
+    public MineComponent mc; //MineComponent is the actual layout of the game, and what makes the game function
     private JLabel status;        //the game status label that is displayed during the game
 
 

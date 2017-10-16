@@ -17,7 +17,7 @@ import java.io.Serializable;
 */
 public class Grid implements Serializable{
 
-    private String saveTime;
+    public String saveTime;
     private final int EASY_SIZE = 10;
     private final int MED_SIZE = 15;
     private final int HARD_SIZE = 20;
