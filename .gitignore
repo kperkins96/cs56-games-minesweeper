@@ -5,3 +5,6 @@ build/
 .ant-targets-build.xml
 *.ser
 *.iml
+.idea/
+.DS_Store
+HighScore.txt
