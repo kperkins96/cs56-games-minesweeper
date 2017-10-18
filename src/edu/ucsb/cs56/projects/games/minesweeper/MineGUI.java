@@ -509,17 +509,14 @@ public class MineGUI {
         private String timeElapsed;
         private String leftOver;
 
-        
         public Clock(){
             nano = 1000000000;
             leftOver = globalTE;
             globalTE = "0";
             currClock = System.nanoTime();
             pClock = 0;
-            leftOver = new String("");
         }
-        
-        
+
         public void updateTE(){
             endClock = System.nanoTime();
             elapse = endClock - currClock;
@@ -531,7 +528,7 @@ public class MineGUI {
             mc.getGrid().saveTime = globalTE;
         }
         
-        public void run(){
+        public void run() {
             this.updateTE();
             Time.setText(globalTE);
             Time.repaint();
