@@ -6,9 +6,9 @@ import javax.swing.*;
 
 /** HelpScreen.java is a Panel that displays help messages and a button to return to the StartMenu
 
-@author Julian Gee
-@version 2015/03/04 for lab07, cs56, W15
-*/
+ @author Julian Gee
+ @version 2015/03/04 for lab07, cs56, W15
+ */
 
 public class HelpScreen {
 
@@ -21,8 +21,8 @@ public class HelpScreen {
 	/**
 	 This has a two arg constructor. It takes in the frame, and a panel representing the menu that you accessed help from. It creates a new panel, displaying the help message and a back button, which takes you back to the previous menu.
 	 @param frame - The Frame of the game
-	@param panel - JPanel representing a menu
-	*/
+	 @param panel - JPanel representing a menu
+	 */
 
 	public HelpScreen(JFrame frame, JPanel panel) {
 		this.temp = frame;

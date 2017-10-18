@@ -23,14 +23,14 @@ import javax.swing.plaf.basic.BasicComboPopup;
 /**
  * An Swing component for playing MineSweeper
 
-   @author Daniel Reta
-   @author David Acevedo
-   @author Caleb Nelson
-   @author Alex Thielk
-   @version 2016/02/019 for lab07, cs56, W16
-   @see Grid
+ @author Daniel Reta
+ @author David Acevedo
+ @author Caleb Nelson
+ @author Alex Thielk
+ @version 2016/02/019 for lab07, cs56, W16
+ @see Grid
  */
-public class MineComponent extends JComponent 
+public class MineComponent extends JComponent
 {
 	private Grid game;
 	private int size;
@@ -41,18 +41,18 @@ public class MineComponent extends JComponent
 	private JButton[][] buttons;
 
 	/** Constructor
-	
-	@param game an object that implements the Inferface interface to keep track
-				of the moves in each game, ensuring the rules are followed and detecting
-				when someone has won.
-	@param md an object that implements the MessageDestination interface.  This is just
-			   a place to send any messages that need to be communicated to the user.
-		   Making this separate allows a user of this components to decide to
-		   send those messages to the console, or to a variety of different
-		   swing Widgets, or even to a web page, as needed.
-	@param start a MineGUI object so we can use the MineComponent class to modify the 
-			GUI on the JFrame
-	*/
+
+	 @param game an object that implements the Inferface interface to keep track
+	 of the moves in each game, ensuring the rules are followed and detecting
+	 when someone has won.
+	 @param md an object that implements the MessageDestination interface.  This is just
+	 a place to send any messages that need to be communicated to the user.
+	 Making this separate allows a user of this components to decide to
+	 send those messages to the console, or to a variety of different
+	 swing Widgets, or even to a web page, as needed.
+	 @param start a MineGUI object so we can use the MineComponent class to modify the
+	 GUI on the JFrame
+	 */
 
 	public MineComponent(Grid game, MineGUI start) {
 		super(); // is this line necessary?  what does it do?
@@ -111,7 +111,7 @@ public class MineComponent extends JComponent
 	}
 	/**
 	 * Inner Class, responds to the event source.
-	*/
+	 */
 
 	class ButtonListener extends MouseAdapter{
 		private int num;
@@ -122,9 +122,9 @@ public class MineComponent extends JComponent
 		}
 
 		/**
-		   Places player's symbol on button, checks for a winner or tie
+		 Places player's symbol on button, checks for a winner or tie
 
-		   @param event when a button is clicked
+		 @param event when a button is clicked
 
 		 */
 

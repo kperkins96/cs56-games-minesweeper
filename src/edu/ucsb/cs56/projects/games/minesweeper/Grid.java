@@ -3,18 +3,18 @@ package edu.ucsb.cs56.projects.games.minesweeper;
 import java.io.Serializable;
 
 /** The Grid class is the foundation for minesweeper, applies mine locations, checks if something is open,
-makes flags functional, etc.
-@author Caleb Nelson
-@author David Acevedo
-@version 2015/03/04 for lab07, cs56, W15
+ makes flags functional, etc.
+ @author Caleb Nelson
+ @author David Acevedo
+ @version 2015/03/04 for lab07, cs56, W15
 
 
-@author Isaiah Egan
-@author Austin Hwang
-@author Sai Srimat
-@version July 2016 for Legacy Code, cs56, M16
+ @author Isaiah Egan
+ @author Austin Hwang
+ @author Sai Srimat
+ @version July 2016 for Legacy Code, cs56, M16
 
-*/
+ */
 public class Grid implements Serializable{
 
 	public String saveTime;
@@ -29,8 +29,8 @@ public class Grid implements Serializable{
 	private boolean isGUI;
 
 	/**
-	* Default constructor for objects of class GUIGrid
-	*/
+	 * Default constructor for objects of class GUIGrid
+	 */
 
 	public Grid(boolean isGUI) {
 		saveTime = new String("0");
@@ -99,22 +99,22 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	*	Getter for isGUI
-	*/
+	 *	Getter for isGUI
+	 */
 	public boolean getIsGUI() {
 		return isGUI;
 	}
 
 	/**
-	*	Getter for size
-	*/
+	 *	Getter for size
+	 */
 	public int getSize() {
 		return size;
 	}
 
 	/**
-	* Sets all cells in the grid to zero.
-	*/
+	 * Sets all cells in the grid to zero.
+	 */
 
 	public void setZero() {
 		for (int i = 0; i < size; i++) {
@@ -126,8 +126,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Finds a random Empty cell and makes it a Mine
-	*/
+	 * Finds a random Empty cell and makes it a Mine
+	 */
 
 	public void blankToMine() {
 		int spotX = (int) (size * size * Math.random());
@@ -144,8 +144,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Finds all Mines in the grid and increases the number of its surrounding integer Cells by 1
-	*/
+	 * Finds all Mines in the grid and increases the number of its surrounding integer Cells by 1
+	 */
 
 	public void insertNums() {
 		for (int i = 0; i < size; i++) {
@@ -164,8 +164,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Creates a map filled with question marks
-	*/
+	 * Creates a map filled with question marks
+	 */
 
 	public void mapMaker(char map[][]) {
 		for (int i = 0; i < size; i++) {
@@ -176,8 +176,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Prints out the map in a table
-	*/
+	 * Prints out the map in a table
+	 */
 
 	public String toString() {
 		final String borders = " ---------------------";
@@ -207,8 +207,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Checks a cell to see if it has been opened
-	*/
+	 * Checks a cell to see if it has been opened
+	 */
 
 	public boolean isOpen(int i) throws IllegalArgumentException {
 		if (i >= 0 && i <= (size * size) - 1) {
@@ -223,8 +223,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Checks a cell to see if there is a grid underneath
-	*/
+	 * Checks a cell to see if there is a grid underneath
+	 */
 
 	public boolean isMine(int i) throws IllegalArgumentException {
 		if (i >= 0 && i <= (size * size) - 1) {
@@ -239,8 +239,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Check to see if a user placed a flag on that cell
-	*/
+	 * Check to see if a user placed a flag on that cell
+	 */
 
 	public boolean isFlag(int i) throws IllegalArgumentException {
 		if (i >= 0 && i <= (size * size) - 1) {
@@ -255,8 +255,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Opens the cell and returns what will be placed there
-	*/
+	 * Opens the cell and returns what will be placed there
+	 */
 
 	public char searchBox(int box) {
 		char spot = 'e';
@@ -280,8 +280,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Places a flag on the cell
-	*/
+	 * Places a flag on the cell
+	 */
 
 	public void flagBox(int box) {
 		if (isFlag(box)) {
@@ -295,8 +295,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Removes a flag on a cell that has one
-	*/
+	 * Removes a flag on a cell that has one
+	 */
 
 	public void deflagBox(int box) {
 		if (!(isFlag(box))) {
@@ -307,8 +307,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Looks for surrounding numbers near the cell and opens them, repeats when find another zero
-	*/
+	 * Looks for surrounding numbers near the cell and opens them, repeats when find another zero
+	 */
 
 	public void findAllZeros(int row, int col) { //TODO: throw exception
 		for (int i = row - 1; i <= row + 1; i++) {
@@ -324,8 +324,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* Updates the state of the game
-	*/
+	 * Updates the state of the game
+	 */
 
 	public int gameStatus(int stat) {
 		if (stat == 0) { // runs only if player hasn't hit a mine
@@ -351,8 +351,8 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	* displays the value of the grid (grid contains all the mines only) on the GUI
-	*/
+	 * displays the value of the grid (grid contains all the mines only) on the GUI
+	 */
 
 
 /*
@@ -369,8 +369,8 @@ return map;
 
 
 	/**
-	* Finds the current condition of a cell
-	*/
+	 * Finds the current condition of a cell
+	 */
 
 	public char getCell (int cell) {
 		return map[cell/size][cell%size];
