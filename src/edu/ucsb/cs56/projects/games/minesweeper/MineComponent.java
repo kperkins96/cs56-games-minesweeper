@@ -32,29 +32,29 @@ import javax.swing.plaf.basic.BasicComboPopup;
  */
 public class MineComponent extends JComponent 
 {
-    private Grid game;
-    private int size;
-    private int status; //allows the MineGUI class to know when the game is done
+	private Grid game;
+	private int size;
+	private int status; //allows the MineGUI class to know when the game is done
 	private MineGUI start;
-    private Color zero;
-    private Color number;
-    private JButton[][] buttons;
+	private Color zero;
+	private Color number;
+	private JButton[][] buttons;
 
-    /** Constructor
+	/** Constructor
 	
 	@param game an object that implements the Inferface interface to keep track
-	            of the moves in each game, ensuring the rules are followed and detecting
-	            when someone has won.
+				of the moves in each game, ensuring the rules are followed and detecting
+				when someone has won.
 	@param md an object that implements the MessageDestination interface.  This is just
-	           a place to send any messages that need to be communicated to the user.
+			   a place to send any messages that need to be communicated to the user.
 		   Making this separate allows a user of this components to decide to
 		   send those messages to the console, or to a variety of different
 		   swing Widgets, or even to a web page, as needed.
 	@param start a MineGUI object so we can use the MineComponent class to modify the 
 			GUI on the JFrame
-    */
-       
-    public MineComponent(Grid game, MineGUI start) {
+	*/
+
+	public MineComponent(Grid game, MineGUI start) {
 		super(); // is this line necessary?  what does it do?
 		this.start = start;
 		status = 0;
@@ -69,7 +69,7 @@ public class MineComponent extends JComponent
 
 		this.setLayout(new GridLayout(this.size ,0));
 		for (int i = 0; i < this.size; i++) {
-		    for (int j = 0; j < this.size; j++) {
+			for (int j = 0; j < this.size; j++) {
 				String label=String.format("%d",i * this.size + j);
 				JButton jb = new JButton(label);
 				buttons[i][j] = jb;
@@ -78,14 +78,14 @@ public class MineComponent extends JComponent
 				jb.setText("");
 				jb.addComponentListener(new sizeListener());
 				this.add(jb);
-		    }
+			}
 		}
-    }
-    /**
-     * inner class, reponds to resizing of component to resize font
-     *
-     */
-    class sizeListener implements ComponentListener{
+	}
+	/**
+	 * inner class, reponds to resizing of component to resize font
+	 *
+	 */
+	class sizeListener implements ComponentListener{
 
 		@Override
 		public void componentHidden(ComponentEvent e) {
@@ -99,7 +99,7 @@ public class MineComponent extends JComponent
 		public void componentResized(ComponentEvent e) {
 			int size = e.getComponent().getSize().height / 2;
 			if (e.getComponent().getSize().height / 2 > e.getComponent().getSize().width / 4) {
-			    size = e.getComponent().getSize().width / 4;
+				size = e.getComponent().getSize().width / 4;
 			}
 			e.getComponent().setFont(new Font("sansserif", Font.BOLD, size));
 		}
@@ -108,17 +108,17 @@ public class MineComponent extends JComponent
 		public void componentShown(ComponentEvent e) {
 			// TODO Auto-generated method stub
 		}
-    }
-    /**
-     * Inner Class, responds to the event source.
-    */
+	}
+	/**
+	 * Inner Class, responds to the event source.
+	*/
 
-    class ButtonListener extends MouseAdapter{
+	class ButtonListener extends MouseAdapter{
 		private int num;
 
 		public ButtonListener(int i) {
-		    super();
-		    this.num = i;
+			super();
+			this.num = i;
 		}
 
 		/**
@@ -134,18 +134,18 @@ public class MineComponent extends JComponent
 			Clip clip;
 			String soundName;
 			AudioInputStream audioInputStream;
-		    if (game.gameStatus(status) == 0) {
+			if (game.gameStatus(status) == 0) {
 				//if you left click and the button is available (not a flag and not already opened)
-		    	if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num)){
-		    		char box = game.searchBox(num);
-		    		if (box == 'X') {
-		    			soundName = "resources/sounds/explosion.wav";
-		    		} else {
-		    			soundName = "resources/sounds/clicked.wav";
-		    		}
-    	            playSound(soundName);
-    	            refresh();
-		    		status = game.gameStatus(status);
+				if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num)){
+					char box = game.searchBox(num);
+					if (box == 'X') {
+						soundName = "resources/sounds/explosion.wav";
+					} else {
+						soundName = "resources/sounds/clicked.wav";
+					}
+					playSound(soundName);
+					refresh();
+					status = game.gameStatus(status);
 					if (status == -1) {
 						// TODO: display mines
 						exposeMines();
@@ -164,44 +164,44 @@ public class MineComponent extends JComponent
 						start.stopTimer();
 						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
 						if (response == JOptionPane.YES_OPTION) {
-    	                    start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
+							start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 							start.goToMainMenu();
 						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-    	                    start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
+							start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 							start.resetGame();
 						} else {
-    	                    //do nothing
-    	                }
+							//do nothing
+						}
 					}
-		    	} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num))) {
+				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num))) {
 					// If you left click and the button is a flag or has been opened
-    	            game.searchBox(num);
-    	            soundName = "resources/sounds/userError.wav";
-    	            playSound(soundName);
+					game.searchBox(num);
+					soundName = "resources/sounds/userError.wav";
+					playSound(soundName);
 
-    	        } else if (event.getButton() == MouseEvent.BUTTON3) {
+				} else if (event.getButton() == MouseEvent.BUTTON3) {
 					// If you right click
-		    		if (game.isFlag(num)) {
+					if (game.isFlag(num)) {
 						game.deflagBox(num);
-		    			JButton jb = buttons[num/size][num%size];
-		    			//jb.setFont(new Font("sansserif",Font.BOLD,12));
-		    			jb.setForeground(Color.BLACK);
-		    			jb.setText("");
-		    		} else if (!game.isOpen(num)) {
-    	                soundName = "resources/sounds/place_flag.wav";
-    	                playSound(soundName);
-		    			game.flagBox(num);
-		    			JButton jb = buttons[num/size][num%size];
-		    			jb.setFont(new Font("sansserif",Font.BOLD,15));
-		    			jb.setForeground(Color.RED);
-		    			jb.setText("F");
-		    		} else {
-    	                game.flagBox(num);
-    	                soundName = "resources/sounds/userError.wav";
-    	                playSound(soundName);
-    	            }
-		    		int status = game.gameStatus(0);
-		    		if (status == 1) {
+						JButton jb = buttons[num/size][num%size];
+						//jb.setFont(new Font("sansserif",Font.BOLD,12));
+						jb.setForeground(Color.BLACK);
+						jb.setText("");
+					} else if (!game.isOpen(num)) {
+						soundName = "resources/sounds/place_flag.wav";
+						playSound(soundName);
+						game.flagBox(num);
+						JButton jb = buttons[num/size][num%size];
+						jb.setFont(new Font("sansserif",Font.BOLD,15));
+						jb.setForeground(Color.RED);
+						jb.setText("F");
+					} else {
+						game.flagBox(num);
+						soundName = "resources/sounds/userError.wav";
+						playSound(soundName);
+					}
+					int status = game.gameStatus(0);
+					if (status == 1) {
 						soundName= "resources/sounds/win.wav";
 						playSound(soundName);
 						exposeMines();
@@ -211,41 +211,41 @@ public class MineComponent extends JComponent
 							start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 							start.goToMainMenu();
 						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-                    	    start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
+							start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 							start.resetGame();
 						} else {
-                    	    // do nothing
-                    	}
-	    			}
-	    		} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(num)){
+							// do nothing
+						}
+					}
+				} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(num)){
 					soundName = "resources/sounds/userError.wav";
-                	playSound(soundName);
-            	}
-	    	}
+					playSound(soundName);
+				}
+			}
 		}
 	}
 
-    public void playSound(String dir){
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(dir).getAbsoluteFile());
+	public void playSound(String dir){
+		try {
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(dir).getAbsoluteFile());
 			Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-        } catch (UnsupportedAudioFileException | IOException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
+			clip.open(audioInputStream);
+			clip.start();
+		} catch (UnsupportedAudioFileException | IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
 	}
 
-    public void refresh() {
+	public void refresh() {
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				JButton jb = buttons[i][j];
 				if (game.getCell(i * size + j) != '?') {
 					int fontSize = jb.getSize().height / 2;
 					if (jb.getSize().height / 2>jb.getSize().width / 4) {
-					    fontSize = jb.getSize().width / 4;
+						fontSize = jb.getSize().width / 4;
 					}
 					jb.setFont(new Font("sansserif", Font.BOLD, fontSize));
 					if (game.getCell(i * size + j) == 48) {
@@ -261,7 +261,7 @@ public class MineComponent extends JComponent
 				}
 			}
 		}
-    }
+	}
 
 	void exposeMines() {
 		Component[] listOfButtons = start.mc.getComponents();
@@ -276,7 +276,7 @@ public class MineComponent extends JComponent
 		start.mc.repaint();
 	}
 
-    int getStatus(){
+	int getStatus(){
 		return status;
 	}
 

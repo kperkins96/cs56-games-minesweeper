@@ -9,16 +9,16 @@ package edu.ucsb.cs56.projects.games.minesweeper;
  */
 public class MineException extends RuntimeException {
 
-    // We must declare this constructor if we want it to exist
-    // since we declared the other one, this one won't get made automatically.
+	// We must declare this constructor if we want it to exist
+	// since we declared the other one, this one won't get made automatically.
 
-    public MineException () {};
+	public MineException () {};
 
-    // We must declare this constructor if we want to be able to create
-    // instances with messages, because we have to pass the message to the 
-    // superclass (parent) constructor.
+	// We must declare this constructor if we want to be able to create
+	// instances with messages, because we have to pass the message to the
+	// superclass (parent) constructor.
 
-    public MineException (String message) {
+	public MineException (String message) {
 	super(message);
-    }
+	}
 }
