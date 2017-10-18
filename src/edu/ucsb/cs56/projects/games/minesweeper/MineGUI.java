@@ -33,6 +33,7 @@ import javax.swing.*;
 
 
 public class MineGUI {
+
     private JToolBar toolbar;
     private JButton mainMenu;
     private JButton quitMine;
@@ -227,19 +228,25 @@ public class MineGUI {
         if (action == "New Easy Game") {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (overwriteSavePrompt(frame)) newGame(0);
+                    if (overwriteSavePrompt(frame)) {
+                        newGame(0);
+                    }
                 }
             });
         } else if (action == "New Medium Game") {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (overwriteSavePrompt(frame)) newGame(1);
+                    if (overwriteSavePrompt(frame)) {
+                        newGame(1);
+                    }
                 }
             });
         } else if (action == "New Hard Game") {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (overwriteSavePrompt(frame)) newGame(2);
+                    if (overwriteSavePrompt(frame)) {
+                        newGame(2);
+                    }
                 }
             });
         } else if (action == "Main Menu") {
@@ -401,10 +408,7 @@ public class MineGUI {
         // write to a file if the game is won, include timer for highest score.
         System.out.println("Saving high score only if you WIN game");
         //if (t < lowestTime) {
-        try (
-            FileWriter fw = new FileWriter("HighScore.txt", true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter out = new PrintWriter(bw)) {
+        try (FileWriter fw = new FileWriter("HighScore.txt", true); BufferedWriter bw = new BufferedWriter(fw); PrintWriter out = new PrintWriter(bw)) { // variables in parenthesis will automatically close if try block fails
             String countString = Integer.toString(count);
             // out.println(countString);
             out.println(name + " finished " + difToString(difficulty) + " difficulty in " + time + " seconds!");
@@ -416,7 +420,7 @@ public class MineGUI {
     }
 
     public String getHighScores() {
-        int num=count;
+        int num = count;
         System.out.println("Loading high scores onto mainframe");
         String score = "";
         String line = "";
@@ -440,16 +444,11 @@ public class MineGUI {
     }
 
     public String difToString(int difficulty){
-        if (difficulty ==10)
-        {
+        if (difficulty == 10) {
             return "Easy";
-        }
-        else if (difficulty ==15)
-        {
+        } else if (difficulty == 15) {
             return "Medium";
-        }
-        else if (difficulty ==20)
-        {
+        } else if (difficulty == 20) {
             return "Hard";
         }
         return "";
@@ -460,16 +459,11 @@ public class MineGUI {
         menu.setVisible(false);
         refreshFrame(frame);
         int diff = mc.getGrid().getSize();
-        if (diff ==10)
-        {
+        if (diff == 10) {
             newGame(0);
-        }
-        else if (diff ==15)
-        {
+        } else if (diff == 15) {
             newGame(1);
-        }
-        else if (diff ==20)
-        {
+        } else if (diff == 20) {
             newGame(2);
         }
     }
@@ -483,8 +477,8 @@ public class MineGUI {
         stopTimer();
         Grid g = mc.getGrid();
         int stat = mc.getStatus();
-        if (g.gameStatus(stat) == 0){
-                    save();
+        if (g.gameStatus(stat) == 0) {
+            save();
         }
         game.setVisible(false);
         inUse = false;

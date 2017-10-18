@@ -30,12 +30,12 @@ public class GUIGame {
 		   int num2 = 0;
 		   try {
 			   num = Integer.parseInt(line);
-			   if (num == 1 || num == 2 || num == 3){
+			   if (num == 1 || num == 2 || num == 3) {
 				   System.out.println("Enter the number of the row and column which box you would like to select");
 				   String line2  = sc.nextLine();
 				   num2 = Integer.parseInt(line2);
-				   if(num2 >= 0 && num2 <= 99){
-					   switch(num){
+				   if (num2 >= 0 && num2 <= 99) {
+					   switch(num) {
 						   case 1:
 							   g.searchBox(num2);
 							   break;
@@ -46,21 +46,23 @@ public class GUIGame {
                                g.deflagBox(num2);
                                break;
                        }
-                   } else
-                       System.out.println("Please try again. \n");
-               }
-               else
-                   System.out.println("Please try again. \n");
+                   } else {
+					   System.out.println("Please try again. \n");
+				   }
+               } else {
+				   System.out.println("Please try again. \n");
+			   }
 		   } catch ( NumberFormatException nfe ) {
 		       System.out.println("Please try again. \n");
 		   }
 		   status = g.gameStatus(status);
 		   System.out.println(status);
-		   if(status != 0)
-		       done = true;
+		   if(status != 0) {
+			   done = true;
+		   }
 		}
 		System.out.println(g); // g.toString() implicitly invoked
-		if (status == -1){
+		if (status == -1) {
 		    System.out.println("You lose!!!");
 		    return;
 		} else {

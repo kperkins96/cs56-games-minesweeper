@@ -37,7 +37,7 @@ public class MineComponent extends JComponent
     private int status; //allows the MineGUI class to know when the game is done
 	private MineGUI start;
     private Color zero;
-    private Color number = new Color (0, 100, 0);
+    private Color number;
     private JButton[][] buttons;
 
     /** Constructor
@@ -69,11 +69,11 @@ public class MineComponent extends JComponent
 
 		this.setLayout(new GridLayout(this.size ,0));
 		for (int i = 0; i < this.size; i++) {
-		    for(int j = 0; j < this.size; j++) {
-				String label=String.format("%d",i* this.size +j);
+		    for (int j = 0; j < this.size; j++) {
+				String label=String.format("%d",i * this.size + j);
 				JButton jb = new JButton(label);
 				buttons[i][j] = jb;
-				jb.addMouseListener(new ButtonListener(i* this.size +j));
+				jb.addMouseListener(new ButtonListener(i * this.size + j));
 				jb.setFont(new Font("sansserif",Font.BOLD,10));
 				jb.setText("");
 				jb.addComponentListener(new sizeListener());
@@ -134,14 +134,14 @@ public class MineComponent extends JComponent
 			Clip clip;
 			String soundName;
 			AudioInputStream audioInputStream;
-		    if(game.gameStatus(status) == 0){
+		    if (game.gameStatus(status) == 0) {
 				//if you left click and the button is available (not a flag and not already opened)
 		    	if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num)){
-		    		char box=game.searchBox(num);
-		    		if (box=='X') {
-		    			soundName= "resources/sounds/explosion.wav";
+		    		char box = game.searchBox(num);
+		    		if (box == 'X') {
+		    			soundName = "resources/sounds/explosion.wav";
 		    		} else {
-		    			soundName="resources/sounds/clicked.wav";
+		    			soundName = "resources/sounds/clicked.wav";
 		    		}
     	            playSound(soundName);
     	            refresh();
@@ -169,7 +169,7 @@ public class MineComponent extends JComponent
 						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
     	                    start.saveHighest(start.User,start.globalTE,start.mc.getGrid().getSize());
 							start.resetGame();
-						} else{
+						} else {
     	                    //do nothing
     	                }
 					}
@@ -239,23 +239,24 @@ public class MineComponent extends JComponent
 	}
 
     public void refresh() {
-		for(int i = 0; i < size; i++) {
-			for(int j = 0; j < size; j++){
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
 				JButton jb = buttons[i][j];
-				if(game.getCell(i * size + j) != '?'){
+				if (game.getCell(i * size + j) != '?') {
 					int fontSize = jb.getSize().height / 2;
-					if (jb.getSize().height / 2>jb.getSize().width / 4){
+					if (jb.getSize().height / 2>jb.getSize().width / 4) {
 					    fontSize = jb.getSize().width / 4;
 					}
 					jb.setFont(new Font("sansserif", Font.BOLD, fontSize));
-					if (game.getCell(i * size + j) == 48)
+					if (game.getCell(i * size + j) == 48) {
 						jb.setForeground(zero);
-					else if (game.getCell(i * size + j) == 70)
+					} else if (game.getCell(i * size + j) == 70) {
 						jb.setForeground(Color.RED);
-					else if (game.getCell(i * size + j) == 88)
+					} else if (game.getCell(i * size + j) == 88) {
 						jb.setForeground(Color.BLACK);
-					else
+					} else {
 						jb.setForeground(number);
+					}
 					jb.setText(Character.toString(game.getCell(i*size+j)));
 				}
 			}
