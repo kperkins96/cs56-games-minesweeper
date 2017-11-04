@@ -94,16 +94,7 @@ public class MainMenu extends JFrame {
 		//menu.add(Username);
 		boolean inUse = false;
     }
-/*
-	public void addActionListener(JTextField text) {
-		text.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String User = text.getText();
-				System.out.println("User is set to: " + User);
-			}
-		});
-	}
-*/
+
 	public void addActionListener(JButton button, String action) {
 		if (action == "New Easy Game") {
 			button.addActionListener(new ActionListener() {
@@ -148,6 +139,10 @@ public class MainMenu extends JFrame {
 				}
 			});
 		}
+	}
+
+	public void refreshHighScoreChart() {
+		highScoreList.setText(getHighScores());
 	}
 
 	public String getHighScores() {

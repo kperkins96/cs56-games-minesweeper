@@ -97,8 +97,6 @@ public class GameFrame extends JFrame {
 			try {
 				one = os.readObject();
 				game = (Grid) one;
-				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-				setSize((65 * game.getSize() > screenSize.width ? screenSize.width : 65 * game.getSize()), (60 * game.getSize() > screenSize.height - 30 ? screenSize.height - 30 : 60 * game.getSize()));
 				globalTE = game.saveTime;
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -268,7 +266,7 @@ public class GameFrame extends JFrame {
 				JButton jb = buttons[i][j];
 				if (game.getCell(i * game.getSize() + j) != '?') {
 					int fontSize = jb.getSize().height / 2;
-					if (jb.getSize().height / 2>jb.getSize().width / 4) {
+					if (jb.getSize().height / 2 > jb.getSize().width / 4) {
 						fontSize = jb.getSize().width / 4;
 					}
 					jb.setFont(new Font("sansserif", Font.BOLD, fontSize));
