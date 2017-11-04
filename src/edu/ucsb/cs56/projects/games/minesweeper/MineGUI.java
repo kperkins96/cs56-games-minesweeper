@@ -22,13 +22,18 @@ public class MineGUI {
 
 	public static void newGame(int difficulty) {
         mainMenu.setVisible(false);
+        if (gameFrame != null) {
+			gameFrame.dispose();
+		}
 		gameFrame = new GameFrame(difficulty);
 		gameFrame.setVisible(true);
 	}
 
 	public static void goToMainMenu() {
 		if (gameFrame != null) {
-			gameFrame.setVisible(true);
+			gameFrame.save();
+			gameFrame.dispose();
+			gameFrame = null;
 		}
 		mainMenu.setVisible(true);
 	}

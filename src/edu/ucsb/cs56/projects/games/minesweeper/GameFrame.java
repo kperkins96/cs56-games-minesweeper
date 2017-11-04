@@ -66,10 +66,10 @@ public class GameFrame extends JFrame {
 		buttons = new JButton[game.getSize()][game.getSize()];
 		JToolBar toolbar = new JToolBar("In-game toolbar");
 		createToolbar(toolbar);
-		getContentPane().add(toolbar, BorderLayout.NORTH);    //puts the game toolbar at the top of the screen
-		// note columns ignored when rows are set
-		// number of columns is implicit from the number of things added
-
+		getContentPane().add(toolbar, BorderLayout.NORTH); //puts the game toolbar at the top of the screen
+		globalTE = "0";
+		timer = new Timer();
+		timer.schedule(new Clock(), 0, 1000);
 		JPanel grid = new JPanel();
 		grid.setLayout(new GridLayout(game.getSize() ,0));
 		for (int i = 0; i < game.getSize(); i++) {
@@ -78,11 +78,14 @@ public class GameFrame extends JFrame {
 				JButton jb = new JButton(label);
 				buttons[i][j] = jb;
 				jb.addMouseListener(new ButtonListener(i * game.getSize() + j));
-				jb.setFont(new Font("sansserif", Font.BOLD,10));
+				jb.setFont(new Font("sansserif", Font.BOLD, 10));
 				jb.setText("");
 				jb.addComponentListener(new SizeListener());
 				grid.add(jb);
 			}
+		}
+		if (difficulty == -2) {
+			refresh();
 		}
 		getContentPane().add(grid);
 	}
@@ -99,8 +102,6 @@ public class GameFrame extends JFrame {
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 				setSize((65 * game.getSize() > screenSize.width ? screenSize.width : 65 * game.getSize()), (60 * game.getSize() > screenSize.height - 30 ? screenSize.height - 30 : 60 * game.getSize()));
 				globalTE = game.saveTime;
-				timer = new Timer();
-				timer.schedule(new Clock(), 0, 1000);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
