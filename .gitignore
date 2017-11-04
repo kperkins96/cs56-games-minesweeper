@@ -1,3 +1,4 @@
+*.ser
 javadoc/
 build/
 *.class

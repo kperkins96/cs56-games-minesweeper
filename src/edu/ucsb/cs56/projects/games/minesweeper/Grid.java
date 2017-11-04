@@ -26,15 +26,13 @@ public class Grid implements Serializable{
 	private int size;
 	private char[][] grid;
 	private char[][] map;
-	private boolean isGUI;
 
 	/**
 	 * Default constructor for objects of class GUIGrid
 	 */
 
-	public Grid(boolean isGUI) {
+	public Grid() {
 		saveTime = new String("0");
-		this.isGUI = isGUI;
 		size = EASY_SIZE;
 		grid = new char[size][size];
 		map = new char[size][size];
@@ -46,9 +44,8 @@ public class Grid implements Serializable{
 		mapMaker(map);
 	}
 
-	public Grid(boolean isGUI, int difficulty) {
+	public Grid(int difficulty) {
 		saveTime = new String("0");
-		this.isGUI = isGUI;
 		switch (difficulty) {
 			case -1: //for known grid testing
 				size = 4;
@@ -98,11 +95,8 @@ public class Grid implements Serializable{
 		size = 4;
 	}
 
-	/**
-	 *	Getter for isGUI
-	 */
-	public boolean getIsGUI() {
-		return isGUI;
+	public void setCell(int i, int j, char input) {
+		grid[i][j] = input;
 	}
 
 	/**
@@ -135,9 +129,6 @@ public class Grid implements Serializable{
 		int b = spotX % size;
 		if (grid[a][b] != 'X') {
 			grid[a][b] = 'X';
-			if (isGUI == true) {
-				System.out.println(a * size + b);
-			}
 		} else {
 			blankToMine();
 		}
@@ -349,24 +340,6 @@ public class Grid implements Serializable{
 		}
 		return stat;
 	}
-
-	/**
-	 * displays the value of the grid (grid contains all the mines only) on the GUI
-	 */
-
-
-/*
-public char[][] displayMines(int size) {
-for (int i = size - 1; i <= size + 1; i++) {
-for (int j = size - 1; j <= size + 1; j++) {
-if (isMine(map[i][j]))
-	map[i][j] = grid[i][j];
-}
-}
-return map;
-}
-*/
-
 
 	/**
 	 * Finds the current condition of a cell

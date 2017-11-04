@@ -16,31 +16,6 @@ import static org.junit.Assert.assertFalse;
 public class GridTest {
 
 	/**
-	 * Test case for default constructor of the Grid class
-	 *
-	 * @see Grid#Grid
-	 */
-	@Test
-	public void test_Grid() {
-		Grid g1 = new Grid(true, 0);
-		Grid g2 = new Grid(true, 1);
-		Grid g3 = new Grid(true, 2);
-		assertEquals(true,g1.getIsGUI());
-	}
-
-	/**
-	 * Test case for getIsGUI of the Grid class
-	 *
-	 * @see Grid#getIsGUI()
-	 */
-
-	@Test
-	public void test_getIsGUI() {
-		Grid g1 = new Grid(true);
-		assertEquals(true, g1.getIsGUI());
-	}
-
-	/**
 	 * Test case for setZero method of the Grid class
 	 *
 	 * @see Grid#setZero()
@@ -49,7 +24,7 @@ public class GridTest {
 	@Test
 	public void test_setZero() {
 		boolean correct = true;
-		Grid test = new Grid(true);
+		Grid test = new Grid(0);
 		test.setZero();
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
@@ -71,7 +46,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Easy() {
 		int count = 0;
-		Grid test = new Grid(true,0);
+		Grid test = new Grid(0);
 		int s = test.getSize();
 		for (int i =0; i< s; i++){
 			for (int j=0; j<s; j++)
@@ -86,7 +61,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Medium(){
 		int count = 0;
-		Grid test = new Grid(true, 1);
+		Grid test = new Grid(1);
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -101,7 +76,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Hard() {
 		int count = 0;
-		Grid test = new Grid(true,2);
+		Grid test = new Grid(2);
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -124,8 +99,8 @@ public class GridTest {
 	public void test_insertNums() {
 		boolean correct = true;
 
-		Grid t = new Grid(true, -1);
-		Grid k = new Grid(true, -1);
+		Grid t = new Grid(-1);
+		Grid k = new Grid(-1);
 		//make a entirely known array and an array with known bombs
 		char[][] test = new char[4][4];
 		char[][] known = new char[4][4];
@@ -180,7 +155,7 @@ public class GridTest {
 	@Test
 	public void test_mapMaker() {
 		int count = 0;
-		Grid test = new Grid(true);
+		Grid test = new Grid();
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -214,7 +189,7 @@ public class GridTest {
 
 	@Test
 	public void test_isOpen1() {
-		Grid g1 = new Grid(true);
+		Grid g1 = new Grid();
 		assertEquals(false, g1.isOpen(1));
 	}
 
@@ -227,7 +202,7 @@ public class GridTest {
 
 	@Test
 	public void test_isOpen2() {
-		Grid g1 = new Grid(false);
+		Grid g1 = new Grid();
 		assertEquals(false, g1.isOpen(1));
 	}
 
@@ -240,7 +215,7 @@ public class GridTest {
 	@Test
 	public void test_isMine() {
 		boolean correct = true;
-		Grid k = new Grid(true, -1);
+		Grid k = new Grid(-1);
 		//make a entirely known array
 		char[][] known = new char[4][4];
 		known[0][0] = '0';
@@ -274,7 +249,7 @@ public class GridTest {
 
 	@Test
 	public void test_isFlag1() {
-		Grid g1 = new Grid(true);
+		Grid g1 = new Grid();
 		assertEquals(false, g1.isOpen(99));
 	}
 
@@ -286,7 +261,7 @@ public class GridTest {
 
 	@Test
 	public void test_isFlag2() {
-		Grid g1 = new Grid(false);
+		Grid g1 = new Grid();
 		assertEquals(false, g1.isOpen(99));
 	}
 
@@ -299,7 +274,7 @@ public class GridTest {
 	@Test
 	public void test_searchBox() {
 		boolean correct = true;
-		Grid k = new Grid(true, -1);
+		Grid k = new Grid(-1);
 		//make a entirely known array
 		char[][] known = new char[4][4];
 		known[0][0] = '0';
@@ -332,7 +307,7 @@ public class GridTest {
 	@Test
 	public void test_flagBox() {
 		boolean correct = true;
-		Grid test = new Grid(true);
+		Grid test = new Grid();
 		test.flagBox(6);
 		test.flagBox(12);
 		test.flagBox(27);
@@ -351,7 +326,7 @@ public class GridTest {
 	@Test
 	public void test_deflagBox() {
 		boolean correct = true;
-		Grid test = new Grid(true);
+		Grid test = new Grid();
 		test.flagBox(6);
 		test.flagBox(12);
 		test.flagBox(27);
@@ -373,7 +348,7 @@ public class GridTest {
 	@Test
 	public void test_findAllZeros() {
 		boolean correct = true;
-		Grid k = new Grid(true, -1);
+		Grid k = new Grid(-1);
 		//make a entirely known array
 		char[][] known = new char[4][4];
 		known[0][0] = '0';
@@ -407,7 +382,7 @@ public class GridTest {
 
 	@Test
 	public void test_gameStatus() {
-		Grid g1 = new Grid(true);
+		Grid g1 = new Grid();
 		assertEquals(0, g1.gameStatus(0));
 	}
 
@@ -420,7 +395,7 @@ public class GridTest {
 	@Test
 	public void test_getCell() {
 		boolean correct = true;
-		Grid k = new Grid(true, -1);
+		Grid k = new Grid(-1);
 		//make a entirely known array
 		char[][] known = new char[4][4];
 		known[0][0] = '0';
