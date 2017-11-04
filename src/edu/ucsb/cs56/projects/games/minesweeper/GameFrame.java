@@ -30,7 +30,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -51,7 +50,6 @@ public class GameFrame extends JFrame {
     private JButton[][] buttons;
 	private String globalTE;
 	private JTextField timeDisplay;
-    private String user;
 	private Timer timer;
 
 	GameFrame(int difficulty) {
@@ -440,16 +438,15 @@ public class GameFrame extends JFrame {
 						stopTimer();
 						int response = JOptionPane.showOptionDialog(null, "You lose! Press 'Reset Game' to start a new game.", "Defeat!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
 						if (response == JOptionPane.YES_OPTION) {
-							saveHighest(user, globalTE, game.getSize());
 							MineGUI.goToMainMenu();
 						} else {
-							saveHighest(user, globalTE, game.getSize());
 							resetGame();
 						}
 					} else if (status == 1) {
 						soundName= "resources/sounds/win.wav";
 						playSound(soundName);
 						stopTimer();
+						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
 						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
 						if (response == JOptionPane.YES_OPTION) {
 							saveHighest(user, globalTE, game.getSize());
@@ -493,6 +490,7 @@ public class GameFrame extends JFrame {
 						playSound(soundName);
 						exposeMines();
 						stopTimer();
+						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
 						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
 						if (response == JOptionPane.YES_OPTION) {
 							saveHighest(user, globalTE, game.getSize());

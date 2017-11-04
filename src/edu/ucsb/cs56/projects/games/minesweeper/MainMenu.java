@@ -51,13 +51,11 @@ public class MainMenu extends JFrame {
 	private int timeTBPos;
 	private Timer timer;
 	public String globalTE;
-
 	private JScrollPane scroller;
 	private JLabel highScore; // this label status displays the local high score.
-	private JTextArea highScoreList;
-	private JTextField Username;
+	private JLabel highScoreList;
+	//private JTextField Username;
 	public String User;
-
 	private int count;
 
     public MainMenu() throws HeadlessException {
@@ -71,15 +69,13 @@ public class MainMenu extends JFrame {
 		hardGame = new JButton("New Hard Game");
 		help = new JButton("Help");
 		load = new JButton("Load Last Game");
-		Username = new JTextField("Name: ");
+		//Username = new JTextField("Name: ");
 		highScore = new JLabel("Leaderboards: "); // added another JLabel
-		highScoreList = new JTextArea(10, 20);
+		highScoreList = new JLabel(getHighScores());
 		scroller = new JScrollPane(highScoreList);
-		highScoreList.setLineWrap(true);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		highScoreList.append(getHighScores());
-		addActionListener(Username);
+		//addActionListener(Username);
 		addActionListener(easyGame, "New Easy Game");
 		addActionListener(medGame, "New Medium Game");
 		addActionListener(hardGame, "New Hard Game");
@@ -95,10 +91,10 @@ public class MainMenu extends JFrame {
 		menu.add(highScore); // add new highScore feature to frame.
 		//menu.add(highScoreList);
 		menu.add(scroller);
-		menu.add(Username);
+		//menu.add(Username);
 		boolean inUse = false;
     }
-
+/*
 	public void addActionListener(JTextField text) {
 		text.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -107,12 +103,12 @@ public class MainMenu extends JFrame {
 			}
 		});
 	}
-
+*/
 	public void addActionListener(JButton button, String action) {
 		if (action == "New Easy Game") {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt(frame)) {
+					if (overwriteSavePrompt()) {
 						MineGUI.newGame(0);
 					}
 				}
@@ -120,7 +116,7 @@ public class MainMenu extends JFrame {
 		} else if (action == "New Medium Game") {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt(frame)) {
+					if (overwriteSavePrompt()) {
 						MineGUI.newGame(1);
 					}
 				}
@@ -128,7 +124,7 @@ public class MainMenu extends JFrame {
 		} else if (action == "New Hard Game") {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt(frame)) {
+					if (overwriteSavePrompt()) {
 						MineGUI.newGame(2);
 					}
 				}
@@ -136,7 +132,7 @@ public class MainMenu extends JFrame {
 		} else if (action == "Quit Minesweeper") {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					quitPrompt(frame);
+					quitPrompt();
 				}
 			});
 		} else if (action == "Help") {
@@ -157,7 +153,7 @@ public class MainMenu extends JFrame {
 	public String getHighScores() {
 		int num = count;
 		System.out.println("Loading high scores onto mainframe");
-		String score = "";
+		String score = "<html>";
 		String line = "";
 		try {
 			File myFile = new File("HighScore.txt");
@@ -165,11 +161,12 @@ public class MainMenu extends JFrame {
 			BufferedReader reader = new BufferedReader(filereader);
 			while ((line = reader.readLine()) != null) {
 				//while(num > -1) {
-				score += line + "\n";
+				score += line + "<br>";
 				//    num--;
 				//}
 			}
 			reader.close();
+			score += "</html>";
 		} catch(IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -178,8 +175,8 @@ public class MainMenu extends JFrame {
 		return score;
 	}
 
-	public void quitPrompt(JFrame frame) {
-		int response = JOptionPane.showConfirmDialog(frame, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+	public void quitPrompt() {
+		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (response == JOptionPane.YES_OPTION) {
 			System.out.println("Closing...");
 			System.exit(0);
@@ -188,8 +185,8 @@ public class MainMenu extends JFrame {
 		}
 	}
 
-	public boolean overwriteSavePrompt(JFrame frame) {
-		int response = JOptionPane.showConfirmDialog(frame, "Are you sure you want to do this? This will delete previous save data", "Overwriting Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+	public boolean overwriteSavePrompt() {
+		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to do this? This will delete previous save data", "Overwriting Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (response == JOptionPane.YES_OPTION) {
 			return true;
 		} else {
