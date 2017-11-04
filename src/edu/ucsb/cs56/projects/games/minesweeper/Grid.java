@@ -346,7 +346,7 @@ public class Grid implements Serializable{
 	 */
 
 	public char getCell (int cell) {
-		return map[cell/size][cell%size];
+		return map[cell / size][cell % size];
 	}
 
 	char[][] getG() {

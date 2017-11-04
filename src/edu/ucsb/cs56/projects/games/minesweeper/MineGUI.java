@@ -30,6 +30,7 @@ public class MineGUI {
 	}
 
 	public static void goToMainMenu() {
+		mainMenu.refreshHighScoreChart();
 		if (gameFrame != null) {
 			gameFrame.save();
 			gameFrame.dispose();
