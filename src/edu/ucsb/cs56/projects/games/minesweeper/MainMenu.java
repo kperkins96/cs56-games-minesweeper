@@ -47,15 +47,14 @@ public class MainMenu extends JFrame {
 	private JPanel menu;    //Menu Panel, initial panel at initial creation of the game e.g. Main Menu
 	private JPanel game;    //Game Panel, where the game is played
 	private boolean inUse; //if game is started and in use
-	private JTextField Time;
+	private JTextField time;
 	private int timeTBPos;
 	private Timer timer;
 	public String globalTE;
 	private JScrollPane scroller;
 	private JLabel highScore; // this label status displays the local high score.
 	private JLabel highScoreList;
-	public String User;
-	private int count;
+	private HelpScreen helpScreen;
 
     public MainMenu() throws HeadlessException {
         super();
@@ -89,6 +88,46 @@ public class MainMenu extends JFrame {
 		menu.add(scroller);
 		boolean inUse = false;
     }
+
+    public int getEasyGameX() {
+		return easyGame.getX();
+	}
+
+    public int getEasyGameY() {
+		return easyGame.getY();
+	}
+
+    public int getMedGameX() {
+		return medGame.getX();
+	}
+
+    public int getMedGameY() {
+		return medGame.getY();
+	}
+
+    public int getHardGameX() {
+		return hardGame.getX();
+	}
+
+    public int getHardGameY() {
+		return hardGame.getY();
+	}
+
+    public int getLoadGameX() {
+		return load.getX();
+	}
+
+    public int getLoadGameY() {
+		return load.getY();
+	}
+
+    public int getHelpX() {
+		return help.getX();
+	}
+
+    public int getHelpY() {
+		return help.getY();
+	}
 
 	public void addActionListener(JButton button, String action) {
 		if (action == "New Easy Game") {
@@ -124,8 +163,7 @@ public class MainMenu extends JFrame {
 		} else if (action == "Help") {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					HelpScreen helpScreen = new HelpScreen();
-					setVisible(false);
+					helpScreen = new HelpScreen();
 				}
 			});
 		} else if (action == "Load") {
@@ -137,12 +175,15 @@ public class MainMenu extends JFrame {
 		}
 	}
 
+	public HelpScreen getHelpScreen() {
+    	return helpScreen;
+	}
+
 	public void refreshHighScoreChart() {
 		highScoreList.setText(getHighScores());
 	}
 
 	public String getHighScores() {
-		int num = count;
 		//System.out.println("Loading high scores onto mainframe");
 		String score = "<html>";
 		String line = "";

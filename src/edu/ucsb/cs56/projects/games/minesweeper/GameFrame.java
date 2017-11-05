@@ -53,6 +53,13 @@ public class GameFrame extends JFrame {
 	private String globalTE;
 	private JTextField timeDisplay;
 	private Timer timer;
+	private JButton refresh;
+	private JButton mainMenu;
+	private JButton quitMine;
+	private JButton inGameHelp;
+	private JToolBar toolbar;
+	private JPanel grid;
+	private HelpScreen helpScreen;
 
 	GameFrame(int difficulty) {
 		super(); // is this line necessary?  what does it do?
@@ -63,14 +70,15 @@ public class GameFrame extends JFrame {
 		} else {
 			game = new Grid(difficulty);  // the Interface game
 		}
+		helpScreen = null;
 		buttons = new JButton[game.getSize()][game.getSize()];
-		JToolBar toolbar = new JToolBar("In-game toolbar");
+		toolbar = new JToolBar("In-game toolbar");
 		createToolbar(toolbar);
 		getContentPane().add(toolbar, BorderLayout.NORTH); //puts the game toolbar at the top of the screen
 		globalTE = "0";
 		timer = new Timer();
 		timer.schedule(new Clock(), 0, 1000);
-		JPanel grid = new JPanel();
+		grid = new JPanel();
 		grid.setLayout(new GridLayout(game.getSize() ,0));
 		for (int i = 0; i < game.getSize(); i++) {
 			for (int j = 0; j < game.getSize(); j++) {
@@ -89,6 +97,14 @@ public class GameFrame extends JFrame {
 			refresh();
 		}
 		getContentPane().add(grid);
+	}
+
+	public int getGridButtonX(int i, int j) {
+		return grid.getX() + buttons[i][j].getX() + 10;
+	}
+
+	public int getGridButtonY(int i, int j) {
+		return grid.getY() + buttons[i][j].getY();
 	}
 
 	public void load() {
@@ -166,10 +182,10 @@ public class GameFrame extends JFrame {
 
 	public void createToolbar(JToolBar toolbar) {
 		//make buttons
-		JButton refresh = new JButton("Reset Game");
-		JButton mainMenu = new JButton("Main Menu");
-		JButton quitMine = new JButton("Quit Minesweeper");
-		JButton inGameHelp = new JButton("Help");
+		refresh = new JButton("Reset Game");
+		mainMenu = new JButton("Main Menu");
+		quitMine = new JButton("Quit Minesweeper");
+		inGameHelp = new JButton("Help");
 		Clock gClock = new Clock();
 		timeDisplay = new JTextField(globalTE);
 		timeDisplay.setColumns(4);
@@ -185,6 +201,30 @@ public class GameFrame extends JFrame {
 		toolbar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolbar.add(timeDisplay);
 		toolbar.setFloatable(false);
+	}
+
+	public int getRefreshX() {
+		return refresh.getX();
+	}
+
+	public int getRefreshY() {
+		return refresh.getY();
+	}
+
+	public int getMainMenuX() {
+		return mainMenu.getX();
+	}
+
+	public int getMainMenuY() {
+		return mainMenu.getY();
+	}
+
+	public int getHelpX() {
+		return inGameHelp.getX();
+	}
+
+	public int getHelpY() {
+		return inGameHelp.getY();
 	}
 
 	public void addActionListener(JButton button, String action) {
@@ -211,8 +251,7 @@ public class GameFrame extends JFrame {
 		} else if (action == "Help") {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					HelpScreen helpScreen = new HelpScreen();
-					setVisible(false);
+					helpScreen = new HelpScreen();
 				}
 			});
 		} else if (action == "Load") {
@@ -279,7 +318,6 @@ public class GameFrame extends JFrame {
 						jb.setForeground(ZERO);
 					} else if (game.isFlag(i, j)) {
 						jb.setForeground(Color.RED);
-						jb.setText("F");
 					} else if (game.getCell(i, j) == 'X') {
 						jb.setForeground(Color.BLACK);
 					} else {
@@ -290,7 +328,7 @@ public class GameFrame extends JFrame {
 		}
 	}
 
-	void exposeMines() {
+	public void exposeMines() {
 		for (int i = 0; i < buttons.length; i++) {
 			for (int j = 0; j < buttons.length; j++) {
 				if (game.isMine(i * buttons.length + j)) {
@@ -300,21 +338,26 @@ public class GameFrame extends JFrame {
 			        Image newimg = img.getScaledInstance( 2 * game.getSize(), 2 *game.getSize(),  java.awt.Image.SCALE_DEFAULT ) ;  
 					mineImage = new ImageIcon( newimg );
 					buttons[i][j].setIcon(mineImage);
-					
+					/*
 					buttons[i][j].setFont(new Font("sansserif", Font.PLAIN, 1));
 					buttons[i][j].setText("X");
+					*/
 					buttons[i][j].setForeground(new Color(255, 255, 255, 0));
 				}
 			}
 		}
 	}
 
-	int getStatus(){
+	public int getStatus(){
 		return status;
 	}
 
-	Grid getGrid(){
+	public Grid getGrid(){
 		return game;
+	}
+
+	public HelpScreen getHelpScreen() {
+		return helpScreen;
 	}
 
 	public String difToString(int difficulty){
@@ -486,12 +529,13 @@ public class GameFrame extends JFrame {
 						//jb.setFont(new Font("sansserif",Font.BOLD,12));
 						jb.setForeground(Color.BLACK);
 						jb.setText("");
+						jb.setIcon(null);
 					} else if (!game.isOpen(num)) {
 						soundName = "resources/sounds/place_flag.wav";
 						playSound(soundName);
 						game.flagBox(num);
 						JButton jb = buttons[num / game.getSize()][num % game.getSize()];
-						jb.setFont(new Font("sansserif", Font.PLAIN,1));
+						//jb.setFont(new Font("sansserif", Font.PLAIN,1));
 						//jb.setForeground(Color.RED);
 						
 						
@@ -502,7 +546,7 @@ public class GameFrame extends JFrame {
 						
 				        flagImage = new ImageIcon( newimg );
 						jb.setIcon(flagImage);
-						jb.setText("F");
+						//jb.setText("F");
 						jb.setForeground(new Color(255, 255, 255, 0));
 
 					} else {

@@ -66,6 +66,14 @@ public class Grid implements Serializable{
 				throw new IllegalArgumentException("Difficulty needs to be an integer between 0 and 2 inclusive.");
 		}
 		setZero();
+		if (difficulty == -1) {
+			grid[3][3].makeMine();
+			for (int i = 2; i <= 3; i++) {
+				for (int j = 2; j <= 3; j++) {
+					grid[i][j].iterate();
+				}
+			}
+		}
 		for (int i = 0; i < (difficulty + 1) * grid.length; i++) {
 			setMine();
 		}
@@ -274,7 +282,7 @@ public class Grid implements Serializable{
 				if (grid[row][col].getSymbol() == '0') {
 					for (int i = row - 1; i <= row + 1; i++) {
 						for (int j = col - 1; j <= col + 1; j++) {
-							if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
+							if (i >= 0 && i < grid.length && j >= 0 && j < grid.length && !grid[i][j].getIsFlagged() && !grid[i][j].getIsMine()) {
 								if (grid[i][j].getSymbol() == '0' && !grid[i][j].getIsOpen()) {
 									bfs.add(i * grid.length + j);
 								}
