@@ -1,5 +1,7 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
+import javax.swing.JFrame;
+
 /** MineGUI.java is a base that calls all GUI objects and handles tasks
  such as pausing the game, creating the GUI, making the escape key functional,
  and allowing for a new game.
@@ -37,5 +39,25 @@ public class MineGUI {
 			gameFrame = null;
 		}
 		mainMenu.setVisible(true);
+	}
+
+	public static void helpBack() {
+		if (gameFrame != null) {
+			gameFrame.setVisible(true);
+		} else {
+			mainMenu.setVisible(true);
+		}
+	}
+
+	/* static getter for JUnit testing
+	 */
+	public static JFrame getCurrentFrame() {
+		if (mainMenu.isVisible()) {
+			return mainMenu;
+		} else if (gameFrame != null && gameFrame.isVisible()) {
+			return gameFrame;
+		} else {
+			return new HelpScreen();
+		}
 	}
 }

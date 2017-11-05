@@ -209,6 +209,7 @@ public class GameFrame extends JFrame {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					HelpScreen helpScreen = new HelpScreen();
+					setVisible(false);
 				}
 			});
 		} else if (action == "Load") {
@@ -324,6 +325,8 @@ public class GameFrame extends JFrame {
 			MineGUI.newGame(1);
 		} else if (diff == 20) {
 			MineGUI.newGame(2);
+		} else if (diff == 4) {
+			MineGUI.newGame(-1);
 		}
 	}
 
@@ -369,7 +372,6 @@ public class GameFrame extends JFrame {
 		}
 	} // class Clock
 
-
 	/**
 	 * inner class, reponds to resizing of component to resize font
 	 */
@@ -397,6 +399,7 @@ public class GameFrame extends JFrame {
 			// TODO Auto-generated method stub
 		}
 	} // class SizeListener
+
 
 	/**
 	 * Inner Class, responds to the event source.
