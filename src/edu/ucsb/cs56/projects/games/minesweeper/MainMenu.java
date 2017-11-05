@@ -143,7 +143,7 @@ public class MainMenu extends JFrame {
 
 	public String getHighScores() {
 		int num = count;
-		System.out.println("Loading high scores onto mainframe");
+		//System.out.println("Loading high scores onto mainframe");
 		String score = "<html>";
 		String line = "";
 		try {
