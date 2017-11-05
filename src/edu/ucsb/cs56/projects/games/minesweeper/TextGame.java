@@ -18,7 +18,7 @@ public class TextGame {
 		int status = 0;
 
 		// TicTacToeGrid implements TicTacToeGame
-		Grid g = new Grid(false);
+		Grid g = new Grid();
 
 		while (!done) {
 			System.out.println(g); // g.toString() implicitly invoked

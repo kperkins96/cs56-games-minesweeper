@@ -99,8 +99,8 @@ public class Grid implements Serializable{
 		if (grid[a][b].makeMine()) {
 			for (int i = a - 1; i <= a + 1; i++) {
 				for (int j = b - 1; j <= b + 1; j++) {
-					if (a >= 0 && a < grid.length && b >= 0 && b < grid.length) {
-						grid[a][b].iterate();
+					if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
+						grid[i][j].iterate();
 					}
 				}
 			}
@@ -214,6 +214,9 @@ public class Grid implements Serializable{
 			} else {
 				spot = grid[i][j].getSymbol();
 				grid[i][j].open();
+				if (grid[i][j].getSymbol() == '0') {
+					findAllZeros(i, j);
+				}
 			}
 		}
 		return spot;
@@ -263,17 +266,21 @@ public class Grid implements Serializable{
 	 */
 	public void findAllZeros(int row, int col) { //TODO: throw exception
         LinkedList<Integer> bfs = new LinkedList<>();
-        bfs.add(row * grid.length + col);
-        while (!bfs.isEmpty()) {
-        	row = bfs.peekFirst() / grid.length;
-        	col = bfs.pollFirst() % grid.length;
-			for (int i = row - 1; i <= row + 1; i++) {
-				for (int j = col - 1; j <= col + 1; j++) {
-					if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
-						if (grid[i][j].getSymbol() == '0' && !grid[i][j].getIsOpen()) {
-						    bfs.add(i * grid.length + j);
+        if (grid[row][col].getSymbol() == '0') {
+			bfs.add(row * grid.length + col);
+			while (!bfs.isEmpty()) {
+				row = bfs.peekFirst() / grid.length;
+				col = bfs.pollFirst() % grid.length;
+				if (grid[row][col].getSymbol() == '0') {
+					for (int i = row - 1; i <= row + 1; i++) {
+						for (int j = col - 1; j <= col + 1; j++) {
+							if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
+								if (grid[i][j].getSymbol() == '0' && !grid[i][j].getIsOpen()) {
+									bfs.add(i * grid.length + j);
+								}
+								grid[i][j].open();
+							}
 						}
-						grid[i][j].open();
 					}
 				}
 			}
@@ -306,9 +313,15 @@ public class Grid implements Serializable{
 	/**
 	 * Finds the current condition of a cell
 	 */
-
 	public char getCell (int cell) {
 		return grid[cell / grid.length][cell % grid.length].getSymbol();
+	}
+
+	/**
+	 * Finds the current condition of a cell
+	 */
+	public char getCell (int i, int j) {
+		return grid[i][j].getSymbol();
 	}
 
 	char[][] getG() {

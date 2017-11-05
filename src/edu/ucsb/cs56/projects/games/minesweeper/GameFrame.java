@@ -265,22 +265,23 @@ public class GameFrame extends JFrame {
 		for (int i = 0; i < game.getSize(); i++) {
 			for (int j = 0; j < game.getSize(); j++) {
 				JButton jb = buttons[i][j];
-				if (game.getCell(i * game.getSize() + j) != '?') {
+				if (game.isOpen(i, j)) {
 					int fontSize = jb.getSize().height / 2;
 					if (jb.getSize().height / 2 > jb.getSize().width / 4) {
 						fontSize = jb.getSize().width / 4;
 					}
 					jb.setFont(new Font("sansserif", Font.BOLD, fontSize));
-					if (game.getCell(i * game.getSize() + j) == 48) {
+					jb.setText(Character.toString(game.getCell(i, j)));
+					if (game.getCell(i, j) == '0') {
 						jb.setForeground(ZERO);
-					} else if (game.getCell(i * game.getSize() + j) == 70) {
+					} else if (game.isFlag(i, j)) {
 						jb.setForeground(Color.RED);
-					} else if (game.getCell(i * game.getSize() + j) == 88) {
+						jb.setText("F");
+					} else if (game.getCell(i, j) == 'X') {
 						jb.setForeground(Color.BLACK);
 					} else {
 						jb.setForeground(NUMBER);
 					}
-					jb.setText(Character.toString(game.getCell(i * game.getSize() + j)));
 				}
 			}
 		}
@@ -448,15 +449,17 @@ public class GameFrame extends JFrame {
 						playSound(soundName);
 						stopTimer();
 						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
-						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-						if (response == JOptionPane.YES_OPTION) {
-							saveHighest(user, globalTE, game.getSize());
-							MineGUI.goToMainMenu();
-						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-							saveHighest(user, globalTE, game.getSize());
-							resetGame();
-						} else {
-							//do nothing
+						if (user != null) {
+							int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
+							if (response == JOptionPane.YES_OPTION) {
+								saveHighest(user, globalTE, game.getSize());
+								MineGUI.goToMainMenu();
+							} else if (response == JOptionPane.INFORMATION_MESSAGE) {
+								saveHighest(user, globalTE, game.getSize());
+								resetGame();
+							} else {
+								//do nothing
+							}
 						}
 					}
 				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num))) {
@@ -492,15 +495,17 @@ public class GameFrame extends JFrame {
 						exposeMines();
 						stopTimer();
 						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
-						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-						if (response == JOptionPane.YES_OPTION) {
-							saveHighest(user, globalTE, game.getSize());
-							MineGUI.goToMainMenu();
-						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-							saveHighest(user, globalTE, game.getSize());
-							resetGame();
-						} else {
-							// do nothing
+						if (user != null) {
+							int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
+							if (response == JOptionPane.YES_OPTION) {
+								saveHighest(user, globalTE, game.getSize());
+								MineGUI.goToMainMenu();
+							} else if (response == JOptionPane.INFORMATION_MESSAGE) {
+								saveHighest(user, globalTE, game.getSize());
+								resetGame();
+							} else {
+								// do nothing
+							}
 						}
 					}
 				} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(num)){
