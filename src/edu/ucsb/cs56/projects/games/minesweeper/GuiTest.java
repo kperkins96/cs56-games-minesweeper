@@ -24,7 +24,7 @@ public class GuiTest {
     public void setUpMainMenu() {
         try {
             robot = new Robot();
-            robot.setAutoDelay(500);
+            robot.setAutoDelay(400);
         } catch (AWTException e) {
             e.printStackTrace();
         }
@@ -118,7 +118,6 @@ public class GuiTest {
         robot.mouseMove(400, 60);
         leftClick();
         typeKey(KeyEvent.VK_ENTER);
-        robot.delay(100);
         assertTrue(!((GameFrame) MineGUI.getCurrentFrame()).getGrid().isFlag(0));
         MineGUI.goToMainMenu();
     }
@@ -129,6 +128,29 @@ public class GuiTest {
         robot.mouseMove(250, 200);
         leftClick();
         assertTrue(((GameFrame) MineGUI.getCurrentFrame()).getGrid().isOpen(1));
+        robot.mouseMove(800, 510);
+        leftClick();
+        robot.mouseMove(900, 510);
+        leftClick();
+        MineGUI.goToMainMenu();
+    }
+
+    @Test
+    public void testGameFrameHelp() {
+        MineGUI.newGame(-1);
+        robot.mouseMove(450, 60);
+        leftClick();
+        assertTrue(MineGUI.getCurrentFrame() instanceof HelpScreen);
+        MineGUI.goToMainMenu();
+    }
+
+    @Test
+    public void testGameFrameMainMenu() {
+        MineGUI.newGame(-1);
+        robot.mouseMove(300, 60);
+        leftClick();
+        typeKey(KeyEvent.VK_ENTER);
+        assertTrue(MineGUI.getCurrentFrame() instanceof MainMenu);
         MineGUI.goToMainMenu();
     }
 

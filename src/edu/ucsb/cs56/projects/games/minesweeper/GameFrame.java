@@ -325,6 +325,8 @@ public class GameFrame extends JFrame {
 			MineGUI.newGame(1);
 		} else if (diff == 20) {
 			MineGUI.newGame(2);
+		} else if (diff == 4) {
+			MineGUI.newGame(-1);
 		}
 	}
 
