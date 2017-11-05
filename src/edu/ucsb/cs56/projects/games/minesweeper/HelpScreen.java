@@ -25,11 +25,18 @@ public class HelpScreen extends JFrame {
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				MineGUI.helpBack();
 			}
 		});
 		screen.add(helpText);
 		screen.add(backButton);
 		setVisible(true);
+	}
+
+	public int getBackX() {
+		return backButton.getX();
+	}
+
+	public int getBackY() {
+		return backButton.getY();
 	}
 }

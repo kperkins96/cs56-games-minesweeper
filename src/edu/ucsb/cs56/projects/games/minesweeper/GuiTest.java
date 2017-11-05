@@ -1,7 +1,7 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
 import org.junit.Test;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -18,13 +18,14 @@ import java.awt.event.KeyEvent;
 
 public class GuiTest {
 
-    private Robot robot;
+    private static Robot robot;
 
-    @Before
-    public void setUpMainMenu() {
+    @BeforeClass
+    public static void setUpMainMenu() {
         try {
             robot = new Robot();
-            robot.setAutoDelay(400);
+            robot.setAutoDelay(200);
+            robot.setAutoWaitForIdle(true);
         } catch (AWTException e) {
             e.printStackTrace();
         }
@@ -38,7 +39,8 @@ public class GuiTest {
 
     @Test
     public void testEasyGameButton() {
-        robot.mouseMove(50, 100);
+        MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
+        robot.mouseMove(menu.getX() + menu.getEasyGameX(), menu.getY() + (menu.getHeight() - menu.getContentPane().getHeight()) + menu.getEasyGameY());
         leftClick();
         typeKey(KeyEvent.VK_ENTER);
         assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame && ((GameFrame) MineGUI.getCurrentFrame()).getGrid().getSize() == 10);
@@ -47,7 +49,8 @@ public class GuiTest {
 
     @Test
     public void testLoadGameButtonEasy() {
-        robot.mouseMove(350, 300);
+        MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
+        robot.mouseMove(menu.getX() + menu.getLoadGameX(), menu.getY() + (menu.getHeight() - menu.getContentPane().getHeight()) + menu.getLoadGameY());
         leftClick();
         assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame && ((GameFrame) MineGUI.getCurrentFrame()).getGrid().getSize() == 10);
         MineGUI.goToMainMenu();
@@ -55,7 +58,8 @@ public class GuiTest {
 
     @Test
     public void testMediumGameButton() {
-        robot.mouseMove(350, 100);
+        MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
+        robot.mouseMove(menu.getX() + menu.getMedGameX(), menu.getY() + (menu.getHeight() - menu.getContentPane().getHeight()) + menu.getMedGameY());
         leftClick();
         typeKey(KeyEvent.VK_ENTER);
         assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame && ((GameFrame) MineGUI.getCurrentFrame()).getGrid().getSize() == 15);
@@ -64,7 +68,8 @@ public class GuiTest {
 
     @Test
     public void testLoadGameButtonMedium() {
-        robot.mouseMove(350, 300);
+        MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
+        robot.mouseMove(menu.getX() + menu.getLoadGameX(), menu.getY() + (menu.getHeight() - menu.getContentPane().getHeight()) + menu.getLoadGameY());
         leftClick();
         assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame && ((GameFrame) MineGUI.getCurrentFrame()).getGrid().getSize() == 15);
         MineGUI.goToMainMenu();
@@ -72,7 +77,8 @@ public class GuiTest {
 
     @Test
     public void testHardGameButton() {
-        robot.mouseMove(50, 300);
+        MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
+        robot.mouseMove(menu.getX() + menu.getHardGameX(), menu.getY() + (menu.getHeight() - menu.getContentPane().getHeight()) + menu.getHardGameY());
         leftClick();
         typeKey(KeyEvent.VK_ENTER);
         assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame && ((GameFrame) MineGUI.getCurrentFrame()).getGrid().getSize() == 20);
@@ -81,7 +87,8 @@ public class GuiTest {
 
     @Test
     public void testLoadGameButton() {
-        robot.mouseMove(350, 300);
+        MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
+        robot.mouseMove(menu.getX() + menu.getLoadGameX(), menu.getY() + (menu.getHeight() - menu.getContentPane().getHeight()) + menu.getLoadGameY());
         leftClick();
         assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame && ((GameFrame) MineGUI.getCurrentFrame()).getGrid().getSize() == 20);
         MineGUI.goToMainMenu();
@@ -89,14 +96,16 @@ public class GuiTest {
 
     @Test
     public void testHelpButton() {
-        robot.mouseMove(50, 400);
+        MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
+        robot.mouseMove(menu.getX() + menu.getHelpX(), menu.getY() + (menu.getHeight() - menu.getContentPane().getHeight()) + menu.getHelpY());
         leftClick();
         assertTrue(MineGUI.getCurrentFrame() instanceof HelpScreen);
     }
 
     @Test
-    public void testHelpBackButton() {
-        robot.mouseMove(150, 500);
+    public void testHelpBackButtonMain() {
+        HelpScreen help = (HelpScreen) MineGUI.getCurrentFrame();
+        robot.mouseMove(help.getX() + help.getBackX(), help.getY() + (help.getHeight() - help.getContentPane().getHeight()) + help.getBackY());
         leftClick();
         assertTrue(MineGUI.getCurrentFrame() instanceof MainMenu);
     }
@@ -104,54 +113,70 @@ public class GuiTest {
     @Test
     public void testGameFrameGridFlag() {
         MineGUI.newGame(-1);
-        robot.mouseMove(50, 200);
+        GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
+        robot.mouseMove(game.getX() + game.getGridButtonX(0, 0), game.getY() + (game.getHeight() - game.getContentPane().getHeight()) + game.getGridButtonY(0, 0));
         rightClick();
-        assertTrue(((GameFrame) MineGUI.getCurrentFrame()).getGrid().isFlag(0));
-        MineGUI.goToMainMenu();
+        assertTrue(((GameFrame) MineGUI.getCurrentFrame()).getGrid().isFlag(0, 0));
     }
 
     @Test
-    public void testGameFrameGridRefresh() {
-        MineGUI.newGame(-1);
-        robot.mouseMove(50, 200);
+    public void testGameFrameGridDeflag() {
+        GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
+        robot.mouseMove(game.getX() + game.getGridButtonX(0, 0), game.getY() + (game.getHeight() - game.getContentPane().getHeight()) + game.getGridButtonY(0, 0));
         rightClick();
-        robot.mouseMove(400, 60);
-        leftClick();
-        typeKey(KeyEvent.VK_ENTER);
-        assertTrue(!((GameFrame) MineGUI.getCurrentFrame()).getGrid().isFlag(0));
-        MineGUI.goToMainMenu();
+        assertTrue(!((GameFrame) MineGUI.getCurrentFrame()).getGrid().isFlag(0, 0));
     }
 
     @Test
     public void testGameFrameGridOpen() {
-        MineGUI.newGame(-1);
-        robot.mouseMove(250, 200);
+        GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
+        robot.mouseMove(game.getX() + game.getGridButtonX(0, 1), game.getY() + (game.getHeight() - game.getContentPane().getHeight()) + game.getGridButtonY(0, 1));
         leftClick();
-        assertTrue(((GameFrame) MineGUI.getCurrentFrame()).getGrid().isOpen(1));
-        robot.mouseMove(800, 510);
+        assertTrue(((GameFrame) MineGUI.getCurrentFrame()).getGrid().isOpen(0, 1));
+    }
+
+    @Test
+    public void testGameFrameRefresh() {
+        GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
+        robot.mouseMove(game.getX() + game.getRefreshX(), game.getY() + (game.getHeight() - game.getContentPane().getHeight()) + game.getRefreshY());
         leftClick();
-        robot.mouseMove(900, 510);
-        leftClick();
-        MineGUI.goToMainMenu();
+        typeKey(KeyEvent.VK_ENTER);
+        game = (GameFrame) MineGUI.getCurrentFrame();
+        boolean open = false;
+        for (int i = 0; i < game.getGrid().getSize(); i++) {
+            for (int j = 0; j < game.getGrid().getSize(); j++) {
+                if (game.getGrid().isOpen(i, j)) {
+                    System.out.println(i + " " + j);
+                    open = true;
+                    break;
+                }
+            }
+        }
+        assertFalse(open);
     }
 
     @Test
     public void testGameFrameHelp() {
-        MineGUI.newGame(-1);
-        robot.mouseMove(450, 60);
+        GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
+        robot.mouseMove(game.getX() + game.getHelpX(), game.getY() + (game.getHeight() - game.getContentPane().getHeight()) + game.getHelpY());
         leftClick();
         assertTrue(MineGUI.getCurrentFrame() instanceof HelpScreen);
-        MineGUI.goToMainMenu();
+    }
+
+    @Test
+    public void testHelpBackButtonGame() {
+        HelpScreen help = (HelpScreen) MineGUI.getCurrentFrame();
+        robot.mouseMove(help.getX() + help.getBackX(), help.getY() + (help.getHeight() - help.getContentPane().getHeight()) + help.getBackY());
+        leftClick();
+        assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame);
     }
 
     @Test
     public void testGameFrameMainMenu() {
-        MineGUI.newGame(-1);
-        robot.mouseMove(300, 60);
+        GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
+        robot.mouseMove(game.getX() + game.getMainMenuX(), game.getY() + (game.getHeight() - game.getContentPane().getHeight()) + game.getMainMenuY());
         leftClick();
-        typeKey(KeyEvent.VK_ENTER);
         assertTrue(MineGUI.getCurrentFrame() instanceof MainMenu);
-        MineGUI.goToMainMenu();
     }
 
     public void leftClick() {

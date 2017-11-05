@@ -52,12 +52,14 @@ public class MineGUI {
 	/* static getter for JUnit testing
 	 */
 	public static JFrame getCurrentFrame() {
-		if (mainMenu.isVisible()) {
-			return mainMenu;
+		if (mainMenu.getHelpScreen() != null && mainMenu.getHelpScreen().isVisible()) {
+			return mainMenu.getHelpScreen();
+		} else if (gameFrame != null && gameFrame.getHelpScreen() != null && gameFrame.getHelpScreen().isVisible()) {
+			return gameFrame.getHelpScreen();
 		} else if (gameFrame != null && gameFrame.isVisible()) {
 			return gameFrame;
 		} else {
-			return new HelpScreen();
+			return mainMenu;
 		}
 	}
 }
