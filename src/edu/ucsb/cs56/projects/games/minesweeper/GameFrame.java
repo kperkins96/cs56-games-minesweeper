@@ -13,6 +13,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Image;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.ImageIcon;
 
 /**
  * Created by ryanwiener on 11/3/17.
@@ -78,6 +80,7 @@ public class GameFrame extends JFrame {
 				jb.addMouseListener(new ButtonListener(i * game.getSize() + j));
 				jb.setFont(new Font("sansserif", Font.BOLD, 10));
 				jb.setText("");
+				jb.setIcon(null);
 				jb.addComponentListener(new SizeListener());
 				grid.add(jb);
 			}
@@ -289,8 +292,16 @@ public class GameFrame extends JFrame {
 		for (int i = 0; i < buttons.length; i++) {
 			for (int j = 0; j < buttons.length; j++) {
 				if (game.isMine(i * buttons.length + j)) {
-					buttons[i][j].setFont(new Font("sansserif", Font.BOLD, 10));
+					ImageIcon mineImage = new ImageIcon("resources/images/mine.jpg")  ;
+
+					Image img = mineImage.getImage() ;  
+			        Image newimg = img.getScaledInstance( 2 * game.getSize(), 2 *game.getSize(),  java.awt.Image.SCALE_DEFAULT ) ;  
+					mineImage = new ImageIcon( newimg );
+					buttons[i][j].setIcon(mineImage);
+					
+					buttons[i][j].setFont(new Font("sansserif", Font.PLAIN, 1));
 					buttons[i][j].setText("X");
+					buttons[i][j].setForeground(new Color(255, 255, 255, 0));
 				}
 			}
 		}
@@ -474,9 +485,20 @@ public class GameFrame extends JFrame {
 						playSound(soundName);
 						game.flagBox(num);
 						JButton jb = buttons[num / game.getSize()][num % game.getSize()];
-						jb.setFont(new Font("sansserif", Font.BOLD,15));
-						jb.setForeground(Color.RED);
+						jb.setFont(new Font("sansserif", Font.PLAIN,1));
+						//jb.setForeground(Color.RED);
+						
+						
+						ImageIcon flagImage = new ImageIcon("resources/images/flag.png");
+						Image img = flagImage.getImage() ;
+						//resize icon to fit button
+				        Image newimg = img.getScaledInstance( 2 * game.getSize(), 2 *game.getSize(),  java.awt.Image.SCALE_DEFAULT ) ;  
+						
+				        flagImage = new ImageIcon( newimg );
+						jb.setIcon(flagImage);
 						jb.setText("F");
+						jb.setForeground(new Color(255, 255, 255, 0));
+
 					} else {
 						game.flagBox(num);
 						soundName = "resources/sounds/userError.wav";

@@ -281,7 +281,7 @@ public class Grid implements Serializable{
 			System.out.println("You cannot put a flag on an opened box!");
 		} else {
 			// TODO: places 'F' only after a left click on a nonflag occurs?
-			map[box / size][box % size] = 'F';
+			//map[box / size][box % size] = 'F';
 		}
 	}
 
