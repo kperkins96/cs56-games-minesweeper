@@ -54,7 +54,6 @@ public class MainMenu extends JFrame {
 	private JScrollPane scroller;
 	private JLabel highScore; // this label status displays the local high score.
 	private JLabel highScoreList;
-	//private JTextField Username;
 	public String User;
 	private int count;
 
@@ -69,13 +68,11 @@ public class MainMenu extends JFrame {
 		hardGame = new JButton("New Hard Game");
 		help = new JButton("Help");
 		load = new JButton("Load Last Game");
-		//Username = new JTextField("Name: ");
 		highScore = new JLabel("Leaderboards: "); // added another JLabel
 		highScoreList = new JLabel(getHighScores());
 		scroller = new JScrollPane(highScoreList);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//addActionListener(Username);
 		addActionListener(easyGame, "New Easy Game");
 		addActionListener(medGame, "New Medium Game");
 		addActionListener(hardGame, "New Hard Game");
@@ -89,9 +86,7 @@ public class MainMenu extends JFrame {
 		menu.add(help);
 		menu.add(quitMine);
 		menu.add(highScore); // add new highScore feature to frame.
-		//menu.add(highScoreList);
 		menu.add(scroller);
-		//menu.add(Username);
 		boolean inUse = false;
     }
 
@@ -130,6 +125,7 @@ public class MainMenu extends JFrame {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					HelpScreen helpScreen = new HelpScreen();
+					setVisible(false);
 				}
 			});
 		} else if (action == "Load") {

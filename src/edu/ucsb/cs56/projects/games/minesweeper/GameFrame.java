@@ -209,6 +209,7 @@ public class GameFrame extends JFrame {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					HelpScreen helpScreen = new HelpScreen();
+					setVisible(false);
 				}
 			});
 		} else if (action == "Load") {
@@ -369,7 +370,6 @@ public class GameFrame extends JFrame {
 		}
 	} // class Clock
 
-
 	/**
 	 * inner class, reponds to resizing of component to resize font
 	 */
@@ -397,6 +397,7 @@ public class GameFrame extends JFrame {
 			// TODO Auto-generated method stub
 		}
 	} // class SizeListener
+
 
 	/**
 	 * Inner Class, responds to the event source.
