@@ -25,7 +25,7 @@ public class GuiTest {
         try {
             robot = new Robot();
             robot.setAutoDelay(200);
-            robot.setAutoWaitForIdle(true);
+            robot.setAutoWaitForIdle(false);
         } catch (AWTException e) {
             e.printStackTrace();
         }
