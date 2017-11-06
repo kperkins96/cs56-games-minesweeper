@@ -14,6 +14,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Image;
+import javax.imageio.ImageIO; 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,6 +58,7 @@ public class GameFrame extends JFrame {
 	private JButton mainMenu;
 	private JButton quitMine;
 	private JButton inGameHelp;
+	private JButton flagBtn;
 	private JToolBar toolbar;
 	private JPanel grid;
 	private HelpScreen helpScreen;
@@ -186,6 +188,7 @@ public class GameFrame extends JFrame {
 		mainMenu = new JButton("Main Menu");
 		quitMine = new JButton("Quit Minesweeper");
 		inGameHelp = new JButton("Help");
+		flagBtn = new JButton("Flag"); //new ImageIcon("resource/images/flag.png"));
 		Clock gClock = new Clock();
 		timeDisplay = new JTextField(globalTE);
 		timeDisplay.setColumns(4);
@@ -194,6 +197,8 @@ public class GameFrame extends JFrame {
 		addActionListener(mainMenu, "Main Menu");
 		addActionListener(inGameHelp, "Help");
 		addActionListener(quitMine, "Quit Minesweeper");
+		addActionListener(flagBtn, "Flag");
+		toolbar.add(flagBtn);
 		toolbar.add(mainMenu);
 		toolbar.add(refresh);
 		toolbar.add(inGameHelp);
@@ -209,6 +214,14 @@ public class GameFrame extends JFrame {
 
 	public int getRefreshY() {
 		return refresh.getY();
+	}
+	
+	public int getFlagBtnX() {
+		return flagBtn.getX();
+	}
+	
+	public int getFlagBtnY() {
+		return flagBtn.getY();
 	}
 
 	public int getMainMenuX() {
@@ -266,6 +279,12 @@ public class GameFrame extends JFrame {
 					save();
 				}
 			});
+		} else { //flag button pressed
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					flag();
+				}
+			});
 		}
 	}
 
@@ -277,6 +296,15 @@ public class GameFrame extends JFrame {
 			System.exit(0);
 		} else {
 			this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		}
+	}
+	
+	public void flag() {
+		if(flagBtn.isSelected() == true) {
+			flagBtn.setSelected(false);
+		}
+		else if(flagBtn.isSelected() == false) {
+			flagBtn.setSelected(true);
 		}
 	}
 
@@ -335,7 +363,7 @@ public class GameFrame extends JFrame {
 					ImageIcon mineImage = new ImageIcon("resources/images/mine.jpg")  ;
 
 					Image img = mineImage.getImage() ;  
-			        Image newimg = img.getScaledInstance( 2 * game.getSize(), 2 *game.getSize(),  java.awt.Image.SCALE_DEFAULT ) ;  
+			        Image newimg = img.getScaledInstance(grid.getWidth()/game.getSize() - 10, grid.getHeight()/game.getSize() -10,  java.awt.Image.SCALE_DEFAULT ) ;  
 					mineImage = new ImageIcon( newimg );
 					buttons[i][j].setIcon(mineImage);
 					/*
@@ -478,7 +506,7 @@ public class GameFrame extends JFrame {
 			AudioInputStream audioInputStream;
 			if (game.gameStatus(status) == 0) {
 				//if you left click and the button is available (not a flag and not already opened)
-				if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num)){
+				if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num) && !flagBtn.isSelected()){
 					char box = game.searchBox(num);
 					if (box == 'X') {
 						soundName = "resources/sounds/explosion.wav";
@@ -516,12 +544,12 @@ public class GameFrame extends JFrame {
 							}
 						}
 					}
-				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num))) {
+				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num)) && !flagBtn.isSelected()) {
 					// If you left click and the button is a flag or has been opened
 					game.searchBox(num);
 					soundName = "resources/sounds/userError.wav";
 					playSound(soundName);
-				} else if (event.getButton() == MouseEvent.BUTTON3) {
+				} else if (event.getButton() == MouseEvent.BUTTON3 || flagBtn.isSelected() == true) {
 					// If you right click
 					if (game.isFlag(num)) {
 						game.deflagBox(num);
@@ -534,15 +562,12 @@ public class GameFrame extends JFrame {
 						soundName = "resources/sounds/place_flag.wav";
 						playSound(soundName);
 						game.flagBox(num);
-						JButton jb = buttons[num / game.getSize()][num % game.getSize()];
-						//jb.setFont(new Font("sansserif", Font.PLAIN,1));
-						//jb.setForeground(Color.RED);
-						
+						JButton jb = buttons[num / game.getSize()][num % game.getSize()];					
 						
 						ImageIcon flagImage = new ImageIcon("resources/images/flag.png");
 						Image img = flagImage.getImage() ;
 						//resize icon to fit button
-				        Image newimg = img.getScaledInstance( 2 * game.getSize(), 2 *game.getSize(),  java.awt.Image.SCALE_DEFAULT ) ;  
+				        Image newimg = img.getScaledInstance( grid.getWidth()/game.getSize() - 10, grid.getHeight()/game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT ) ;  
 						
 				        flagImage = new ImageIcon( newimg );
 						jb.setIcon(flagImage);
