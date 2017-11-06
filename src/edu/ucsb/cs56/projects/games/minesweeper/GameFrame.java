@@ -193,11 +193,11 @@ public class GameFrame extends JFrame {
 		timeDisplay = new JTextField(globalTE);
 		timeDisplay.setColumns(4);
 		timeDisplay.setEditable(false);
-		addActionListener(refresh, "Reset Game");
-		addActionListener(mainMenu, "Main Menu");
-		addActionListener(inGameHelp, "Help");
-		addActionListener(quitMine, "Quit Minesweeper");
-		addActionListener(flagBtn, "Flag");
+		refresh.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.RESET));
+		mainMenu.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.MAIN_MENU));
+		inGameHelp.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.HELP));
+		quitMine.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.QUIT));
+		flagBtn.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.FLAG));
 		toolbar.add(flagBtn);
 		toolbar.add(mainMenu);
 		toolbar.add(refresh);
@@ -240,82 +240,8 @@ public class GameFrame extends JFrame {
 		return inGameHelp.getY();
 	}
 
-	public void addActionListener(JButton button, String action) {
-		if (action == "Main Menu") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					MineGUI.goToMainMenu();
-				}
-			});
-		} else if (action == "Quit Minesweeper") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					quitPrompt();
-				}
-			});
-		} else if (action == "Reset Game") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt()) {
-						resetGame();
-					}
-				}
-			});
-		} else if (action == "Help") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					helpScreen = new HelpScreen();
-				}
-			});
-		} else if (action == "Load") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					load();
-				}
-			});
-		} else if (action == "Save") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					save();
-				}
-			});
-		} else { //flag button pressed
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					flag();
-				}
-			});
-		}
-	}
-
-	public void quitPrompt() {
-		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (response == JOptionPane.YES_OPTION) {
-			save();
-			System.out.println("Closing...");
-			System.exit(0);
-		} else {
-			this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		}
-	}
-	
 	public void flag() {
-		if(flagBtn.isSelected() == true) {
-			flagBtn.setSelected(false);
-		}
-		else if(flagBtn.isSelected() == false) {
-			flagBtn.setSelected(true);
-		}
-	}
-
-	public boolean overwriteSavePrompt() {
-		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to do this? This will delete previous save data", "Overwriting Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (response == JOptionPane.YES_OPTION) {
-			return true;
-		} else {
-			this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			return false;
-		}
+		flagBtn.setSelected(!flagBtn.isSelected());
 	}
 
 	public void playSound(String dir){

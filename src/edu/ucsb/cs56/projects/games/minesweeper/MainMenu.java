@@ -33,28 +33,15 @@ import javax.swing.ScrollPaneConstants;
 
 public class MainMenu extends JFrame {
 
-	private JButton mainMenu;
 	private JButton quitMine;
-	private JButton inGameHelp;
-	private JButton refresh;
 	private JButton easyGame;
 	private JButton medGame;
 	private JButton hardGame;
 	private JButton load; //loads game
 	private JButton help;    //Main Menu Help Button
-	private JButton save;
-	public JFrame frame;    //The frame is where all the good stuff is displayed e.g. Everything
-	private JPanel menu;    //Menu Panel, initial panel at initial creation of the game e.g. Main Menu
-	private JPanel game;    //Game Panel, where the game is played
-	private boolean inUse; //if game is started and in use
-	private JTextField time;
-	private int timeTBPos;
-	private Timer timer;
-	public String globalTE;
 	private JScrollPane scroller;
 	private JLabel highScore; // this label status displays the local high score.
 	private JLabel highScoreList;
-	private HelpScreen helpScreen;
 
     public MainMenu() throws HeadlessException {
         super();
@@ -72,12 +59,12 @@ public class MainMenu extends JFrame {
 		scroller = new JScrollPane(highScoreList);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		addActionListener(easyGame, "New Easy Game");
-		addActionListener(medGame, "New Medium Game");
-		addActionListener(hardGame, "New Hard Game");
-		addActionListener(help, "Help");
-		addActionListener(load, "Load");
-		addActionListener(quitMine, "Quit Minesweeper");
+		easyGame.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.EASY_GAME));
+		medGame.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.MED_GAME));
+		hardGame.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.HARD_GAME));
+		help.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.HELP));
+		load.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.LOAD));
+		quitMine.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.QUIT));
 		menu.add(easyGame);
 		menu.add(medGame);
 		menu.add(hardGame);
@@ -86,7 +73,7 @@ public class MainMenu extends JFrame {
 		menu.add(quitMine);
 		menu.add(highScore); // add new highScore feature to frame.
 		menu.add(scroller);
-		boolean inUse = false;
+		setVisible(true);
     }
 
     public int getEasyGameX() {
@@ -129,56 +116,6 @@ public class MainMenu extends JFrame {
 		return help.getY();
 	}
 
-	public void addActionListener(JButton button, String action) {
-		if (action == "New Easy Game") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt()) {
-						MineGUI.newGame(0);
-					}
-				}
-			});
-		} else if (action == "New Medium Game") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt()) {
-						MineGUI.newGame(1);
-					}
-				}
-			});
-		} else if (action == "New Hard Game") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt()) {
-						MineGUI.newGame(2);
-					}
-				}
-			});
-		} else if (action == "Quit Minesweeper") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					quitPrompt();
-				}
-			});
-		} else if (action == "Help") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					helpScreen = new HelpScreen();
-				}
-			});
-		} else if (action == "Load") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-                    MineGUI.newGame(-2);
-				}
-			});
-		}
-	}
-
-	public HelpScreen getHelpScreen() {
-    	return helpScreen;
-	}
-
 	public void refreshHighScoreChart() {
 		highScoreList.setText(getHighScores());
 	}
@@ -205,25 +142,5 @@ public class MainMenu extends JFrame {
 		}
 		// sort scores by smallest time
 		return score;
-	}
-
-	public void quitPrompt() {
-		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (response == JOptionPane.YES_OPTION) {
-			System.out.println("Closing...");
-			System.exit(0);
-		} else {
-			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		}
-	}
-
-	public boolean overwriteSavePrompt() {
-		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to do this? This will delete previous save data", "Overwriting Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (response == JOptionPane.YES_OPTION) {
-			return true;
-		} else {
-			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			return false;
-		}
 	}
 }

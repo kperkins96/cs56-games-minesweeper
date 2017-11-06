@@ -29,7 +29,6 @@ public class HelpScreen extends JFrame {
 		});
 		screen.add(helpText);
 		screen.add(backButton);
-		setVisible(true);
 	}
 
 	public int getBackX() {
