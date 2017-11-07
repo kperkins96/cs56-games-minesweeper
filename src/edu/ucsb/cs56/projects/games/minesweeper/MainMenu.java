@@ -59,12 +59,24 @@ public class MainMenu extends JFrame {
 		scroller = new JScrollPane(highScoreList);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		easyGame.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.EASY_GAME));
-		medGame.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.MED_GAME));
-		hardGame.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.HARD_GAME));
-		help.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.HELP));
-		load.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.LOAD));
-		quitMine.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.QUIT));
+		easyGame.addActionListener((ActionEvent e) -> {
+			if (MineGUI.overwriteSavePrompt()) {
+				MineGUI.newGame(0);
+			}
+		});
+		medGame.addActionListener((ActionEvent e) -> {
+			if (MineGUI.overwriteSavePrompt()) {
+				MineGUI.newGame(1);
+			}
+		});
+		hardGame.addActionListener((ActionEvent e) -> {
+			if (MineGUI.overwriteSavePrompt()) {
+				MineGUI.newGame(2);
+			}
+		});
+		help.addActionListener((ActionEvent e) -> { MineGUI.setHelpScreenVisible(true); });
+		load.addActionListener((ActionEvent e) -> { MineGUI.newGame(-2); });
+		quitMine.addActionListener((ActionEvent e) -> { MineGUI.quitPrompt(); });
 		menu.add(easyGame);
 		menu.add(medGame);
 		menu.add(hardGame);
@@ -121,7 +133,6 @@ public class MainMenu extends JFrame {
 	}
 
 	public String getHighScores() {
-		//System.out.println("Loading high scores onto mainframe");
 		String score = "<html>";
 		String line = "";
 		try {
@@ -129,10 +140,7 @@ public class MainMenu extends JFrame {
 			FileReader filereader = new FileReader(myFile);
 			BufferedReader reader = new BufferedReader(filereader);
 			while ((line = reader.readLine()) != null) {
-				//while(num > -1) {
 				score += line + "<br>";
-				//    num--;
-				//}
 			}
 			reader.close();
 			score += "</html>";

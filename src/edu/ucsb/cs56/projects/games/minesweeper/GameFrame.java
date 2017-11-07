@@ -49,7 +49,6 @@ public class GameFrame extends JFrame {
     private static final Color ZERO = new Color(0, 0, 128);
     private static final Color NUMBER = new Color(0, 100, 0);
     private Grid game;
-    private int status;
     private JButton[][] buttons;
 	private String globalTE;
 	private JTextField timeDisplay;
@@ -61,18 +60,15 @@ public class GameFrame extends JFrame {
 	private JButton flagBtn;
 	private JToolBar toolbar;
 	private JPanel grid;
-	private HelpScreen helpScreen;
 
 	GameFrame(int difficulty) {
 		super(); // is this line necessary?  what does it do?
 		setSize(650, 600);
-		status = 0;
         if (difficulty == -2) {
 			load();
 		} else {
 			game = new Grid(difficulty);  // the Interface game
 		}
-		helpScreen = null;
 		buttons = new JButton[game.getSize()][game.getSize()];
 		toolbar = new JToolBar("In-game toolbar");
 		createToolbar(toolbar);
@@ -193,11 +189,15 @@ public class GameFrame extends JFrame {
 		timeDisplay = new JTextField(globalTE);
 		timeDisplay.setColumns(4);
 		timeDisplay.setEditable(false);
-		refresh.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.RESET));
-		mainMenu.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.MAIN_MENU));
-		inGameHelp.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.HELP));
-		quitMine.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.QUIT));
-		flagBtn.addActionListener(ActionListenerFactory.buildActionListener(ActionListenerFactory.Purpose.FLAG));
+		refresh.addActionListener((ActionEvent e) -> {
+			if (MineGUI.overwriteSavePrompt()) {
+				resetGame();
+			}
+		});
+		mainMenu.addActionListener((ActionEvent e) -> { MineGUI.goToMainMenu(); });
+		inGameHelp.addActionListener((ActionEvent e) -> { MineGUI.setHelpScreenVisible(true); });
+		quitMine.addActionListener((ActionEvent e) -> { MineGUI.quitPrompt(); });
+		flagBtn.addActionListener((ActionEvent e) -> { flag(); });
 		toolbar.add(flagBtn);
 		toolbar.add(mainMenu);
 		toolbar.add(refresh);
@@ -302,16 +302,8 @@ public class GameFrame extends JFrame {
 		}
 	}
 
-	public int getStatus(){
-		return status;
-	}
-
 	public Grid getGrid(){
 		return game;
-	}
-
-	public HelpScreen getHelpScreen() {
-		return helpScreen;
 	}
 
 	public String difToString(int difficulty){
@@ -346,13 +338,10 @@ public class GameFrame extends JFrame {
 
 	public class Clock extends TimerTask {
 		private long currClock;
-		private long pClock;
 		private long endClock;
 		private long elapse;
 		private final long nano;
 		private long sec;
-		private long resClock;
-		private String timeElapsed;
 		private String leftOver;
 
 		public Clock(){
@@ -360,7 +349,6 @@ public class GameFrame extends JFrame {
 			leftOver = globalTE;
 			globalTE = "0";
 			currClock = System.nanoTime();
-			pClock = 0;
 		}
 
 		public void updateTE(){
@@ -430,7 +418,7 @@ public class GameFrame extends JFrame {
 			Clip clip;
 			String soundName;
 			AudioInputStream audioInputStream;
-			if (game.gameStatus(status) == 0) {
+			if (game.getGameState() == Grid.GameState.PLAYING) {
 				//if you left click and the button is available (not a flag and not already opened)
 				if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num) && !flagBtn.isSelected()){
 					char box = game.searchBox(num);
@@ -441,35 +429,6 @@ public class GameFrame extends JFrame {
 					}
 					playSound(soundName);
 					refresh();
-					status = game.gameStatus(status);
-					if (status == -1) {
-						// TODO: display mines
-						exposeMines();
-						stopTimer();
-						int response = JOptionPane.showOptionDialog(null, "You lose! Press 'Reset Game' to start a new game.", "Defeat!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-						if (response == JOptionPane.YES_OPTION) {
-							MineGUI.goToMainMenu();
-						} else {
-							resetGame();
-						}
-					} else if (status == 1) {
-						soundName= "resources/sounds/win.wav";
-						playSound(soundName);
-						stopTimer();
-						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
-						if (user != null) {
-							int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-							if (response == JOptionPane.YES_OPTION) {
-								saveHighest(user, globalTE, game.getSize());
-								MineGUI.goToMainMenu();
-							} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-								saveHighest(user, globalTE, game.getSize());
-								resetGame();
-							} else {
-								//do nothing
-							}
-						}
-					}
 				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num)) && !flagBtn.isSelected()) {
 					// If you left click and the button is a flag or has been opened
 					game.searchBox(num);
@@ -499,35 +458,42 @@ public class GameFrame extends JFrame {
 						jb.setIcon(flagImage);
 						//jb.setText("F");
 						jb.setForeground(new Color(255, 255, 255, 0));
-
 					} else {
 						game.flagBox(num);
 						soundName = "resources/sounds/userError.wav";
 						playSound(soundName);
 					}
-					int status = game.gameStatus(0);
-					if (status == 1) {
-						soundName= "resources/sounds/win.wav";
-						playSound(soundName);
-						exposeMines();
-						stopTimer();
-						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
-						if (user != null) {
-							int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-							if (response == JOptionPane.YES_OPTION) {
-								saveHighest(user, globalTE, game.getSize());
-								MineGUI.goToMainMenu();
-							} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-								saveHighest(user, globalTE, game.getSize());
-								resetGame();
-							} else {
-								// do nothing
-							}
-						}
-					}
 				} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(num)){
 					soundName = "resources/sounds/userError.wav";
 					playSound(soundName);
+				}
+				if (game.getGameState() == Grid.GameState.LOST) {
+					// TODO: display mines
+					exposeMines();
+					stopTimer();
+					int response = JOptionPane.showOptionDialog(null, "You lose! Press 'Reset Game' to start a new game.", "Defeat!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
+					if (response == JOptionPane.YES_OPTION) {
+						MineGUI.goToMainMenu();
+					} else {
+						resetGame();
+					}
+				} else if (game.getGameState() == Grid.GameState.WON) {
+					soundName= "resources/sounds/win.wav";
+					playSound(soundName);
+					stopTimer();
+					String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
+					if (user != null) {
+						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
+						if (response == JOptionPane.YES_OPTION) {
+							saveHighest(user, globalTE, game.getSize());
+							MineGUI.goToMainMenu();
+						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
+							saveHighest(user, globalTE, game.getSize());
+							resetGame();
+						} else {
+							//do nothing
+						}
+					}
 				}
 			}
 		}

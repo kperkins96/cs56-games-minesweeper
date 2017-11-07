@@ -2,6 +2,7 @@ package edu.ucsb.cs56.projects.games.minesweeper;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /** The Grid class is the foundation for minesweeper, applies mine locations, checks if something is open,
  makes flags functional, etc.
@@ -18,18 +19,20 @@ import java.util.LinkedList;
  */
 public class Grid implements Serializable{
 
+    public enum GameState {
+    	PLAYING,
+		LOST,
+		WON
+	}
+
 	private final int EASY_SIZE = 10;
 	private final int MED_SIZE = 15;
 	private final int HARD_SIZE = 20;
 
 	public String saveTime;
 	private GridComponent[][] grid;
-	/*
-	// instance variables
-	private int size;
-	private char[][] grid;
-	private char[][] map;
-	*/
+	private GameState gameState;
+	private int correctMoves;
 
 	/**
 	 * Default constructor for objects of class GUIGrid
@@ -37,18 +40,12 @@ public class Grid implements Serializable{
 
 	public Grid() {
 		this(0);
-		/*
-		saveTime = new String("0");
-		grid = new GridComponent[EASY_SIZE][EASY_SIZE];
-		setZero();
-		for (int i = 0; i < grid.length; i++) {
-			setMine();
-		}
-		*/
 	}
 
 	public Grid(int difficulty) {
 		saveTime = new String("0");
+		gameState = GameState.PLAYING;
+		correctMoves = 0;
 		switch (difficulty) {
 			case -1: //for known grid testing
 				grid = new GridComponent[4][4];
@@ -222,8 +219,16 @@ public class Grid implements Serializable{
 			} else {
 				spot = grid[i][j].getSymbol();
 				grid[i][j].open();
-				if (grid[i][j].getSymbol() == '0') {
-					findAllZeros(i, j);
+				if (grid[i][j].getIsMine()) {
+					gameState = GameState.LOST;
+				} else {
+					correctMoves++;
+					if (correctMoves >= grid.length * grid.length) {
+						gameState = GameState.WON;
+					}
+					if (grid[i][j].getSymbol() == '0') {
+						findAllZeros(i, j);
+					}
 				}
 			}
 		}
@@ -248,6 +253,12 @@ public class Grid implements Serializable{
 		} else {
 			// TODO: places 'F' only after a left click on a nonflag occurs?
 			grid[i][j].setFlagged(true);
+			if (grid[i][j].getIsMine()) {
+				correctMoves++;
+				if (correctMoves >= grid.length * grid.length) {
+					gameState = GameState.WON;
+				}
+			}
 		}
 	}
 
@@ -266,6 +277,9 @@ public class Grid implements Serializable{
 			System.out.println("That box does not have a flag on it!");
 		} else {
 			grid[i][j].setFlagged(false);
+			if (grid[i][j].getIsMine()) {
+				correctMoves--;
+			}
 		}
 	}
 
@@ -273,17 +287,21 @@ public class Grid implements Serializable{
 	 * Looks for surrounding numbers near the cell and opens them, repeats when find another zero
 	 */
 	public void findAllZeros(int row, int col) { //TODO: throw exception
-        LinkedList<Integer> bfs = new LinkedList<>();
+        Queue<Integer> bfs = new LinkedList<Integer>();
         if (grid[row][col].getSymbol() == '0') {
 			bfs.add(row * grid.length + col);
 			while (!bfs.isEmpty()) {
-				row = bfs.peekFirst() / grid.length;
-				col = bfs.pollFirst() % grid.length;
+				row = bfs.peek() / grid.length;
+				col = bfs.poll() % grid.length;
 				if (grid[row][col].getSymbol() == '0') {
 					for (int i = row - 1; i <= row + 1; i++) {
 						for (int j = col - 1; j <= col + 1; j++) {
-							if (i >= 0 && i < grid.length && j >= 0 && j < grid.length && !grid[i][j].getIsFlagged() && !grid[i][j].getIsMine()) {
-								if (grid[i][j].getSymbol() == '0' && !grid[i][j].getIsOpen()) {
+							if (i >= 0 && i < grid.length && j >= 0 && j < grid.length && !grid[i][j].getIsFlagged() && !grid[i][j].getIsMine() && !grid[i][j].getIsOpen()) {
+								correctMoves++;
+								if (correctMoves >= grid.length * grid.length) {
+									gameState = GameState.WON;
+								}
+								if (grid[i][j].getSymbol() == '0') {
 									bfs.add(i * grid.length + j);
 								}
 								grid[i][j].open();
@@ -298,37 +316,14 @@ public class Grid implements Serializable{
 	/**
 	 * Updates the state of the game
 	 */
-	public int gameStatus(int stat) {
-		if (stat == 0) { // runs only if player hasn't hit a mine
-			int correctBoxes = 0;
-			for (int i = 0; i < grid.length; i++) {
-				for (int j = 0; j < grid.length; j++) {
-					if (grid[i][j].getIsOpen() && grid[i][j].getIsMine()) {
-						stat = -1;
-						break;
-					} else if ((grid[i][j].getIsMine() && grid[i][j].getIsFlagged()) || grid[i][j].getIsOpen()) {
-						correctBoxes++; //the map has the correct move for that cell
-					}
-				}
-			}
-			if(stat == 0 && correctBoxes == grid.length * grid.length) { //all correct moves have been made
-				stat = 1;
-			}
-		}
-		return stat;
-	}
+	public GameState getGameState() {
+	    return gameState;
+    }
 
 	/**
 	 * Finds the current condition of a cell
 	 */
-	public char getCell (int cell) {
-		return grid[cell / grid.length][cell % grid.length].getSymbol();
-	}
-
-	/**
-	 * Finds the current condition of a cell
-	 */
-	public char getCell (int i, int j) {
+	public char getCell(int i, int j) {
 		return grid[i][j].getSymbol();
 	}
 

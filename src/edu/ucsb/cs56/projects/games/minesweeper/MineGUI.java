@@ -47,15 +47,7 @@ public class MineGUI {
 	public static void setHelpScreenVisible(boolean visible) {
 		helpScreen.setVisible(visible);
 	}
-/*
-	public static void helpBack() {
-		if (gameFrame != null) {
-			gameFrame.setVisible(true);
-		} else {
-			mainMenu.setVisible(true);
-		}
-	}
-	*/
+
 	public static void quitPrompt() {
 		JFrame currFrame = getCurrentFrame();
 		int response = JOptionPane.showConfirmDialog(currFrame, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -81,9 +73,6 @@ public class MineGUI {
 		}
 	}
 
-
-	/* static getter for JUnit testing
-	 */
 	public static JFrame getCurrentFrame() {
 		if (helpScreen.isVisible()) {
 			return helpScreen;
