@@ -1,6 +1,7 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /** MineGUI.java is a base that calls all GUI objects and handles tasks
  such as pausing the game, creating the GUI, making the escape key functional,
@@ -16,13 +17,14 @@ public class MineGUI {
 
     private static MainMenu mainMenu;
 	private static GameFrame gameFrame;
+	private static HelpScreen helpScreen;
 
 	public static void main (String[] args) {
 		mainMenu = new MainMenu();
-		mainMenu.setVisible(true);
+		helpScreen = new HelpScreen();
 	}
 
-	public static void newGame(int difficulty) {
+	public static void newGame(Grid.Difficulty difficulty) {
         mainMenu.setVisible(false);
         if (gameFrame != null) {
 			gameFrame.dispose();
@@ -38,24 +40,42 @@ public class MineGUI {
 			gameFrame.dispose();
 			gameFrame = null;
 		}
+		helpScreen.setVisible(false);
 		mainMenu.setVisible(true);
 	}
 
-	public static void helpBack() {
-		if (gameFrame != null) {
-			gameFrame.setVisible(true);
+	public static void setHelpScreenVisible(boolean visible) {
+		helpScreen.setVisible(visible);
+	}
+
+	public static void quitPrompt() {
+		JFrame currFrame = getCurrentFrame();
+		int response = JOptionPane.showConfirmDialog(currFrame, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (response == JOptionPane.YES_OPTION) {
+			if (currFrame instanceof GameFrame) {
+				((GameFrame) currFrame).save();
+			}
+			System.out.println("Closing...");
+			System.exit(0);
 		} else {
-			mainMenu.setVisible(true);
+			currFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		}
 	}
 
-	/* static getter for JUnit testing
-	 */
+	public static boolean overwriteSavePrompt() {
+		JFrame currFrame = getCurrentFrame();
+		int response = JOptionPane.showConfirmDialog(currFrame, "Are you sure you want to do this? This will delete previous save data", "Overwriting Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		if (response == JOptionPane.YES_OPTION) {
+			return true;
+		} else {
+			currFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			return false;
+		}
+	}
+
 	public static JFrame getCurrentFrame() {
-		if (mainMenu.getHelpScreen() != null && mainMenu.getHelpScreen().isVisible()) {
-			return mainMenu.getHelpScreen();
-		} else if (gameFrame != null && gameFrame.getHelpScreen() != null && gameFrame.getHelpScreen().isVisible()) {
-			return gameFrame.getHelpScreen();
+		if (helpScreen.isVisible()) {
+			return helpScreen;
 		} else if (gameFrame != null && gameFrame.isVisible()) {
 			return gameFrame;
 		} else {

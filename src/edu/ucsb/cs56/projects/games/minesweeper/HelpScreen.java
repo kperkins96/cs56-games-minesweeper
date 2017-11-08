@@ -29,7 +29,7 @@ public class HelpScreen extends JFrame {
 		});
 		screen.add(helpText);
 		screen.add(backButton);
-		setVisible(true);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 	}
 
 	public int getBackX() {
