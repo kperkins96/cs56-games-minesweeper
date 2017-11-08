@@ -61,21 +61,21 @@ public class MainMenu extends JFrame {
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		easyGame.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
-				MineGUI.newGame(0);
+				MineGUI.newGame(Grid.Difficulty.EASY);
 			}
 		});
 		medGame.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
-				MineGUI.newGame(1);
+				MineGUI.newGame(Grid.Difficulty.MEDIUM);
 			}
 		});
 		hardGame.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
-				MineGUI.newGame(2);
+				MineGUI.newGame(Grid.Difficulty.HARD);
 			}
 		});
 		help.addActionListener((ActionEvent e) -> { MineGUI.setHelpScreenVisible(true); });
-		load.addActionListener((ActionEvent e) -> { MineGUI.newGame(-2); });
+		load.addActionListener((ActionEvent e) -> { MineGUI.newGame(Grid.Difficulty.LOAD); });
 		quitMine.addActionListener((ActionEvent e) -> { MineGUI.quitPrompt(); });
 		menu.add(easyGame);
 		menu.add(medGame);

@@ -24,7 +24,7 @@ public class MineGUI {
 		helpScreen = new HelpScreen();
 	}
 
-	public static void newGame(int difficulty) {
+	public static void newGame(Grid.Difficulty difficulty) {
         mainMenu.setVisible(false);
         if (gameFrame != null) {
 			gameFrame.dispose();

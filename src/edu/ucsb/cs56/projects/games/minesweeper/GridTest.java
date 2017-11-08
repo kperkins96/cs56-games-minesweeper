@@ -24,7 +24,7 @@ public class GridTest {
 	@Test
 	public void test_setZero() {
 		boolean correct = true;
-		Grid test = new Grid(0);
+		Grid test = new Grid();
 		test.setZero();
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
@@ -46,7 +46,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Easy() {
 		int count = 0;
-		Grid test = new Grid(0);
+		Grid test = new Grid();
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -61,7 +61,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Medium() {
 		int count = 0;
-		Grid test = new Grid(1);
+		Grid test = new Grid(Grid.Difficulty.MEDIUM);
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -76,7 +76,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Hard() {
 		int count = 0;
-		Grid test = new Grid(2);
+		Grid test = new Grid(Grid.Difficulty.HARD);
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -111,7 +111,7 @@ public class GridTest {
 	@Test
 	public void test_isOpen1() {
 		Grid g1 = new Grid();
-		assertEquals(false, g1.isOpen(1));
+		assertEquals(false, g1.isOpen(0, 1));
 	}
 
 
@@ -124,7 +124,7 @@ public class GridTest {
 	@Test
 	public void test_isOpen2() {
 		Grid g1 = new Grid();
-		assertEquals(false, g1.isOpen(1));
+		assertEquals(false, g1.isOpen(0, 1));
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class GridTest {
 	@Test
 	public void test_isFlag1() {
 		Grid g1 = new Grid();
-		assertEquals(false, g1.isOpen(99));
+		assertEquals(false, g1.isFlag(9, 9));
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class GridTest {
 	@Test
 	public void test_isFlag2() {
 		Grid g1 = new Grid();
-		assertEquals(false, g1.isOpen(99));
+		assertEquals(false, g1.isFlag(9, 9));
 	}
 
 	/**
@@ -161,9 +161,9 @@ public class GridTest {
 	public void test_flagBox() {
 		boolean correct = false;
 		Grid test = new Grid();
-		test.flagBox(6);
-		test.flagBox(12);
-		test.flagBox(27);
+		test.flagBox(0, 6);
+		test.flagBox(1, 2);
+		test.flagBox(2, 7);
 		if (test.isFlag(0, 6) && test.isFlag(1, 2) && test.isFlag(2, 7)) {
 			correct = true;
 		}
@@ -180,12 +180,12 @@ public class GridTest {
 	public void test_deflagBox() {
 		boolean correct = false;
 		Grid test = new Grid();
-		test.flagBox(6);
-		test.flagBox(12);
-		test.flagBox(27);
-		test.deflagBox(6);
-		test.deflagBox(12);
-		test.deflagBox(27);
+		test.flagBox(0, 6);
+		test.flagBox(1, 2);
+		test.flagBox(2, 7);
+		test.deflagBox(0, 6);
+		test.deflagBox(1, 2);
+		test.deflagBox(2, 7);
 		if (!test.isFlag(0, 6) && !test.isFlag(1, 2) && !test.isFlag(2, 7)) {
 			correct = true;
 		}
@@ -200,6 +200,6 @@ public class GridTest {
 	@Test
 	public void test_gameStatus() {
 		Grid g1 = new Grid();
-		assertEquals(0, g1.gameStatus(0));
+		assertEquals(Grid.GameState.PLAYING, g1.getGameState());
 	}
 }
