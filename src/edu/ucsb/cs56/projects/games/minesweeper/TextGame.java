@@ -1,9 +1,5 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
-import java.awt.AWTException;
-import java.awt.KeyEventDispatcher;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -19,58 +15,76 @@ public class TextGame {
 
 	public static void main(String [] args) {
 		Scanner sc = new Scanner(System.in);
+		refreshConsole();
+		System.out.println("Welcome to the text version of MineSweeper!");
+		System.out.println("Please select a difficulty");
+		System.out.println("Enter 1 for easy, Enter 2 for medium, Enter 3 for hard");
+		int difficulty = sc.nextInt();
+		// clears input
+		sc.nextLine();
+		Grid game = null;
 		boolean done = false;
-		int status = 0;
-
-		// TicTacToeGrid implements TicTacToeGame
-		Grid g = new Grid();
-
+		while (!done) {
+			done = true;
+			switch (difficulty) {
+				case 1:
+					game = new Grid(Grid.Difficulty.EASY);
+					break;
+				case 2:
+					game = new Grid(Grid.Difficulty.MEDIUM);
+					break;
+				case 3:
+					game = new Grid(Grid.Difficulty.HARD);
+					break;
+				default:
+					done = false;
+					System.out.println("Please select a valid difficulty");
+					System.out.println("Enter 1 for easy, Enter 2 for medium, Enter 3 for hard");
+					break;
+			}
+		}
+		//reset done for game play
+		done = false;
 		while (!done) {
 			refreshConsole();
-			System.out.println(g); // g.toString() implicitly invoked
+			System.out.println(game); // g.toString() implicitly invoked
 			System.out.println("What would you like to do?");
-			System.out.println("Enter 1 to Search  a spot, Enter 2 to place a flag, Enter 3 to Deflag a spot");
-			String line = sc.nextLine();
-
-			int num = 0;
-			int num2 = 0;
-			try {
-				num = Integer.parseInt(line);
-				if (num == 1 || num == 2 || num == 3) {
-					System.out.println("Enter the number of the row and column which box you would like to select");
-					String line2  = sc.nextLine();
-					num2 = Integer.parseInt(line2);
-					if (num2 >= 0 && num2 <= 99) {
-						switch (num) {
-							case 1:
-								g.searchBox(num2 / g.getSize(), num2 % g.getSize());
-								break;
-							case 2:
-								g.flagBox(num2 / g.getSize(), num2 % g.getSize());
-								break;
-							case 3:
-								g.deflagBox(num2 / g.getSize(), num2 % g.getSize());
-								break;
-						}
-					} else {
+			System.out.println("Enter 1 to search a spot, Enter 2 to place a flag, Enter 3 to deflag a spot");
+			int move = sc.nextInt();
+			// clears input
+			sc.nextLine();
+			System.out.println("Enter the number of the row and column which box you would like to select (5 7 would be row 5 column 7)");
+			int row = sc.nextInt();
+			int col = sc.nextInt();
+			// clears input
+			sc.nextLine();
+			if (row * game.getSize() + col >= 0 && row * game.getSize() + col < game.getSize() * game.getSize()) {
+				switch (move) {
+					case 1:
+						game.searchBox(row, col);
+						break;
+					case 2:
+						game.flagBox(row, col);
+						break;
+					case 3:
+						game.deflagBox(row, col);
+						break;
+					default:
 						System.out.println("Please try again. \n");
-					}
-				} else {
-					System.out.println("Please try again. \n");
+						break;
 				}
-			} catch (NumberFormatException nfe) {
+			} else {
 				System.out.println("Please try again. \n");
 			}
-			if (g.getGameState() != Grid.GameState.PLAYING) {
+			if (game.getGameState() != Grid.GameState.PLAYING) {
 				done = true;
 			}
 		}
 		refreshConsole();
-		System.out.println(g); // g.toString() implicitly invoked
-		if (g.getGameState() == Grid.GameState.LOST) {
+		System.out.println(game); // g.toString() implicitly invoked
+		if (game.getGameState() == Grid.GameState.LOST) {
 			System.out.println("You lose!");
 		} else {
-			System.out.println(status);
 			System.out.println("You win!!!");
 		}
 	}
