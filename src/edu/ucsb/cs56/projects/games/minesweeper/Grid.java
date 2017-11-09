@@ -20,6 +20,8 @@ import java.util.Queue;
  */
 public class Grid implements Serializable{
 
+	public static final String ANSI_RED = "\u001B[30m";
+	public static final String ANSI_RESET = "\u001B[0m";
     public enum GameState {
     	PLAYING,
 		LOST,
@@ -152,7 +154,10 @@ public class Grid implements Serializable{
 		for (int i = 0; i < grid.length; i++) {
 			game += i + line;
 			for (int j = 0; j < grid.length; j++) {
-				game += grid[i][j];
+				if(grid[i][j].getIsFlagged())
+					game = game + ANSI_RED + grid[i][j] + ANSI_RESET;
+				else 
+					game += grid[i][j];
 				game += line;
 			}
 			game += "\n";
@@ -238,7 +243,7 @@ public class Grid implements Serializable{
 			grid[i][j].setFlagged(true);
 			if (grid[i][j].getIsMine()) {
 				correctMoves++;
-				if (correctMoves >= grid.length * grid.length) {
+				if (correctMoves >= grid.length * grid.length) { 
 					gameState = GameState.WON;
 				}
 			}
