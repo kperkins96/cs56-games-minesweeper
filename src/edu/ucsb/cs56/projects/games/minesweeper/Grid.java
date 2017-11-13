@@ -20,10 +20,6 @@ import java.util.Queue;
  */
 public class Grid implements Serializable{
 
-	public static final String ANSI_RED = "\u001B[31m";
-	public static final String ANSI_BLACK = "\u001B[30m";
-	public static final String ANSI_BLUE = "\u001B[34m";
-	public static final String ANSI_RESET = "\u001B[0m";
     public enum GameState {
     	PLAYING,
 		LOST,
@@ -62,6 +58,11 @@ public class Grid implements Serializable{
 			}
 		}
 	}
+
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_RESET = "\u001B[0m";
 
 	public String saveTime;
 	private GridComponent[][] grid;
@@ -140,38 +141,55 @@ public class Grid implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		final String borders = " ---------------------";
+		String borders = " ";
 		final String line = "|";
-
+		String preSpace = "";
 		String game = "";
-
-		game += "\n  ";
-		for (int i = 0; i < grid.length; i++) {
-			game += i;
+		for (int i = 1; i < Integer.toString(grid.length).length(); i++) {
+			preSpace += " ";
+		}
+		game += "\n";
+		for (int i = 0; i <= Integer.toString(grid.length).length(); i++) {
 			game += " ";
+			borders += " ";
+		}
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = Integer.toString(i).length(); j <= Integer.toString(grid.length).length(); j++) {
+				game += " ";
+				borders += "-";
+			}
+			game += i;
+			for (int j = 0; j < Integer.toString(i).length(); j++) {
+				borders += "-";
+			}
 		}
 		game += "\n";
 		game += borders;
 		game += "\n";
 		for (int i = 0; i < grid.length; i++) {
+			for (int j = Integer.toString(i).length(); j < Integer.toString(grid.length).length(); j++) {
+				game += " ";
+			}
 			game += i + line;
+			game += " ";
 			for (int j = 0; j < grid.length; j++) {
-				if(grid[i][j].getIsFlagged())
-					game = game + ANSI_RED + grid[i][j] + ANSI_RESET;
-				else if (grid[i][j].getIsMine())
+				game += preSpace;
+				if (grid[i][j].getIsFlagged()) {
+					game += ANSI_RED + grid[i][j] + ANSI_RESET;
+				} else if (grid[i][j].getIsOpen()) {
+					if (grid[i][j].getIsMine()) {
+						game += ANSI_RED + grid[i][j] + ANSI_RESET;
+					} else {
+						game += ANSI_BLUE + grid[i][j] + ANSI_RESET;
+					}
+				} else {
 					game += grid[i][j];
-				else {
-					if (grid[i][j].getIsOpen())
-						game = game + ANSI_BLUE + grid[i][j] + ANSI_RESET;
-					else 
-						game += grid[i][j];
 				}
 				game += line;
 			}
 			game += "\n";
 		}
 		game += borders;
-
 		return game;
 	}
 
