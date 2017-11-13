@@ -23,28 +23,16 @@ public class TextGame {
 		// clears input
 		sc.nextLine();
 		Grid game = null;
-		boolean done = false;
-		while (!done) {
-			done = true;
-			switch (difficulty) {
-				case 1:
-					game = new Grid(Grid.Difficulty.EASY);
-					break;
-				case 2:
-					game = new Grid(Grid.Difficulty.MEDIUM);
-					break;
-				case 3:
-					game = new Grid(Grid.Difficulty.HARD);
-					break;
-				default:
-					done = false;
-					System.out.println("Please select a valid difficulty");
-					System.out.println("Enter 1 for easy, Enter 2 for medium, Enter 3 for hard");
-					break;
-			}
+		while (difficulty < 1 || difficulty > 3) {
+			refreshConsole();
+			System.out.println("Please select a valid difficulty");
+			System.out.println("Enter 1 for easy, Enter 2 for medium, Enter 3 for hard");
+			difficulty = sc.nextInt();
+			// clears input
+			sc.nextLine();
 		}
-		//reset done for game play
-		done = false;
+		game = new Grid(Grid.Difficulty.values()[difficulty]);
+		boolean done = false;
 		while (!done) {
 			refreshConsole();
 			System.out.println(game); // g.toString() implicitly invoked

@@ -20,10 +20,6 @@ import java.util.Queue;
  */
 public class Grid implements Serializable{
 
-	public static final String ANSI_RED = "\u001B[31m";
-	public static final String ANSI_BLACK = "\u001B[30m";
-	public static final String ANSI_BLUE = "\u001B[34m";
-	public static final String ANSI_RESET = "\u001B[0m";
     public enum GameState {
     	PLAYING,
 		LOST,
@@ -31,10 +27,10 @@ public class Grid implements Serializable{
 	}
 
 	public enum Difficulty {
+		TEST(4),
     	EASY(10),
 		MEDIUM(15),
 		HARD(20),
-		TEST(4),
 		LOAD(-1);
 
 		private final int value;
@@ -62,6 +58,11 @@ public class Grid implements Serializable{
 			}
 		}
 	}
+
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_RESET = "\u001B[0m";
 
 	public String saveTime;
 	private GridComponent[][] grid;
@@ -140,7 +141,7 @@ public class Grid implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		String borders = "";
+		String borders = " ";
 		final String line = "|";
 		String preSpace = "";
 		String game = "";
@@ -166,10 +167,11 @@ public class Grid implements Serializable{
 		game += borders;
 		game += "\n";
 		for (int i = 0; i < grid.length; i++) {
-			game += i + line;
-			for (int j = Integer.toString(i).length(); j <= Integer.toString(grid.length).length(); j++) {
+			for (int j = Integer.toString(i).length(); j < Integer.toString(grid.length).length(); j++) {
 				game += " ";
 			}
+			game += i + line;
+			game += " ";
 			for (int j = 0; j < grid.length; j++) {
 				game += preSpace;
 				if (grid[i][j].getIsFlagged()) {
