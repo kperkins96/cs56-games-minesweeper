@@ -353,4 +353,31 @@ public class Grid implements Serializable{
 		}
 		return g;
 	}
+	
+	boolean searchSurrounding(int row, int col) {
+		int numFlags = 0;
+		
+		for(int i = row - 1; i <= row + 1; i++) {
+			for(int j = col - 1; j <= col + 1; j++) {
+				if ((i >= 0 && i < grid.length) && (j >= 0 && j < grid.length )) {
+					if(grid[i][j].getIsFlagged())
+						numFlags++;
+				}
+			}
+		}
+		
+		if(Integer.toString(numFlags).equals(Character.toString(grid[row][col].getSymbol())) && !grid[row][col].getIsFlagged()) {
+			for(int i = row - 1; i <= row + 1; i++) {
+				for(int j = col - 1; j <= col + 1; j++) {
+					if ((i >= 0 && i < grid.length) && (j >= 0 && j < grid.length )) {
+						grid[i][j].open();
+					}
+				}
+			}
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
