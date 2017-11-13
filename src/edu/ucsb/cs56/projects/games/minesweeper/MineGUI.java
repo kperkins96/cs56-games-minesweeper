@@ -20,6 +20,8 @@ public class MineGUI {
 	private static HelpScreen helpScreen;
 
 	public static void main (String[] args) {
+		DBConnector.init();
+		System.out.println(DBConnector.getTopTenEasy());
 		mainMenu = new MainMenu();
 		helpScreen = new HelpScreen();
 	}
