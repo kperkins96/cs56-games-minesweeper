@@ -14,6 +14,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
 import java.util.Timer;
 
 import javax.swing.JButton;
@@ -41,7 +44,7 @@ public class MainMenu extends JFrame {
 	private JButton help;    //Main Menu Help Button
 	private JScrollPane scroller;
 	private JLabel highScore; // this label status displays the local high score.
-	private JLabel highScoreList;
+	private JTextArea highScoreList;
 
     public MainMenu() throws HeadlessException {
         super();
@@ -55,7 +58,8 @@ public class MainMenu extends JFrame {
 		help = new JButton("Help");
 		load = new JButton("Load Last Game");
 		highScore = new JLabel("Leaderboards: "); // added another JLabel
-		highScoreList = new JLabel(getHighScores());
+		highScoreList = new JTextArea(getHighScores());
+		highScoreList.setEditable(false);
 		scroller = new JScrollPane(highScoreList);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -133,22 +137,15 @@ public class MainMenu extends JFrame {
 	}
 
 	public String getHighScores() {
-		String score = "<html>";
-		String line = "";
-		try {
-			File myFile = new File("HighScore.txt");
-			FileReader filereader = new FileReader(myFile);
-			BufferedReader reader = new BufferedReader(filereader);
-			while ((line = reader.readLine()) != null) {
-				score += line + "<br>";
-			}
-			reader.close();
-			score += "</html>";
-		} catch(IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		ArrayList<Map<String, String>> highScores = DBConnector.getTopTenEasy();
+		String display = "";
+		for (Map<String, String> row : highScores) {
+			display += row.get("name") + " ";
+			display += row.get("score") + " ";
+			display += Grid.Difficulty.values()[Integer.parseInt(row.get("difficulty"))] + " ";
+			display += row.get("attime") + " ";
+			display += '\n';
 		}
-		// sort scores by smallest time
-		return score;
+		return  display;
 	}
 }

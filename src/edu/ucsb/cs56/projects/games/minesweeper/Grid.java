@@ -1,6 +1,9 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PrimitiveIterator;
 import java.util.Queue;
@@ -64,7 +67,7 @@ public class Grid implements Serializable{
 	public static final String ANSI_BLUE = "\u001B[34m";
 	public static final String ANSI_RESET = "\u001B[0m";
 
-	public String saveTime;
+	public int saveTime;
 	private GridComponent[][] grid;
 	private GameState gameState;
 	private int correctMoves;
@@ -76,7 +79,7 @@ public class Grid implements Serializable{
 	public Grid() { this(Difficulty.EASY); }
 
 	public Grid(Difficulty difficulty) {
-		saveTime = new String("0");
+		saveTime = 0;
 		gameState = GameState.PLAYING;
 		correctMoves = 0;
 		grid = new GridComponent[difficulty.getValue()][difficulty.getValue()];

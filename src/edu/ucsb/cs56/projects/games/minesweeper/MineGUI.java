@@ -1,5 +1,8 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -20,6 +23,8 @@ public class MineGUI {
 	private static HelpScreen helpScreen;
 
 	public static void main (String[] args) {
+		DBConnector.init();
+		System.out.println(DBConnector.getTopTenEasy());
 		mainMenu = new MainMenu();
 		helpScreen = new HelpScreen();
 	}
