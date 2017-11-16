@@ -391,6 +391,13 @@ public class GameFrame extends JFrame {
 					}
 				} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(row, col)){
 					soundName = "resources/sounds/userError.wav";
+				} else if (event.getButton() == MouseEvent.BUTTON2) {
+					if (game.searchSurrounding(row, col)) {
+						soundName = "resources/sounds/clicked.wav";
+						refresh();
+					} else {
+						soundName = "resources/sounds/userError.wav";
+					}
 				}
 				playSound(soundName);
 				if (game.getGameState() == Grid.GameState.LOST) {
