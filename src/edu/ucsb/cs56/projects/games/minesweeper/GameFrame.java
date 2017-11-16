@@ -50,7 +50,7 @@ public class GameFrame extends JFrame {
 	private static final Color NUMBER = new Color(0, 100, 0);
 	private Grid game;
 	private JButton[][] buttons;
-	private String globalTE;
+	private int globalTE;
 	private JTextField timeDisplay;
 	private Timer timer;
 	private JButton refresh;
@@ -71,7 +71,7 @@ public class GameFrame extends JFrame {
 		JToolBar toolbar = new JToolBar("In-game toolbar");
 		createToolbar(toolbar);
 		getContentPane().add(toolbar, BorderLayout.NORTH); //puts the game toolbar at the top of the screen
-		globalTE = "0";
+		globalTE = 0;
 		timer = new Timer();
 		timer.schedule(new Clock(), 0, 1000);
 		grid = new JPanel();
@@ -137,15 +137,8 @@ public class GameFrame extends JFrame {
 
 
 	//int lowestTime=1000;
-	public void saveHighest(String name, String time) { //will throw an exception if highscore.txt doesn't exist, but will create one when you win the game.
-		// write to a file if the game is won, include timer for highest score.
-		System.out.println("Saving high score only if you WIN game");
-		try (FileWriter fw = new FileWriter("HighScore.txt", true); BufferedWriter bw = new BufferedWriter(fw); PrintWriter out = new PrintWriter(bw)) { // variables in parenthesis will automatically close if try block fails
-			out.println(name + " finished " + game.getDifficulty().toString() + " difficulty in " + time + " seconds!");
-		} catch (IOException e) {
-			e.printStackTrace();
-			//exception handling left as an exercise for the reader
-		}
+	public void saveHighest(String name, int time) { //will throw an exception if highscore.txt doesn't exist, but will create one when you win the game.
+		DBConnector.addScore(name, time, game.getDifficulty().ordinal());
 	}
 
 	public void createToolbar(JToolBar toolbar) {
@@ -286,12 +279,12 @@ public class GameFrame extends JFrame {
 		private long elapse;
 		private final long nano;
 		private long sec;
-		private String leftOver;
+		private int leftOver;
 
 		public Clock(){
 			nano = 1000000000;
 			leftOver = globalTE;
-			globalTE = "0";
+			globalTE = 0;
 			currClock = System.nanoTime();
 		}
 
@@ -299,7 +292,7 @@ public class GameFrame extends JFrame {
 			endClock = System.nanoTime();
 			elapse = endClock - currClock;
 			sec = Math.floorDiv(elapse, nano);
-			globalTE = String.valueOf(sec + Long.parseLong(leftOver));
+			globalTE = (int)sec + leftOver;
 		}
 
 		public void pauseClock(){
@@ -308,7 +301,7 @@ public class GameFrame extends JFrame {
 
 		public void run() {
 			this.updateTE();
-			timeDisplay.setText(globalTE);
+			timeDisplay.setText(Integer.toString(globalTE));
 			timeDisplay.repaint();
 		}
 	} // class Clock
@@ -329,26 +322,6 @@ public class GameFrame extends JFrame {
 		@Override
 		public void componentResized(ComponentEvent e) {
 			refresh();
-			/*
-			int size = buttons[0][0].getSize().height / 2;
-			if (buttons[0][0].getSize().height / 2 > buttons[0][0].getSize().width / 4) {
-				size = buttons[0][0].getSize().width / 4;
-			}
-			for (int i = 0; i < game.getSize(); i++) {
-				for (int j = 0; j < game.getSize(); j++) {
-					if (game.isOpen(i, j) || game.isFlag(i, j)) {
-						if (game.isFlag(i, j) || game.isMine(i, j)) {
-							Image img = ((ImageIcon) buttons[i][j].getIcon()).getImage();
-							//resize icon to fit button
-							Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10, java.awt.Image.SCALE_DEFAULT);
-							buttons[i][j].setIcon(new ImageIcon((newImg)));
-						} else {
-							buttons[i][j].setFont(new Font("sansserif", Font.BOLD, size));
-						}
-					}
-				}
-			}
-			*/
 		}
 
 		@Override

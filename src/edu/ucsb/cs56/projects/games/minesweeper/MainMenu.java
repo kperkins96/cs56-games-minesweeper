@@ -44,7 +44,7 @@ public class MainMenu extends JFrame {
 	private JButton help;    //Main Menu Help Button
 	private JScrollPane scroller;
 	private JLabel highScore; // this label status displays the local high score.
-	private JLabel highScoreList;
+	private JTextArea highScoreList;
 
     public MainMenu() throws HeadlessException {
         super();
@@ -58,7 +58,8 @@ public class MainMenu extends JFrame {
 		help = new JButton("Help");
 		load = new JButton("Load Last Game");
 		highScore = new JLabel("Leaderboards: "); // added another JLabel
-		highScoreList = new JLabel(getHighScores());
+		highScoreList = new JTextArea(getHighScores());
+		highScoreList.setEditable(false);
 		scroller = new JScrollPane(highScoreList);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -143,6 +144,7 @@ public class MainMenu extends JFrame {
 			display += row.get("score") + " ";
 			display += Grid.Difficulty.values()[Integer.parseInt(row.get("difficulty"))] + " ";
 			display += row.get("attime") + " ";
+			display += '\n';
 		}
 		return  display;
 	}

@@ -39,11 +39,25 @@ public class DBConnector {
 		}
 	}
 
+	public static boolean addScore(String name, int score, int difficulty) {
+	    try {
+			Statement statement = connection.createStatement();
+			int rowCount = statement.executeUpdate("INSERT INTO scores (name, score, difficulty) VALUES ('" + name + "', " + score + ", " + difficulty + ");");
+			if (rowCount > 0) {
+				return true;
+			}
+			return false;
+		} catch (SQLException e) {
+	    	e.printStackTrace();
+		}
+		return false;
+	}
+
 	public static ArrayList<Map<String, String>> getTopTenEasy() {
 		ArrayList<Map<String, String>> data = new ArrayList<>(10);
 	    try {
 			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM scores;");
+			ResultSet result = statement.executeQuery("SELECT * FROM scores WHERE difficulty = 1;");
 			for (int i = 0; i < 10 && result.next(); i++) {
 				Map<String, String> row = new HashMap<>();
 				row.put("name", result.getString("name"));
@@ -54,6 +68,44 @@ public class DBConnector {
 			}
 		} catch (SQLException e) {
 	    	e.printStackTrace();
+		}
+		return data;
+	}
+
+	public static ArrayList<Map<String, String>> getTopTenMedium() {
+		ArrayList<Map<String, String>> data = new ArrayList<>(10);
+		try {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery("SELECT * FROM scores WHERE difficulty = 2;");
+			for (int i = 0; i < 10 && result.next(); i++) {
+				Map<String, String> row = new HashMap<>();
+				row.put("name", result.getString("name"));
+				row.put("score", result.getString("score"));
+				row.put("difficulty", result.getString("difficulty"));
+				row.put("attime", result.getString("attime"));
+				data.add(row);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
+
+	public static ArrayList<Map<String, String>> getTopTenHard() {
+		ArrayList<Map<String, String>> data = new ArrayList<>(10);
+		try {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery("SELECT * FROM scores WHERE difficulty = 3;");
+			for (int i = 0; i < 10 && result.next(); i++) {
+				Map<String, String> row = new HashMap<>();
+				row.put("name", result.getString("name"));
+				row.put("score", result.getString("score"));
+				row.put("difficulty", result.getString("difficulty"));
+				row.put("attime", result.getString("attime"));
+				data.add(row);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return data;
 	}
