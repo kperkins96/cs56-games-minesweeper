@@ -65,21 +65,21 @@ public class MainMenu extends JFrame {
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		easyGame.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
-				MineGUI.newGame(Grid.Difficulty.EASY);
+				MineGUI.newGame(Constants.Difficulty.EASY);
 			}
 		});
 		medGame.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
-				MineGUI.newGame(Grid.Difficulty.MEDIUM);
+				MineGUI.newGame(Constants.Difficulty.MEDIUM);
 			}
 		});
 		hardGame.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
-				MineGUI.newGame(Grid.Difficulty.HARD);
+				MineGUI.newGame(Constants.Difficulty.HARD);
 			}
 		});
 		help.addActionListener((ActionEvent e) -> { MineGUI.setHelpScreenVisible(true); });
-		load.addActionListener((ActionEvent e) -> { MineGUI.newGame(Grid.Difficulty.LOAD); });
+		load.addActionListener((ActionEvent e) -> { MineGUI.newGame(Constants.Difficulty.LOAD); });
 		quitMine.addActionListener((ActionEvent e) -> { MineGUI.quitPrompt(); });
 		menu.add(easyGame);
 		menu.add(medGame);
@@ -142,7 +142,7 @@ public class MainMenu extends JFrame {
 		for (Map<String, String> row : highScores) {
 			display += row.get("name") + " ";
 			display += row.get("score") + " ";
-			display += Grid.Difficulty.values()[Integer.parseInt(row.get("difficulty"))] + " ";
+			display += Constants.Difficulty.values()[Integer.parseInt(row.get("difficulty"))] + " ";
 			display += row.get("attime") + " ";
 			display += '\n';
 		}

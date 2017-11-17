@@ -60,11 +60,11 @@ public class GameFrame extends JFrame {
 	private JButton flagBtn;
 	private JPanel grid;
 
-	GameFrame(Grid.Difficulty difficulty) {
+	GameFrame(Constants.Difficulty difficulty) throws IOException, ClassNotFoundException {
 		super(); // is this line necessary?  what does it do?
 		setSize(650, 600);
-		if (difficulty == Grid.Difficulty.LOAD) {
-			load();
+		if (difficulty == Constants.Difficulty.LOAD) {
+			game = Grid.loadGame();
 		} else {
 			game = new Grid(difficulty);  // the Interface game
 		}
@@ -86,7 +86,7 @@ public class GameFrame extends JFrame {
 				grid.add(buttons[i][j]);
 			}
 		}
-		if (difficulty == Grid.Difficulty.LOAD) {
+		if (difficulty == Constants.Difficulty.LOAD) {
 			refresh();
 		}
 		getContentPane().add(grid);
@@ -99,27 +99,6 @@ public class GameFrame extends JFrame {
 
 	public int getGridButtonY(int i, int j) {
 		return grid.getY() + buttons[i][j].getY();
-	}
-
-	public void load() {
-		System.out.println("Loading...");
-		try {
-			FileInputStream fileStream = new FileInputStream("MyGame.ser");
-			ObjectInputStream os = new ObjectInputStream(fileStream);
-			Object one;
-			try {
-				one = os.readObject();
-				game = (Grid) one;
-				globalTE = game.saveTime;
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			os.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	public void save() {
@@ -351,7 +330,7 @@ public class GameFrame extends JFrame {
 		 */
 		public void mouseReleased(MouseEvent event) {
 			String soundName = null;
-			if (game.getGameState() == Grid.GameState.PLAYING) {
+			if (game.getGameState() == Constants.GameState.PLAYING) {
 				if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(row, col) && !game.isOpen(row, col) && !flagBtn.isSelected()){
 					//if you left click and the button is available (not a flag and not already opened)
 					char result = game.searchBox(row, col);
@@ -400,7 +379,7 @@ public class GameFrame extends JFrame {
 					}
 				}
 				playSound(soundName);
-				if (game.getGameState() == Grid.GameState.LOST) {
+				if (game.getGameState() == Constants.GameState.LOST) {
 					// display mines
 					refresh();
 					stopTimer();
@@ -410,7 +389,7 @@ public class GameFrame extends JFrame {
 					} else {
 						resetGame();
 					}
-				} else if (game.getGameState() == Grid.GameState.WON) {
+				} else if (game.getGameState() == Constants.GameState.WON) {
 					soundName = "resources/sounds/win.wav";
 					playSound(soundName);
 					stopTimer();

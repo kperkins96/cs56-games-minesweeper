@@ -29,13 +29,17 @@ public class MineGUI {
 		helpScreen = new HelpScreen();
 	}
 
-	public static void newGame(Grid.Difficulty difficulty) {
-        mainMenu.setVisible(false);
+	public static void newGame(Constants.Difficulty difficulty) {
         if (gameFrame != null) {
 			gameFrame.dispose();
 		}
-		gameFrame = new GameFrame(difficulty);
-		gameFrame.setVisible(true);
+		try {
+			gameFrame = new GameFrame(difficulty);
+			mainMenu.setVisible(false);
+			gameFrame.setVisible(true);
+		} catch (IOException | ClassNotFoundException e) {
+        	JOptionPane.showMessageDialog(null, "There is no previous game to load", "No previous game", JOptionPane.DEFAULT_OPTION);
+		}
 	}
 
 	public static void goToMainMenu() {

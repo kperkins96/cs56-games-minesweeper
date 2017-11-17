@@ -1,11 +1,10 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.PrimitiveIterator;
 import java.util.Queue;
 
 /** The Grid class is the foundation for minesweeper, applies mine locations, checks if something is open,
@@ -23,68 +22,25 @@ import java.util.Queue;
  */
 public class Grid implements Serializable{
 
-    public enum GameState {
-    	PLAYING,
-		LOST,
-		WON
-	}
-
-	public enum Difficulty {
-		TEST(4),
-    	EASY(10),
-		MEDIUM(15),
-		HARD(20),
-		LOAD(-1);
-
-		private final int value;
-
-		private Difficulty(final int val) {
-			value = val;
-		}
-
-		public final int getValue() {
-			return value;
-		}
-
-		public static final Difficulty getDifficultyFromSize(int size) {
-			switch (size) {
-				case 4:
-					return TEST;
-				case 10:
-					return EASY;
-				case 15:
-					return MEDIUM;
-				case 20:
-					return HARD;
-				default:
-					return EASY;
-			}
-		}
-	}
-
-	public static final String ANSI_RED = "\u001B[31m";
-	public static final String ANSI_BLACK = "\u001B[30m";
-	public static final String ANSI_BLUE = "\u001B[34m";
-	public static final String ANSI_RESET = "\u001B[0m";
-
 	public int saveTime;
 	private GridComponent[][] grid;
-	private GameState gameState;
+	private Constants.GameState gameState;
+	private Constants.Difficulty difficulty;
 	private int correctMoves;
 
 	/**
 	 * Default constructor for objects of class GUIGrid
 	 */
 
-	public Grid() { this(Difficulty.EASY); }
+	public Grid() { this(Constants.Difficulty.EASY); }
 
-	public Grid(Difficulty difficulty) {
-		saveTime = 0;
-		gameState = GameState.PLAYING;
+	public Grid(Constants.Difficulty difficulty) {
+		gameState = Constants.GameState.PLAYING;
+		this.difficulty = difficulty;
 		correctMoves = 0;
-		grid = new GridComponent[difficulty.getValue()][difficulty.getValue()];
+		grid = new GridComponent[Constants.getGridSize(difficulty)][Constants.getGridSize(difficulty)];
 		setZero();
-		if (difficulty == Difficulty.TEST) {
+		if (difficulty == Constants.Difficulty.TEST) {
 			grid[3][3].makeMine();
 			for (int i = 2; i <= 3; i++) {
 				for (int j = 2; j <= 3; j++) {
@@ -104,8 +60,8 @@ public class Grid implements Serializable{
 		return grid.length;
 	}
 
-	public Difficulty getDifficulty() {
-		return Difficulty.getDifficultyFromSize(grid.length);
+	public Constants.Difficulty getDifficulty() {
+		return difficulty;
 	}
 
 	/**
@@ -178,12 +134,12 @@ public class Grid implements Serializable{
 			for (int j = 0; j < grid.length; j++) {
 				game += preSpace;
 				if (grid[i][j].getIsFlagged()) {
-					game += ANSI_RED + grid[i][j] + ANSI_RESET;
+					game += Constants.ANSI_RED + grid[i][j] + Constants.ANSI_RESET;
 				} else if (grid[i][j].getIsOpen()) {
 					if (grid[i][j].getIsMine()) {
-						game += ANSI_RED + grid[i][j] + ANSI_RESET;
+						game += Constants.ANSI_RED + grid[i][j] + Constants.ANSI_RESET;
 					} else {
-						game += ANSI_BLUE + grid[i][j] + ANSI_RESET;
+						game += Constants.ANSI_BLUE + grid[i][j] + Constants.ANSI_RESET;
 					}
 				} else {
 					game += grid[i][j];
@@ -244,12 +200,12 @@ public class Grid implements Serializable{
 				spot = grid[i][j].getSymbol();
 				grid[i][j].open();
 				if (grid[i][j].getIsMine()) {
-					gameState = GameState.LOST;
+					gameState = Constants.GameState.LOST;
 					exposeMines();
 				} else {
 					correctMoves++;
 					if (correctMoves >= grid.length * grid.length) {
-						gameState = GameState.WON;
+						gameState = Constants.GameState.WON;
 					} else if (grid[i][j].getSymbol() == '0') {
 						findAllZeros(i, j);
 					}
@@ -273,7 +229,7 @@ public class Grid implements Serializable{
 			if (grid[i][j].getIsMine()) {
 				correctMoves++;
 				if (correctMoves >= grid.length * grid.length) { 
-					gameState = GameState.WON;
+					gameState = Constants.GameState.WON;
 				}
 			}
 		}
@@ -309,7 +265,7 @@ public class Grid implements Serializable{
 							if (i >= 0 && i < grid.length && j >= 0 && j < grid.length && !grid[i][j].getIsFlagged() && !grid[i][j].getIsMine() && !grid[i][j].getIsOpen()) {
 								correctMoves++;
 								if (correctMoves >= grid.length * grid.length) {
-									gameState = GameState.WON;
+									gameState = Constants.GameState.WON;
 								}
 								if (grid[i][j].getSymbol() == '0') {
 									bfs.add(i * grid.length + j);
@@ -336,7 +292,7 @@ public class Grid implements Serializable{
 	/**
 	 * Updates the state of the game
 	 */
-	public GameState getGameState() {
+	public Constants.GameState getGameState() {
 	    return gameState;
     }
 
@@ -382,5 +338,15 @@ public class Grid implements Serializable{
 		else {
 			return false;
 		}
+	}
+
+	public static Grid loadGame() throws IOException, ClassNotFoundException {
+		System.out.println("Loading...");
+		FileInputStream fileStream = new FileInputStream("MyGame.ser");
+		ObjectInputStream os = new ObjectInputStream(fileStream);
+		Object one;
+		one = os.readObject();
+		os.close();
+		return (Grid) one;
 	}
 }
