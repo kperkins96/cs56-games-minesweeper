@@ -45,7 +45,7 @@ public class MineGUI {
 	public static void goToMainMenu() {
 		mainMenu.refreshHighScoreChart();
 		if (gameFrame != null) {
-			gameFrame.save();
+			gameFrame.getGrid().save();
 			gameFrame.dispose();
 			gameFrame = null;
 		}
@@ -62,7 +62,7 @@ public class MineGUI {
 		int response = JOptionPane.showConfirmDialog(currFrame, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (response == JOptionPane.YES_OPTION) {
 			if (currFrame instanceof GameFrame) {
-				((GameFrame) currFrame).save();
+				((GameFrame) currFrame).getGrid().save();
 			}
 			System.out.println("Closing...");
 			System.exit(0);

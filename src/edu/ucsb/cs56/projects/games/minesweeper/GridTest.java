@@ -61,7 +61,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Medium() {
 		int count = 0;
-		Grid test = new Grid(Grid.Difficulty.MEDIUM);
+		Grid test = new Grid(Constants.Difficulty.MEDIUM);
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -76,7 +76,7 @@ public class GridTest {
 	@Test
 	public void test_blankToMine_Hard() {
 		int count = 0;
-		Grid test = new Grid(Grid.Difficulty.HARD);
+		Grid test = new Grid(Constants.Difficulty.HARD);
 		int s = test.getSize();
 		for (int i = 0; i < s; i++) {
 			for (int j = 0; j < s; j++) {
@@ -200,6 +200,6 @@ public class GridTest {
 	@Test
 	public void test_gameStatus() {
 		Grid g1 = new Grid();
-		assertEquals(Grid.GameState.PLAYING, g1.getGameState());
+		assertEquals(Constants.GameState.PLAYING, g1.getGameState());
 	}
 }

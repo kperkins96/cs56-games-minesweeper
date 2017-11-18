@@ -1,11 +1,16 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /** The Grid class is the foundation for minesweeper, applies mine locations, checks if something is open,
  makes flags functional, etc.
@@ -22,7 +27,8 @@ import java.util.Queue;
  */
 public class Grid implements Serializable{
 
-	public int saveTime;
+	private int gameTime;
+	private transient Timer timer;
 	private GridComponent[][] grid;
 	private Constants.GameState gameState;
 	private Constants.Difficulty difficulty;
@@ -51,6 +57,31 @@ public class Grid implements Serializable{
 		for (int i = 0; i < difficulty.ordinal() * grid.length; i++) {
 			setMine();
 		}
+		startTimer();
+	}
+
+	public void deleteSave() {
+		File file = new File("MyGame.ser");
+		file.delete();
+	}
+
+	public void endGame() {
+		stopTimer();
+		deleteSave();
+	}
+
+	public void startTimer() {
+		timer = new Timer();
+		timer.schedule(new Clock(), 0, 1);
+	}
+
+	public void stopTimer() {
+		timer.cancel();
+		timer.purge();
+	}
+
+	public int getGameTime() {
+		return gameTime;
 	}
 
 	/**
@@ -201,11 +232,13 @@ public class Grid implements Serializable{
 				grid[i][j].open();
 				if (grid[i][j].getIsMine()) {
 					gameState = Constants.GameState.LOST;
+					endGame();
 					exposeMines();
 				} else {
 					correctMoves++;
 					if (correctMoves >= grid.length * grid.length) {
 						gameState = Constants.GameState.WON;
+						endGame();
 					} else if (grid[i][j].getSymbol() == '0') {
 						findAllZeros(i, j);
 					}
@@ -230,6 +263,7 @@ public class Grid implements Serializable{
 				correctMoves++;
 				if (correctMoves >= grid.length * grid.length) { 
 					gameState = Constants.GameState.WON;
+                    endGame();
 				}
 			}
 		}
@@ -266,6 +300,7 @@ public class Grid implements Serializable{
 								correctMoves++;
 								if (correctMoves >= grid.length * grid.length) {
 									gameState = Constants.GameState.WON;
+                                    endGame();
 								}
 								if (grid[i][j].getSymbol() == '0') {
 									bfs.add(i * grid.length + j);
@@ -315,7 +350,6 @@ public class Grid implements Serializable{
 	
 	boolean searchSurrounding(int row, int col) {
 		int numFlags = 0;
-		
 		for(int i = row - 1; i <= row + 1; i++) {
 			for(int j = col - 1; j <= col + 1; j++) {
 				if ((i >= 0 && i < grid.length) && (j >= 0 && j < grid.length )) {
@@ -324,7 +358,6 @@ public class Grid implements Serializable{
 				}
 			}
 		}
-		
 		if(Integer.toString(numFlags).equals(Character.toString(grid[row][col].getSymbol())) && !grid[row][col].getIsFlagged()) {
 			for(int i = row - 1; i <= row + 1; i++) {
 				for(int j = col - 1; j <= col + 1; j++) {
@@ -341,12 +374,46 @@ public class Grid implements Serializable{
 	}
 
 	public static Grid loadGame() throws IOException, ClassNotFoundException {
-		System.out.println("Loading...");
 		FileInputStream fileStream = new FileInputStream("MyGame.ser");
 		ObjectInputStream os = new ObjectInputStream(fileStream);
 		Object one;
 		one = os.readObject();
 		os.close();
-		return (Grid) one;
+		Grid g = (Grid) one;
+		g.startTimer();
+		return g;
 	}
+
+	public void save() {
+		try {
+			FileOutputStream fileStream = new FileOutputStream("MyGame.ser");
+			ObjectOutputStream os = new ObjectOutputStream(fileStream);
+			os.writeObject(this);
+			os.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public class Clock extends TimerTask {
+		private long currClock;
+		private long endClock;
+		private long elapse;
+		private final int NANO = 1000000000;
+		private long sec;
+		private int leftOver;
+
+		public Clock(){
+			leftOver = gameTime;
+			gameTime = 0;
+			currClock = System.nanoTime();
+		}
+
+		public void run(){
+			endClock = System.nanoTime();
+			elapse = endClock - currClock;
+			sec = Math.floorDiv(elapse, NANO);
+			gameTime = (int)sec + leftOver;
+		}
+	} // class Clock
 }

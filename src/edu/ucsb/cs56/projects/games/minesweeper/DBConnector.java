@@ -2,6 +2,7 @@ package edu.ucsb.cs56.projects.games.minesweeper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,6 +18,8 @@ import java.util.Properties;
 public class DBConnector {
 
 	private static Connection connection;
+	private static PreparedStatement insertionStatement;
+	private static PreparedStatement queryStatement;
 
 	public static void init() {
 		try {
@@ -34,6 +37,8 @@ public class DBConnector {
 		properties.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
 		try {
 			connection = DriverManager.getConnection(host, properties);
+			insertionStatement = connection.prepareStatement("INSERT INTO scores (name, score, difficulty) VALUES (?, ?, ?);");
+			queryStatement = connection.prepareStatement("SELECT * FROM scores WHERE difficulty = ?;");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -41,12 +46,14 @@ public class DBConnector {
 
 	public static boolean addScore(String name, int score, int difficulty) {
 	    try {
-			Statement statement = connection.createStatement();
-			int rowCount = statement.executeUpdate("INSERT INTO scores (name, score, difficulty) VALUES ('" + name + "', " + score + ", " + difficulty + ");");
+			insertionStatement.setString(1, name);
+            insertionStatement.setInt(2, score);
+			insertionStatement.setInt(3, difficulty);
+			int rowCount = insertionStatement.executeUpdate();
+			insertionStatement.clearParameters();
 			if (rowCount > 0) {
 				return true;
 			}
-			return false;
 		} catch (SQLException e) {
 	    	e.printStackTrace();
 		}
@@ -56,8 +63,8 @@ public class DBConnector {
 	public static ArrayList<Map<String, String>> getTopTenEasy() {
 		ArrayList<Map<String, String>> data = new ArrayList<>(10);
 	    try {
-			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM scores WHERE difficulty = 1;");
+			queryStatement.setInt(1, 1);
+			ResultSet result = queryStatement.executeQuery();
 			for (int i = 0; i < 10 && result.next(); i++) {
 				Map<String, String> row = new HashMap<>();
 				row.put("name", result.getString("name"));
@@ -75,8 +82,8 @@ public class DBConnector {
 	public static ArrayList<Map<String, String>> getTopTenMedium() {
 		ArrayList<Map<String, String>> data = new ArrayList<>(10);
 		try {
-			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM scores WHERE difficulty = 2;");
+			queryStatement.setInt(1, 2);
+			ResultSet result = queryStatement.executeQuery();
 			for (int i = 0; i < 10 && result.next(); i++) {
 				Map<String, String> row = new HashMap<>();
 				row.put("name", result.getString("name"));
@@ -94,8 +101,8 @@ public class DBConnector {
 	public static ArrayList<Map<String, String>> getTopTenHard() {
 		ArrayList<Map<String, String>> data = new ArrayList<>(10);
 		try {
-			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM scores WHERE difficulty = 3;");
+			queryStatement.setInt(1, 3);
+			ResultSet result = queryStatement.executeQuery();
 			for (int i = 0; i < 10 && result.next(); i++) {
 				Map<String, String> row = new HashMap<>();
 				row.put("name", result.getString("name"));

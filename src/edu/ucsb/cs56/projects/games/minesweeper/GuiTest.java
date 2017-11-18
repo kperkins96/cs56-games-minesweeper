@@ -112,7 +112,7 @@ public class GuiTest {
 
     @Test
     public void testGameFrameGridFlag() {
-        MineGUI.newGame(Grid.Difficulty.TEST);
+        MineGUI.newGame(Constants.Difficulty.TEST);
         GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
         robot.mouseMove(game.getX() + game.getGridButtonX(0, 0), game.getY() + (game.getHeight() - game.getContentPane().getHeight()) + game.getGridButtonY(0, 0));
         rightClick();

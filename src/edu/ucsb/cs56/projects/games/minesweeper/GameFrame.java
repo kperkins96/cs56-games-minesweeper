@@ -50,9 +50,7 @@ public class GameFrame extends JFrame {
 	private static final Color NUMBER = new Color(0, 100, 0);
 	private Grid game;
 	private JButton[][] buttons;
-	private int globalTE;
 	private JTextField timeDisplay;
-	private Timer timer;
 	private JButton refresh;
 	private JButton mainMenu;
 	private JButton quitMine;
@@ -71,9 +69,6 @@ public class GameFrame extends JFrame {
 		JToolBar toolbar = new JToolBar("In-game toolbar");
 		createToolbar(toolbar);
 		getContentPane().add(toolbar, BorderLayout.NORTH); //puts the game toolbar at the top of the screen
-		globalTE = 0;
-		timer = new Timer();
-		timer.schedule(new Clock(), 0, 1000);
 		grid = new JPanel();
 		grid.setLayout(new GridLayout(game.getSize() ,0));
 		buttons = new JButton[game.getSize()][game.getSize()];
@@ -101,22 +96,7 @@ public class GameFrame extends JFrame {
 		return grid.getY() + buttons[i][j].getY();
 	}
 
-	public void save() {
-		System.out.println("Saving...");
-		game.saveTime = globalTE;
-		try {
-			FileOutputStream fileStream = new FileOutputStream("MyGame.ser");
-			ObjectOutputStream os = new ObjectOutputStream(fileStream);
-			os.writeObject(game);
-			os.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-
-	//int lowestTime=1000;
-	public void saveHighest(String name, int time) { //will throw an exception if highscore.txt doesn't exist, but will create one when you win the game.
+	public void saveHighest(String name, int time) {
 		DBConnector.addScore(name, time, game.getDifficulty().ordinal());
 	}
 
@@ -127,10 +107,16 @@ public class GameFrame extends JFrame {
 		quitMine = new JButton("Quit Minesweeper");
 		inGameHelp = new JButton("Help");
 		flagBtn = new JButton("Flag"); //new ImageIcon("resource/images/flag.png"));
-		Clock gClock = new Clock();
-		timeDisplay = new JTextField(globalTE);
+		timeDisplay = new JTextField(game.getGameTime());
 		timeDisplay.setColumns(4);
 		timeDisplay.setEditable(false);
+		Timer t = new Timer();
+		t.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				timeDisplay.setText(Integer.toString(game.getGameTime()));
+			}
+		}, 0, 1);
 		refresh.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
 				resetGame();
@@ -243,47 +229,8 @@ public class GameFrame extends JFrame {
 	}
 
 	public void resetGame() {
-		stopTimer();
 		MineGUI.newGame(game.getDifficulty());
 	}
-
-	public void stopTimer() {
-		timer.cancel();
-		timer.purge();
-	}
-
-	public class Clock extends TimerTask {
-		private long currClock;
-		private long endClock;
-		private long elapse;
-		private final long nano;
-		private long sec;
-		private int leftOver;
-
-		public Clock(){
-			nano = 1000000000;
-			leftOver = globalTE;
-			globalTE = 0;
-			currClock = System.nanoTime();
-		}
-
-		private void updateTE(){
-			endClock = System.nanoTime();
-			elapse = endClock - currClock;
-			sec = Math.floorDiv(elapse, nano);
-			globalTE = (int)sec + leftOver;
-		}
-
-		public void pauseClock(){
-			game.saveTime = globalTE;
-		}
-
-		public void run() {
-			this.updateTE();
-			timeDisplay.setText(Integer.toString(globalTE));
-			timeDisplay.repaint();
-		}
-	} // class Clock
 
 	/**
 	 * inner class, reponds to resizing of component to resize font
@@ -308,7 +255,6 @@ public class GameFrame extends JFrame {
 			// TODO Auto-generated method stub
 		}
 	} // class SizeListener
-
 
 	/**
 	 * Inner Class, responds to the event source.
@@ -382,7 +328,6 @@ public class GameFrame extends JFrame {
 				if (game.getGameState() == Constants.GameState.LOST) {
 					// display mines
 					refresh();
-					stopTimer();
 					int response = JOptionPane.showOptionDialog(null, "You lose! Press 'Reset Game' to start a new game.", "Defeat!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
 					if (response == JOptionPane.YES_OPTION) {
 						MineGUI.goToMainMenu();
@@ -392,15 +337,14 @@ public class GameFrame extends JFrame {
 				} else if (game.getGameState() == Constants.GameState.WON) {
 					soundName = "resources/sounds/win.wav";
 					playSound(soundName);
-					stopTimer();
 					String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
 					if (user != null) {
 						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
 						if (response == JOptionPane.YES_OPTION) {
-							saveHighest(user, globalTE);
+							saveHighest(user, game.getGameTime());
 							MineGUI.goToMainMenu();
 						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-							saveHighest(user, globalTE);
+							saveHighest(user, game.getGameTime());
 							resetGame();
 						} else {
 							//do nothing

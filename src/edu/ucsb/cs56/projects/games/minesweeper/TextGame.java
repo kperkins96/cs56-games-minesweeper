@@ -1,6 +1,8 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 
 /** Makes the game on the terminal functional
@@ -18,6 +20,7 @@ public class TextGame {
 
 	public static void main(String [] args) {
 		sc = new Scanner(System.in);
+        DBConnector.init();
 		state = Constants.ApplicationState.MAINMENU;
 		refreshConsole();
 		System.out.println("Welcome to the text version of MineSweeper!");
@@ -26,84 +29,153 @@ public class TextGame {
 				case MAINMENU:
 					printMainMenu();
 					int menuResponse = getIntInput();
-					while (menuResponse < 1 || menuResponse > 2) {
+					while (menuResponse < 1 || menuResponse > 5) {
 						refreshConsole();
-						switch (menuResponse) {
-							case 3:
-								printHelp();
-								break;
-							case 4:
-								System.exit(0);
-								break;
-							default:
-								printInvalidInput();
-								break;
-						}
+						printInvalidInput();
 						printMainMenu();
-						menuResponse = sc.nextInt();
-						sc.nextLine();
+						menuResponse = getIntInput();
 					}
-					if (menuResponse == 1) {
-						setUpGameDifficulty();
-					} else {
-						try {
-							game = Grid.loadGame();
-						} catch (IOException | ClassNotFoundException e) {
+					switch (menuResponse) {
+						case 1:
 							setUpGameDifficulty();
+                            state = Constants.ApplicationState.GAME;
+							break;
+						case 2:
+							try {
+								game = Grid.loadGame();
+							} catch (IOException | ClassNotFoundException e) {
+								System.out.println(Constants.ANSI_RED + "There was no save file to load from" + Constants.ANSI_RESET);
+								setUpGameDifficulty();
+							}
+							state = Constants.ApplicationState.GAME;
+                            break;
+						case 3:
+							printHelp();
+							break;
+						case 4:
+							state = Constants.ApplicationState.LEADERBOARD;
+							break;
+						case 5:
+							System.exit(0);
+							break;
+						default:
+							printInvalidInput();
+							break;
+					}
+					refreshConsole();
+					break;
+				case GAME:
+					boolean done = false;
+					while (!done) {
+						System.out.println(game); // g.toString() implicitly invoked
+						printMoveOptions();
+						int move = getIntInput();
+						while (move < 1 || move > 6) {
+							refreshConsole();
+							printInvalidInput();
+							System.out.println(game);
+							printMoveOptions();
+							move = getIntInput();
+						}
+						if (move < 4) {
+							System.out.println("Enter the number of the row and column which box you would like to select (5 7 would be row 5 column 7)");
+							int row = sc.nextInt();
+							int col = getIntInput();
+                            refreshConsole();
+							if (row * game.getSize() + col >= 0 && row * game.getSize() + col < game.getSize() * game.getSize()) {
+								switch (move) {
+									case 1:
+										game.searchBox(row, col);
+										break;
+									case 2:
+										game.flagBox(row, col);
+										break;
+									case 3:
+										game.deflagBox(row, col);
+										break;
+									default:
+										printInvalidInput();
+										break;
+								}
+							} else {
+								printInvalidInput();
+							}
+							if (game.getGameState() != Constants.GameState.PLAYING) {
+								done = true;
+							}
+						} else if (move == 4) {
+							game.save();
+							refreshConsole();
+                            break;
+						} else if (move == 5) {
+							game = new Grid(game.getDifficulty());
+							refreshConsole();
+						} else {
+							game.save();
+							System.exit(0);
 						}
 					}
-					boolean done = false;
-				while (!done) {
-					refreshConsole();
-					System.out.println(game); // g.toString() implicitly invoked
-					printMoveOptions();
-					int move = sc.nextInt();
-					// clears input
-					sc.nextLine();
-					while (move < 1 || move > 6) {
+					if (done) {
+						refreshConsole();
+						System.out.println(game); // game.toString() implicitly invoked
+						if (game.getGameState() == Constants.GameState.LOST) {
+							System.out.println("You lose");
+						} else {
+							System.out.println("You won in " + game.getGameTime() + " seconds!!!");
+							printLeaderboardQuestion();
+							int leaderboardResponse = getIntInput();
+							while (leaderboardResponse < 1 || leaderboardResponse > 2) {
+								refreshConsole();
+								printInvalidInput();
+								printLeaderboardQuestion();
+								leaderboardResponse = getIntInput();
+							}
+							if (leaderboardResponse == 1) {
+								System.out.println("Please enter your name");
+								String name = sc.nextLine();
+								DBConnector.addScore(name, game.getGameTime(), game.getDifficulty().ordinal());
+							}
+							refreshConsole();
+						}
+					}
+					state = Constants.ApplicationState.MAINMENU;
+					break;
+				case LEADERBOARD:
+					printLeaderboardPrompt();
+					int leaderboardResponse = getIntInput();
+					while (leaderboardResponse < 1 || leaderboardResponse > 4) {
 						refreshConsole();
 						printInvalidInput();
-						System.out.println(game);
-						printMoveOptions();
-						move = sc.nextInt();
-						sc.nextLine();
+						printLeaderboardQuestion();
+						leaderboardResponse = getIntInput();
 					}
-					System.out.println("Enter the number of the row and column which box you would like to select (5 7 would be row 5 column 7)");
-					int row = sc.nextInt();
-					int col = sc.nextInt();
-					// clears input
-					sc.nextLine();
-					if (row * game.getSize() + col >= 0 && row * game.getSize() + col < game.getSize() * game.getSize()) {
-						switch (move) {
-							case 1:
-								game.searchBox(row, col);
-								break;
-							case 2:
-								game.flagBox(row, col);
-								break;
-							case 3:
-								game.deflagBox(row, col);
-								break;
-							default:
-								printInvalidInput();
-								break;
-						}
-					} else {
-						printInvalidInput();
+					refreshConsole();
+					switch (leaderboardResponse) {
+						case 1:
+							printTable(DBConnector.getTopTenEasy());
+							System.out.println();
+							break;
+						case 2:
+							printTable(DBConnector.getTopTenMedium());
+							System.out.println();
+							break;
+						case 3:
+							printTable(DBConnector.getTopTenHard());
+							System.out.println();
+                            break;
+						case 4:
+							state = Constants.ApplicationState.MAINMENU;
+							break;
+						default:
+							break;
 					}
-					if (game.getGameState() != Constants.GameState.PLAYING) {
-						done = true;
-					}
-				}
+					break;
+				default:
+					System.exit(0);
+					break;
 			}
 		}
-		refreshConsole();
-		System.out.println(game); // g.toString() implicitly invoked
-		if (game.getGameState() == Constants.GameState.LOST) {
-			System.out.println("You lose!");
-		} else {
-			System.out.println("You win!!!");
-		}
+
 	}
 
 	private static void printMainMenu() {
@@ -111,7 +183,8 @@ public class TextGame {
 		System.out.println("1) To start a new game");
 		System.out.println("2) To load your last game");
 		System.out.println("3) To display the help screen");
-		System.out.println("4) To quit");
+		System.out.println("4) To display the leaderboards");
+		System.out.println("5) To quit");
 	}
 
 	private static void printHelp() {
@@ -136,6 +209,14 @@ public class TextGame {
 		System.out.println("3) Hard");
 	}
 
+	private static void printLeaderboardPrompt() {
+		System.out.println("Which leaderboard would you like to view?");
+		System.out.println("1) Easy");
+		System.out.println("2) Medium");
+		System.out.println("3) Hard");
+		System.out.println("4) Go back to the main menu");
+	}
+
 	private static void printMoveOptions() {
 		System.out.println("What would you like to do?");
 		System.out.println("1) To search a spot");
@@ -149,22 +230,85 @@ public class TextGame {
 	private static void setUpGameDifficulty() {
 		refreshConsole();
 		printDifficultyPrompt();
-		int difficulty = sc.nextInt();
-		sc.nextLine();
+		int difficulty = getIntInput();
 		while (difficulty < 1 || difficulty > 3) {
 			refreshConsole();
+			printInvalidInput();
 			printDifficultyPrompt();
-			difficulty = sc.nextInt();
-			// clears input
-			sc.nextLine();
+			difficulty = getIntInput();
 		}
 		game = new Grid(Constants.Difficulty.values()[difficulty]);
+	}
+
+	private static void printLeaderboardQuestion() {
+		System.out.println("Would you like to enter your name into the leaderboard?");
+		System.out.println("1) Yes");
+		System.out.println("2) No");
 	}
 
 	private static int getIntInput() {
 		int temp = sc.nextInt();
 		sc.nextLine();
 		return temp;
+	}
+
+	private static void printTable(ArrayList<Map<String, String>> leaders) {
+		if (leaders.size() > 0) {
+			ArrayList<String> relations = new ArrayList<String>(leaders.get(0).size());
+			relations.add("name");
+			relations.add("score");
+			relations.add("difficulty");
+			relations.add("attime");
+			ArrayList<Integer> spaces = new ArrayList<Integer>(leaders.get(0).size());
+			for (int i = 0; i < leaders.get(0).size(); i++) {
+				spaces.add(relations.get(i).length());
+			}
+			for (int i = 0; i < leaders.get(0).size(); i++) {
+				for (int j = 0; j < leaders.size(); j++) {
+					if (spaces.get(i) < leaders.get(j).get(relations.get(i)).length()) {
+						spaces.set(i, leaders.get(j).get(relations.get(i)).length());
+					}
+				}
+			}
+			String borders = "";
+			for (int i = 0; i < spaces.size(); i++) {
+				for (int j = 0; j < spaces.get(i) + 2; j++) {
+					borders += "-";
+				}
+				if (i != spaces.size() - 1) {
+					borders += "+";
+				}
+			}
+			for (int i = 0; i < relations.size(); i++) {
+				for (int j = 0; j < (spaces.get(i) + 3 - relations.get(i).length()) / 2; j++) {
+					System.out.print(" ");
+				}
+				System.out.print(relations.get(i));
+				for (int j = 0; j < (spaces.get(i) + 2 - relations.get(i).length()) / 2; j++) {
+					System.out.print(" ");
+				}
+				if (i != relations.size() - 1) {
+					System.out.print("|");
+				}
+			}
+			System.out.println();
+			for (int i = 0; i < leaders.size(); i++) {
+				System.out.println(borders);
+				for (int j = 0; j < leaders.get(i).size(); j++) {
+					for (int k = 0; k < (spaces.get(j) + 3 - leaders.get(i).get(relations.get(j)).length()) / 2; k++) {
+						System.out.print(" ");
+					}
+					System.out.print(leaders.get(i).get(relations.get(j)));
+					for (int k = 0; k < (spaces.get(j) + 2 - leaders.get(i).get(relations.get(j)).length()) / 2; k++) {
+						System.out.print(" ");
+					}
+					if (j != relations.size() - 1) {
+						System.out.print("|");
+					}
+				}
+				System.out.println();
+			}
+		}
 	}
 
 	private static void refreshConsole() {
@@ -180,5 +324,7 @@ public class TextGame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		//Print new line because ant acts weird
+		System.out.println();
 	}
 }
