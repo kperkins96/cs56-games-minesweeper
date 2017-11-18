@@ -21,12 +21,14 @@ public class MineGUI {
     private static MainMenu mainMenu;
 	private static GameFrame gameFrame;
 	private static HelpScreen helpScreen;
+	private static LeaderboardFrame leaderboardFrame;
 
 	public static void main (String[] args) {
 		DBConnector.init();
 		System.out.println(DBConnector.getTopTenEasy());
 		mainMenu = new MainMenu();
 		helpScreen = new HelpScreen();
+		leaderboardFrame = new LeaderboardFrame();
 	}
 
 	public static void newGame(Grid.Difficulty difficulty) {
@@ -52,6 +54,7 @@ public class MineGUI {
 	public static void setHelpScreenVisible(boolean visible) {
 		helpScreen.setVisible(visible);
 	}
+	public static void setLeaderboardVisible(boolean visible) { leaderboardFrame.setVisible(visible); }
 
 	public static void quitPrompt() {
 		JFrame currFrame = getCurrentFrame();
@@ -81,6 +84,8 @@ public class MineGUI {
 	public static JFrame getCurrentFrame() {
 		if (helpScreen.isVisible()) {
 			return helpScreen;
+		} else if(leaderboardFrame.isVisible()) {
+			return leaderboardFrame;
 		} else if (gameFrame != null && gameFrame.isVisible()) {
 			return gameFrame;
 		} else {
