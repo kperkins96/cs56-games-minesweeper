@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -38,7 +39,7 @@ public class DBConnector {
 		try {
 			connection = DriverManager.getConnection(host, properties);
 			insertionStatement = connection.prepareStatement("INSERT INTO scores (name, score, difficulty) VALUES (?, ?, ?);");
-			queryStatement = connection.prepareStatement("SELECT * FROM scores WHERE difficulty = ?;");
+			queryStatement = connection.prepareStatement("SELECT * FROM scores WHERE difficulty = ? ORDER BY score ASC LIMIT 10;");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

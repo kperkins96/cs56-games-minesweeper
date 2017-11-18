@@ -135,10 +135,11 @@ public class Grid implements Serializable{
 		final String line = "|";
 		String preSpace = "";
 		String game = "";
+		game += "Difficulty: " + getDifficulty().toString() + '\t';
+		game += "Time elapsed: " + gameTime + '\n';
 		for (int i = 1; i < Integer.toString(grid.length).length(); i++) {
 			preSpace += " ";
 		}
-		game += "\n";
 		for (int i = 0; i <= Integer.toString(grid.length).length(); i++) {
 			game += " ";
 			borders += " ";
@@ -179,7 +180,6 @@ public class Grid implements Serializable{
 			}
 			game += "\n";
 		}
-		game += borders;
 		return game;
 	}
 

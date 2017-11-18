@@ -35,19 +35,18 @@ public class TextGame {
 						printMainMenu();
 						menuResponse = getIntInput();
 					}
+					refreshConsole();
 					switch (menuResponse) {
 						case 1:
 							setUpGameDifficulty();
-                            state = Constants.ApplicationState.GAME;
+							refreshConsole();
 							break;
 						case 2:
 							try {
 								game = Grid.loadGame();
 							} catch (IOException | ClassNotFoundException e) {
 								System.out.println(Constants.ANSI_RED + "There was no save file to load from" + Constants.ANSI_RESET);
-								setUpGameDifficulty();
 							}
-							state = Constants.ApplicationState.GAME;
                             break;
 						case 3:
 							printHelp();
@@ -62,7 +61,6 @@ public class TextGame {
 							printInvalidInput();
 							break;
 					}
-					refreshConsole();
 					break;
 				case GAME:
 					boolean done = false;
@@ -152,14 +150,17 @@ public class TextGame {
 					refreshConsole();
 					switch (leaderboardResponse) {
 						case 1:
+							System.out.println("Easy leaderboard:");
 							printTable(DBConnector.getTopTenEasy());
 							System.out.println();
 							break;
 						case 2:
+							System.out.println("Medium leaderboard:");
 							printTable(DBConnector.getTopTenMedium());
 							System.out.println();
 							break;
 						case 3:
+							System.out.println("Hard leaderboard:");
 							printTable(DBConnector.getTopTenHard());
 							System.out.println();
                             break;
@@ -207,6 +208,7 @@ public class TextGame {
 		System.out.println("1) Easy");
 		System.out.println("2) Medium");
 		System.out.println("3) Hard");
+		System.out.println("4) Go back to the main menu");
 	}
 
 	private static void printLeaderboardPrompt() {
@@ -228,16 +230,20 @@ public class TextGame {
 	}
 
 	private static void setUpGameDifficulty() {
-		refreshConsole();
 		printDifficultyPrompt();
 		int difficulty = getIntInput();
-		while (difficulty < 1 || difficulty > 3) {
+		while (difficulty < 1 || difficulty > 4) {
 			refreshConsole();
 			printInvalidInput();
 			printDifficultyPrompt();
 			difficulty = getIntInput();
 		}
-		game = new Grid(Constants.Difficulty.values()[difficulty]);
+		if (difficulty == 4) {
+			state = Constants.ApplicationState.MAINMENU;
+		} else {
+			game = new Grid(Constants.Difficulty.values()[difficulty]);
+			state = Constants.ApplicationState.GAME;
+		}
 	}
 
 	private static void printLeaderboardQuestion() {
@@ -255,9 +261,9 @@ public class TextGame {
 	private static void printTable(ArrayList<Map<String, String>> leaders) {
 		if (leaders.size() > 0) {
 			ArrayList<String> relations = new ArrayList<String>(leaders.get(0).size());
+			relations.add("place");
 			relations.add("name");
 			relations.add("score");
-			relations.add("difficulty");
 			relations.add("attime");
 			ArrayList<Integer> spaces = new ArrayList<Integer>(leaders.get(0).size());
 			for (int i = 0; i < leaders.get(0).size(); i++) {
@@ -265,7 +271,11 @@ public class TextGame {
 			}
 			for (int i = 0; i < leaders.get(0).size(); i++) {
 				for (int j = 0; j < leaders.size(); j++) {
-					if (spaces.get(i) < leaders.get(j).get(relations.get(i)).length()) {
+					if (relations.get(i).equals("place")) {
+						if (spaces.get(i) < Integer.toString(i).length()) {
+							spaces.set(i, leaders.get(j).get(relations.get(i)).length());
+						}
+					} else if (spaces.get(i) < leaders.get(j).get(relations.get(i)).length()) {
 						spaces.set(i, leaders.get(j).get(relations.get(i)).length());
 					}
 				}
@@ -294,16 +304,21 @@ public class TextGame {
 			System.out.println();
 			for (int i = 0; i < leaders.size(); i++) {
 				System.out.println(borders);
-				for (int j = 0; j < leaders.get(i).size(); j++) {
-					for (int k = 0; k < (spaces.get(j) + 3 - leaders.get(i).get(relations.get(j)).length()) / 2; k++) {
+				for (int k = 0; k < (spaces.get(0) + 3 - Integer.toString(i).length()) / 2; k++) {
+					System.out.print(" ");
+				}
+				System.out.print(i);
+				for (int k = 0; k < (spaces.get(0) + 2 - Integer.toString(i).length()) / 2; k++) {
+					System.out.print(" ");
+				}
+				for (int j = 1; j < leaders.get(i).size(); j++) {
+					System.out.print("|");
+				   	for (int k = 0; k < (spaces.get(j) + 3 - leaders.get(i).get(relations.get(j)).length()) / 2; k++) {
 						System.out.print(" ");
 					}
 					System.out.print(leaders.get(i).get(relations.get(j)));
 					for (int k = 0; k < (spaces.get(j) + 2 - leaders.get(i).get(relations.get(j)).length()) / 2; k++) {
 						System.out.print(" ");
-					}
-					if (j != relations.size() - 1) {
-						System.out.print("|");
 					}
 				}
 				System.out.println();
