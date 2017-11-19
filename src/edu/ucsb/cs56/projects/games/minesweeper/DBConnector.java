@@ -71,7 +71,8 @@ public class DBConnector {
 				row.put("name", result.getString("name"));
 				row.put("score", result.getString("score"));
 				row.put("difficulty", result.getString("difficulty"));
-				row.put("attime", result.getString("attime"));
+				Date date = result.getDate("attime");
+				row.put("attime", date.toString());
 				data.add(row);
 			}
 		} catch (SQLException e) {

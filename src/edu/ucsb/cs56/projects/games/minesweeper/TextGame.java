@@ -302,8 +302,9 @@ public class TextGame {
 				}
 			}
 			System.out.println();
+			System.out.println(borders);
 			for (int i = 0; i < leaders.size(); i++) {
-				System.out.println(borders);
+				//System.out.println(borders);
 				for (int k = 0; k < (spaces.get(0) + 3 - Integer.toString(i).length()) / 2; k++) {
 					System.out.print(" ");
 				}
