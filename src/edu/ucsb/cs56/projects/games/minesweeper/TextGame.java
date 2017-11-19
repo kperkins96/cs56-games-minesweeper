@@ -308,7 +308,7 @@ public class TextGame {
 				for (int k = 0; k < (spaces.get(0) + 3 - Integer.toString(i).length()) / 2; k++) {
 					System.out.print(" ");
 				}
-				System.out.print(i);
+				System.out.print(i + 1);
 				for (int k = 0; k < (spaces.get(0) + 2 - Integer.toString(i).length()) / 2; k++) {
 					System.out.print(" ");
 				}

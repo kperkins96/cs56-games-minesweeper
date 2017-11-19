@@ -6,11 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TimeZone;
 
 /**
  * Created by ryanwiener on 11/12/17.
@@ -71,8 +74,11 @@ public class DBConnector {
 				row.put("name", result.getString("name"));
 				row.put("score", result.getString("score"));
 				row.put("difficulty", result.getString("difficulty"));
-				Date date = result.getDate("attime");
-				row.put("attime", date.toString());
+				Date date = result.getTimestamp("attime");
+				DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.getDefault());
+				System.out.println(TimeZone.getDefault());
+				dateFormat.setTimeZone(TimeZone.getDefault());
+				row.put("attime", dateFormat.format(date));
 				data.add(row);
 			}
 		} catch (SQLException e) {
