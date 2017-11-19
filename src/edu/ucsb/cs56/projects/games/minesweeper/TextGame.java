@@ -44,6 +44,7 @@ public class TextGame {
 						case 2:
 							try {
 								game = Grid.loadGame();
+								state = Constants.ApplicationState.GAME;
 							} catch (IOException | ClassNotFoundException e) {
 								System.out.println(Constants.ANSI_RED + "There was no save file to load from" + Constants.ANSI_RESET);
 							}

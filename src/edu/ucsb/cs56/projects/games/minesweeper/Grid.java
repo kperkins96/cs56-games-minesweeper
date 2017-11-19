@@ -132,11 +132,12 @@ public class Grid implements Serializable{
 	@Override
 	public String toString() {
 		String borders = " ";
-		final String line = "|";
+		String line = "|";
 		String preSpace = "";
 		String game = "";
 		game += "Difficulty: " + getDifficulty().toString() + '\t';
 		game += "Time elapsed: " + gameTime + '\n';
+		game += '\n';
 		for (int i = 1; i < Integer.toString(grid.length).length(); i++) {
 			preSpace += " ";
 		}
@@ -224,9 +225,9 @@ public class Grid implements Serializable{
 		if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
 			// set variable to an object in the grid
 			if (grid[i][j].getIsFlagged()) {
-				System.out.println("You cannot search a flagged box!");
+				//System.out.println("You cannot search a flagged box!");
 			} else if (grid[i][j].getIsOpen()) {
-				System.out.println("You cannot search an opened box!");
+				//System.out.println("You cannot search an opened box!");
 			} else {
 				spot = grid[i][j].getSymbol();
 				grid[i][j].open();
@@ -253,9 +254,9 @@ public class Grid implements Serializable{
 	 */
 	public void flagBox(int i, int j) {
 		if (grid[i][j].getIsFlagged()) {
-			System.out.println("This box is already flagged!");
+			//System.out.println("This box is already flagged!");
 		} else if (grid[i][j].getIsFlagged()) {
-			System.out.println("You cannot put a flag on an opened box!");
+			//System.out.println("You cannot put a flag on an opened box!");
 		} else {
 			// TODO: places 'F' only after a left click on a nonflag occurs?
 			grid[i][j].setFlagged(true);
@@ -274,7 +275,7 @@ public class Grid implements Serializable{
 	 */
 	public void deflagBox(int i, int j) {
 		if (!grid[i][j].getIsFlagged()) {
-			System.out.println("That box does not have a flag on it!");
+			//System.out.println("That box does not have a flag on it!");
 		} else {
 			grid[i][j].setFlagged(false);
 			if (grid[i][j].getIsMine()) {

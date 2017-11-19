@@ -65,9 +65,21 @@ public class DBConnector {
 	}
 
 	public static ArrayList<Map<String, String>> getTopTenEasy() {
+        return getTopTenLeaders(1);
+	}
+
+	public static ArrayList<Map<String, String>> getTopTenMedium() {
+        return getTopTenLeaders(2);
+	}
+
+	public static ArrayList<Map<String, String>> getTopTenHard() {
+        return getTopTenLeaders(3);
+	}
+
+	private static ArrayList<Map<String, String>> getTopTenLeaders(int difficulty) {
 		ArrayList<Map<String, String>> data = new ArrayList<>(10);
 	    try {
-			queryStatement.setInt(1, 1);
+			queryStatement.setInt(1, difficulty);
 			ResultSet result = queryStatement.executeQuery();
 			for (int i = 0; i < 10 && result.next(); i++) {
 				Map<String, String> row = new HashMap<>();
@@ -84,44 +96,6 @@ public class DBConnector {
 			}
 		} catch (SQLException e) {
 	    	e.printStackTrace();
-		}
-		return data;
-	}
-
-	public static ArrayList<Map<String, String>> getTopTenMedium() {
-		ArrayList<Map<String, String>> data = new ArrayList<>(10);
-		try {
-			queryStatement.setInt(1, 2);
-			ResultSet result = queryStatement.executeQuery();
-			for (int i = 0; i < 10 && result.next(); i++) {
-				Map<String, String> row = new HashMap<>();
-				row.put("name", result.getString("name"));
-				row.put("score", result.getString("score"));
-				row.put("difficulty", result.getString("difficulty"));
-				row.put("attime", result.getString("attime"));
-				data.add(row);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return data;
-	}
-
-	public static ArrayList<Map<String, String>> getTopTenHard() {
-		ArrayList<Map<String, String>> data = new ArrayList<>(10);
-		try {
-			queryStatement.setInt(1, 3);
-			ResultSet result = queryStatement.executeQuery();
-			for (int i = 0; i < 10 && result.next(); i++) {
-				Map<String, String> row = new HashMap<>();
-				row.put("name", result.getString("name"));
-				row.put("score", result.getString("score"));
-				row.put("difficulty", result.getString("difficulty"));
-				row.put("attime", result.getString("attime"));
-				data.add(row);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return data;
 	}
