@@ -44,6 +44,7 @@ public class TextGame {
 						case 2:
 							try {
 								game = Grid.loadGame();
+								state = Constants.ApplicationState.GAME;
 							} catch (IOException | ClassNotFoundException e) {
 								System.out.println(Constants.ANSI_RED + "There was no save file to load from" + Constants.ANSI_RESET);
 							}
@@ -302,12 +303,13 @@ public class TextGame {
 				}
 			}
 			System.out.println();
+			System.out.println(borders);
 			for (int i = 0; i < leaders.size(); i++) {
-				System.out.println(borders);
+				//System.out.println(borders);
 				for (int k = 0; k < (spaces.get(0) + 3 - Integer.toString(i).length()) / 2; k++) {
 					System.out.print(" ");
 				}
-				System.out.print(i);
+				System.out.print(i + 1);
 				for (int k = 0; k < (spaces.get(0) + 2 - Integer.toString(i).length()) / 2; k++) {
 					System.out.print(" ");
 				}

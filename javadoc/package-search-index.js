@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"edu.ucsb.cs56.projects.games.minesweeper"}]
