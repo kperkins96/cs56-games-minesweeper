@@ -76,7 +76,8 @@ public class DBConnector {
 				row.put("difficulty", result.getString("difficulty"));
 				Date date = result.getTimestamp("attime");
 				DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.getDefault());
-				System.out.println(TimeZone.getDefault());
+				int offset = TimeZone.getDefault().getOffset(date.getTime());
+				date.setTime(date.getTime() + offset);
 				dateFormat.setTimeZone(TimeZone.getDefault());
 				row.put("attime", dateFormat.format(date));
 				data.add(row);
