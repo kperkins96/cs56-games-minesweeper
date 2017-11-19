@@ -12,18 +12,19 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/** The Grid class is the foundation for minesweeper, applies mine locations, checks if something is open,
- makes flags functional, etc.
- @author Caleb Nelson
- @author David Acevedo
- @version 2015/03/04 for lab07, cs56, W15
-
-
- @author Isaiah Egan
- @author Austin Hwang
- @author Sai Srimat
- @version July 2016 for Legacy Code, cs56, M16
-
+/**
+ * The Grid class is the foundation for minesweeper, applies mine locations, checks if something is open,
+ * makes flags functional, etc.
+ * @author Caleb Nelson
+ * @author David Acevedo
+ * @version 2015/03/04 for lab07, cs56, W15
+ *
+ * @author Isaiah Egan
+ * @author Austin Hwang
+ * @author Sai Srimat
+ * @version July 2016 for Legacy Code, cs56, M16
+ *
+ * @author Ryan Wiener
  */
 public class Grid implements Serializable{
 
@@ -36,10 +37,14 @@ public class Grid implements Serializable{
 
 	/**
 	 * Default constructor for objects of class GUIGrid
+	 * same as calling Grid(Constants.Difficulty.EASY)
 	 */
-
 	public Grid() { this(Constants.Difficulty.EASY); }
 
+	/**
+	 * Constructs grid from a given difficulty
+	 * @param difficulty difficulty of the game that the grid will be
+	 */
 	public Grid(Constants.Difficulty difficulty) {
 		gameState = Constants.GameState.PLAYING;
 		this.difficulty = difficulty;
@@ -60,37 +65,58 @@ public class Grid implements Serializable{
 		startTimer();
 	}
 
+	/**
+	 * Delete the current save file
+	 */
 	public void deleteSave() {
 		File file = new File("MyGame.ser");
 		file.delete();
 	}
 
+	/**
+	 * End game when it is won or lost (not when a user ends it
+	 */
 	public void endGame() {
 		stopTimer();
 		deleteSave();
 	}
 
+	/**
+	 * start timer to keep track of time to finish the game
+	 */
 	public void startTimer() {
 		timer = new Timer();
-		timer.schedule(new Clock(), 0, 1);
+		timer.scheduleAtFixedRate(new Clock(), 0, 1000);
 	}
 
+	/**
+	 * stop timer when user has stopped playing the game
+	 */
 	public void stopTimer() {
 		timer.cancel();
 		timer.purge();
 	}
 
+	/**
+	 * get how long the user has been playing for
+	 * @return the time the user has been playing for
+	 */
 	public int getGameTime() {
 		return gameTime;
 	}
 
 	/**
-	 *	Getter for size
+	 * Getter for size of the grid
+	 * @return the size of the grid (the length of one row or one column)
 	 */
 	public int getSize() {
 		return grid.length;
 	}
 
+	/**
+	 * Get difficulty of the current game
+	 * @return the difficulty as an enum from Constants.Difficulty
+	 */
 	public Constants.Difficulty getDifficulty() {
 		return difficulty;
 	}
@@ -127,7 +153,9 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	 * Prints out the map in a table
+	 * Prints out the game
+	 * Used for the text game
+	 * @return a text display of the current game
 	 */
 	@Override
 	public String toString() {
@@ -186,6 +214,9 @@ public class Grid implements Serializable{
 
 	/**
 	 * Checks a cell to see if it has been opened
+	 * @param i row of box cell
+	 * @param j column of box cell
+	 * @return boolean indicating whether the cell has been opened or not
 	 */
 	public boolean isOpen(int i, int j) throws IllegalArgumentException {
 		if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
@@ -197,6 +228,9 @@ public class Grid implements Serializable{
 
 	/**
 	 * Checks a cell to see if there is a grid underneath
+	 * @param i row of box cell
+	 * @param j column of box cell
+	 * @return a boolean indicating whether the spot is a mine or not
 	 */
 	public boolean isMine(int i, int j) throws IllegalArgumentException {
 		if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
@@ -208,6 +242,9 @@ public class Grid implements Serializable{
 
 	/**
 	 * Check to see if a user placed a flag on that cell
+	 * @param i row of box cell
+	 * @param j column of box cell
+	 * @return a boolean indicating whether a spot has been flagged or not
 	 */
 	public boolean isFlag(int i, int j) throws IllegalArgumentException {
 		if (i >= 0 && i < grid.length && j >= 0 && j < grid.length) {
@@ -219,6 +256,9 @@ public class Grid implements Serializable{
 
 	/**
 	 * Opens the cell and returns what will be placed there
+	 * @param i row of box cell
+	 * @param j column of box cell
+	 * @return a the symbol of the cell that was just opened or 'e' if not opened
 	 */
 	public char searchBox(int i, int j) {
 		char spot = 'e';
@@ -251,6 +291,8 @@ public class Grid implements Serializable{
 
 	/**
 	 * Places a flag on the cell
+	 * @param i row of box cell
+	 * @param j column of box cell
 	 */
 	public void flagBox(int i, int j) {
 		if (grid[i][j].getIsFlagged()) {
@@ -272,6 +314,8 @@ public class Grid implements Serializable{
 
 	/**
 	 * Removes a flag on a cell that has one
+	 * @param i row of box cell
+	 * @param j column of box cell
 	 */
 	public void deflagBox(int i, int j) {
 		if (!grid[i][j].getIsFlagged()) {
@@ -286,6 +330,8 @@ public class Grid implements Serializable{
 
 	/**
 	 * Looks for surrounding numbers near the cell and opens them, repeats when find another zero
+	 * @param row row of box cell
+	 * @param col column of box cell
 	 */
 	public void findAllZeros(int row, int col) { //TODO: throw exception
         Queue<Integer> bfs = new LinkedList<Integer>();
@@ -315,6 +361,9 @@ public class Grid implements Serializable{
 		}
 	}
 
+	/**
+	 * Display where all the mines were after a user lost
+	 */
 	private void exposeMines() {
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid.length; j++) {
@@ -326,20 +375,28 @@ public class Grid implements Serializable{
 	}
 
 	/**
-	 * Updates the state of the game
+	 * Get the state of the game
+	 * @return the gamestate as an enum from Constants.GameState
 	 */
 	public Constants.GameState getGameState() {
 	    return gameState;
     }
 
 	/**
-	 * Finds the current condition of a cell
+	 * Get the symbol of a cell
+	 * @param i row of box cell
+	 * @param j column of box cell
+	 * @return the symbol of the cell
 	 */
 	public char getCell(int i, int j) {
 		return grid[i][j].getSymbol();
 	}
 
-	char[][] getG() {
+	/**
+	 * get the grid ad a 2D array of chars
+	 * @return 2D array of chars where each entry represents the symbol of that cell
+	 */
+	public char[][] getG() {
 		char[][] g = new char[grid.length][grid.length];
 		for (int i = 0; i < g.length; i++) {
 			for (int j = 0; j < g.length; j++) {
@@ -348,8 +405,15 @@ public class Grid implements Serializable{
 		}
 		return g;
 	}
-	
-	boolean searchSurrounding(int row, int col) {
+
+	/**
+	 * Open the cell and all surrounding cells
+	 * @param row row of box cell
+	 * @param col column of box cell
+	 * Will only work if the correct number of flags are adjacent to the space being clicked on
+	 * @return boolean indicating whether the move was allowed or not
+	 */
+	public boolean searchSurrounding(int row, int col) {
 		int numFlags = 0;
 		for(int i = row - 1; i <= row + 1; i++) {
 			for(int j = col - 1; j <= col + 1; j++) {
@@ -374,6 +438,12 @@ public class Grid implements Serializable{
 		}
 	}
 
+	/**
+	 * Returns the grid from the user's previous game
+	 * @throws IOException if no save file
+	 * @throws ClassNotFoundException if no save file
+	 * @return the Grid object with the previous game's data
+	 */
 	public static Grid loadGame() throws IOException, ClassNotFoundException {
 		FileInputStream fileStream = new FileInputStream("MyGame.ser");
 		ObjectInputStream os = new ObjectInputStream(fileStream);
@@ -385,6 +455,9 @@ public class Grid implements Serializable{
 		return g;
 	}
 
+	/**
+	 * Saves the current game (this) into a serialized file
+	 */
 	public void save() {
 		try {
 			FileOutputStream fileStream = new FileOutputStream("MyGame.ser");
@@ -396,25 +469,16 @@ public class Grid implements Serializable{
 		}
 	}
 
+	/**
+	 * Class that extends from TimerTask to keep track of users time on the current game
+	 */
 	public class Clock extends TimerTask {
-		private long currClock;
-		private long endClock;
-		private long elapse;
-		private final int NANO = 1000000000;
-		private long sec;
-		private int leftOver;
 
-		public Clock(){
-			leftOver = gameTime;
-			gameTime = 0;
-			currClock = System.nanoTime();
-		}
-
+		/**
+		 * Increment gameTime every second
+		 */
 		public void run(){
-			endClock = System.nanoTime();
-			elapse = endClock - currClock;
-			sec = Math.floorDiv(elapse, NANO);
-			gameTime = (int)sec + leftOver;
+			gameTime++;
 		}
 	} // class Clock
 }

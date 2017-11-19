@@ -5,22 +5,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-/** Test class for Grid
-
- @author David Acevedo
- @version 2015/03/04 for lab07, cs56, W15
- @see Grid
-
+/**
+ * Test class for Grid
+ * @author David Acevedo
+ * @version 2015/03/04 for lab07, cs56, W15
+ * @see Grid
  */
 
 public class GridTest {
 
 	/**
 	 * Test case for setZero method of the Grid class
-	 *
 	 * @see Grid#setZero()
 	 */
-
 	@Test
 	public void test_setZero() {
 		boolean correct = true;
@@ -38,13 +35,11 @@ public class GridTest {
 	}
 
 	/**
-	 * Test case for blankToMine method of the Grid class
-	 *
-	 * @see Grid#blankToMine()
+	 * Test case default constructor of the Grid class
+	 * @see Grid#Grid()
 	 */
-
 	@Test
-	public void test_blankToMine_Easy() {
+	public void test_Grid_Easy() {
 		int count = 0;
 		Grid test = new Grid();
 		int s = test.getSize();
@@ -58,8 +53,12 @@ public class GridTest {
 		assertEquals(10, count);
 	}
 
+	/**
+	 * Test medium difficulty constructor of Grid class
+	 * @see Grid#Grid(Constants.Difficulty)
+	 */
 	@Test
-	public void test_blankToMine_Medium() {
+	public void test_Grid_Medium() {
 		int count = 0;
 		Grid test = new Grid(Constants.Difficulty.MEDIUM);
 		int s = test.getSize();
@@ -73,8 +72,12 @@ public class GridTest {
 		assertEquals(30, count);
 	}
 
+	/**
+	 * Test medium difficulty constructor of Grid class
+	 * @see Grid#Grid(Constants.Difficulty)
+	 */
 	@Test
-	public void test_blankToMine_Hard() {
+	public void test_Grid_Hard() {
 		int count = 0;
 		Grid test = new Grid(Constants.Difficulty.HARD);
 		int s = test.getSize();
@@ -88,26 +91,10 @@ public class GridTest {
 		assertEquals(60, count);
 	}
 
-
-	/**
-	 * Test case for toString method of the Grid class
-	 *
-	 * @see Grid#toString()
-	 */
-
-	@Test
-	public void test_toString() {
-
-		//not going to implement tests, this version is obsolete
-	}
-
-
 	/**
 	 * Test case for isOpen method of the Grid class
-	 *
 	 * @see Grid#isOpen
 	 */
-
 	@Test
 	public void test_isOpen1() {
 		Grid g1 = new Grid();
@@ -116,11 +103,9 @@ public class GridTest {
 
 
 	/**
-	 * Test case for setZero method of the Grid class
-	 *
-	 * @see Grid#isOpen()
+	 * Test case for isOpen method of the Grid class
+	 * @see Grid#isOpen(int, int)
 	 */
-
 	@Test
 	public void test_isOpen2() {
 		Grid g1 = new Grid();
@@ -129,10 +114,8 @@ public class GridTest {
 
 	/**
 	 * Test case for isFlag method of the Grid class
-	 *
-	 * @see Grid#isFlag()
+	 * @see Grid#isFlag(int, int)
 	 */
-
 	@Test
 	public void test_isFlag1() {
 		Grid g1 = new Grid();
@@ -141,10 +124,8 @@ public class GridTest {
 
 	/**
 	 * Test case for isFlag method of the Grid class
-	 *
-	 * @see Grid#isFlag()
+	 * @see Grid#isFlag(int, int)
 	 */
-
 	@Test
 	public void test_isFlag2() {
 		Grid g1 = new Grid();
@@ -153,10 +134,8 @@ public class GridTest {
 
 	/**
 	 * Test case for flagBox method of the Grid class
-	 *
-	 * @see Grid#flagBox()
+	 * @see Grid#flagBox(int, int)
 	 */
-
 	@Test
 	public void test_flagBox() {
 		boolean correct = false;
@@ -172,10 +151,8 @@ public class GridTest {
 
 	/**
 	 * Test case for deflagBox method of the Grid class
-	 *
-	 * @see Grid#deflagBox()
+	 * @see Grid#deflagBox(int, int)
 	 */
-
 	@Test
 	public void test_deflagBox() {
 		boolean correct = false;
@@ -194,11 +171,10 @@ public class GridTest {
 
 	/**
 	 * Test case for gameStatus method of the Grid class
-	 *
-	 * @see Grid#gameStatus()
+	 * @see Grid#getGameState()
 	 */
 	@Test
-	public void test_gameStatus() {
+	public void test_getGameState() {
 		Grid g1 = new Grid();
 		assertEquals(Constants.GameState.PLAYING, g1.getGameState());
 	}
