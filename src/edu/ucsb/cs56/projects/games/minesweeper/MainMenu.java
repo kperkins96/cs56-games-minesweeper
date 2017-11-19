@@ -31,7 +31,8 @@ import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
 
 /**
- * Created by ryanwiener on 11/3/17.
+ * Main Menu JFrame
+ * @author Ryan Wiener
  */
 
 public class MainMenu extends JFrame {
@@ -46,6 +47,10 @@ public class MainMenu extends JFrame {
 	private JLabel highScore; // this label status displays the local high score.
 	private JTextArea highScoreList;
 
+	/**
+	 * Default Constructor for main menu
+	 * @throws HeadlessException if no display
+	 */
     public MainMenu() throws HeadlessException {
         super();
 		setSize(650, 600);

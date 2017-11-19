@@ -40,8 +40,8 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ImageIcon;
 
-/**
- * Created by ryanwiener on 11/3/17.
+/** The window that displays the game in the GUI
+ * @author Ryan Wiener
  */
 
 public class GameFrame extends JFrame {
@@ -58,6 +58,12 @@ public class GameFrame extends JFrame {
 	private JButton flagBtn;
 	private JPanel grid;
 
+	/**
+	 * Constructs game from the given difficulty
+	 * @param difficulty difficulty of the game to be played
+	 * @throws IOException if loading fails
+	 * @throws ClassNotFoundException if loading fails
+	 */
 	GameFrame(Constants.Difficulty difficulty) throws IOException, ClassNotFoundException {
 		super(); // is this line necessary?  what does it do?
 		setSize(650, 600);
@@ -88,18 +94,41 @@ public class GameFrame extends JFrame {
 		getContentPane().addComponentListener(new SizeListener());
 	}
 
+	/**
+	 * Get x coordinate of a given grid button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @param i row of grid button
+	 * @param j column of grid button
+	 * @return x coordinate of grid button
+	 */
 	public int getGridButtonX(int i, int j) {
 		return grid.getX() + buttons[i][j].getX() + 10;
 	}
 
+	/**
+	 * Get y coordinate of a given grid button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @param i row of grid button
+	 * @param j column of grid button
+	 * @return y coordinate of grid button
+	 */
 	public int getGridButtonY(int i, int j) {
 		return grid.getY() + buttons[i][j].getY();
 	}
 
+	/**
+	 * helper function for adding scores to database
+	 * @param name name of user
+	 * @param time how long it took the user to win
+	 */
 	public void saveHighest(String name, int time) {
 		DBConnector.addScore(name, time, game.getDifficulty().ordinal());
 	}
 
+	/**
+	 * Initializes toolbar at the top of the screen
+	 * @param toolbar toolbar to be initialized
+	 */
 	public void createToolbar(JToolBar toolbar) {
 		//make buttons
 		refresh = new JButton("Reset Game");
@@ -136,42 +165,90 @@ public class GameFrame extends JFrame {
 		toolbar.setFloatable(false);
 	}
 
+	/**
+	 * Get x coordinate of a given refresh button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of refresh button
+	 */
 	public int getRefreshX() {
 		return refresh.getX();
 	}
 
+	/**
+	 * Get y coordinate of a given refresh button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of refresh button
+	 */
 	public int getRefreshY() {
 		return refresh.getY();
 	}
-	
+
+	/**
+	 * Get x coordinate of a given flag button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of flag button
+	 */
 	public int getFlagBtnX() {
 		return flagBtn.getX();
 	}
-	
+
+	/**
+	 * Get y coordinate of a given flag button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of flag button
+	 */
 	public int getFlagBtnY() {
 		return flagBtn.getY();
 	}
 
+	/**
+	 * Get x coordinate of a given main menu button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of main menu button
+	 */
 	public int getMainMenuX() {
 		return mainMenu.getX();
 	}
 
+	/**
+	 * Get y coordinate of a given main menu button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of main menu button
+	 */
 	public int getMainMenuY() {
 		return mainMenu.getY();
 	}
 
+	/**
+	 * Get x coordinate of a given help button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of help button
+	 */
 	public int getHelpX() {
 		return inGameHelp.getX();
 	}
 
+	/**
+	 * Get y coordinate of a given help button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of help button
+	 */
 	public int getHelpY() {
 		return inGameHelp.getY();
 	}
 
+	/**
+	 * switch flag buttons selected property
+	 * if flag button is selected then left clicking flags boxes rather than opening them
+	 */
 	public void flag() {
 		flagBtn.setSelected(!flagBtn.isSelected());
 	}
 
+	/**
+	 * plays a sound from the resources
+	 * @param dir name of the sound file to be played
+	 */
 	public void playSound(String dir) {
 		if (dir != null) {
 			try {
@@ -185,6 +262,9 @@ public class GameFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Refreshed the grid to coincide with the game
+	 */
 	public void refresh() {
 		int fontSize = buttons[0][0].getSize().height / 2;
 		if (buttons[0][0].getSize().height / 2 > buttons[0][0].getSize().width / 4) {
@@ -224,10 +304,17 @@ public class GameFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Get the Grid object (the game itself)
+	 * @return the underlying Grid object (the game)
+	 */
 	public Grid getGrid(){
 		return game;
 	}
 
+	/**
+	 * Reset the game with the same difficulty
+	 */
 	public void resetGame() {
 		MineGUI.newGame(game.getDifficulty());
 	}
@@ -245,6 +332,10 @@ public class GameFrame extends JFrame {
 		public void componentMoved(ComponentEvent e) {
 		}
 
+		/**
+		 * refresh the screen when resizing the frame
+		 * @param e the ComponentEvent object (not used)
+		 */
 		@Override
 		public void componentResized(ComponentEvent e) {
 			refresh();
@@ -264,6 +355,11 @@ public class GameFrame extends JFrame {
 		private int row;
 		private int col;
 
+		/**
+		 * Constructs ButtonListener
+		 * @param i row value of the ButtonListener
+		 * @param j column value of the ButtonListener
+		 */
 		public ButtonListener(int i, int j) {
 			super();
 			row = i;
@@ -271,8 +367,8 @@ public class GameFrame extends JFrame {
 		}
 
 		/**
-		 Places player's symbol on button, checks for a winner or tie
-		 @param event when a button is clicked
+		 * Places player's symbol on button, checks for a winner or tie
+		 * @param event when a button is clicked
 		 */
 		public void mouseReleased(MouseEvent event) {
 			String soundName = null;

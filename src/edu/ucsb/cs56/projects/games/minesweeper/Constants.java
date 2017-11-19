@@ -1,29 +1,38 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by ryanwiener on 11/16/17.
+ * Supplies universal enums and finals for classes to share between each other
+ * @author Ryan Wiener
  */
 
 public class Constants {
 
     private Constants() {}
 
+    /**
+	 * The game state of the grid
+     */
     public enum GameState {
     	PLAYING,
 		LOST,
 		WON
 	}
 
+	/**
+	 * The current state of the application for the text game
+	 */
 	public enum ApplicationState {
     	MAINMENU,
 		GAME,
 		LEADERBOARD
 	}
 
+	/**
+	 * The difficulty of the game
+	 */
 	public enum Difficulty {
 		TEST,
     	EASY,
@@ -39,6 +48,11 @@ public class Constants {
 
 	private static final Map<Difficulty, Integer> gridSizes = new HashMap<Difficulty, Integer>();
 
+	/**
+	 * links the difficulty enum to grid size
+	 * @param difficulty Difficulty enum member that you want the grid size of
+	 * @return size of grid for the passed in difficulty
+	 */
 	public static int getGridSize(Difficulty difficulty) {
 		if (gridSizes.size() == 0) {
 			gridSizes.put(Difficulty.TEST, 4);

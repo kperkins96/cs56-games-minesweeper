@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +15,8 @@ import java.util.Properties;
 import java.util.TimeZone;
 
 /**
- * Created by ryanwiener on 11/12/17.
+ * Supplies an abstraction of connecting to the leaderboard stored on a remote database
+ * @author Ryan Wiener
  */
 
 public class DBConnector {
@@ -25,6 +25,10 @@ public class DBConnector {
 	private static PreparedStatement insertionStatement;
 	private static PreparedStatement queryStatement;
 
+	/**
+	 * Initialize connection to database
+	 * Should be called at the beginning of program execution
+	 */
 	public static void init() {
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -48,13 +52,20 @@ public class DBConnector {
 		}
 	}
 
+	/**
+	 * Adds a high score to the database
+	 * @param name name of the user with the score
+	 * @param score time it took the user to win
+	 * @param difficulty an integer representation of the difficulty the user beat
+	 * difficulty corresponds with the Difficulty enum .ordinal() method
+	 * @return boolean indicating whether score addition was successful or not
+	 */
 	public static boolean addScore(String name, int score, int difficulty) {
 	    try {
 			insertionStatement.setString(1, name);
             insertionStatement.setInt(2, score);
 			insertionStatement.setInt(3, difficulty);
 			int rowCount = insertionStatement.executeUpdate();
-			insertionStatement.clearParameters();
 			if (rowCount > 0) {
 				return true;
 			}
@@ -64,18 +75,40 @@ public class DBConnector {
 		return false;
 	}
 
+	/**
+	 * Gets top ten easy difficulty leaders
+	 * @return an ArrayList of Maps of String to Strings so they can be efficiently displayed in a table
+	 * Map has keys "place", "name", "score" and "attime"
+	 */
 	public static ArrayList<Map<String, String>> getTopTenEasy() {
         return getTopTenLeaders(1);
 	}
 
+	/**
+	 * Gets top ten medium difficulty leaders
+	 * @return an ArrayList of Maps of String to Strings so they can be efficiently displayed in a table
+	 * Map has keys "place", "name", "score" and "attime"
+	 */
 	public static ArrayList<Map<String, String>> getTopTenMedium() {
         return getTopTenLeaders(2);
 	}
 
+	/**
+	 * Gets top ten hard difficulty leaders
+	 * @return an ArrayList of Maps of String to Strings so they can be efficiently displayed in a table
+	 * Map has keys "place", "name", "score" and "attime"
+	 */
 	public static ArrayList<Map<String, String>> getTopTenHard() {
         return getTopTenLeaders(3);
 	}
 
+	/**
+	 * Gets top ten leaders for given difficulty
+	 * @param difficulty an integer representation of the difficulty the user beat
+	 * difficulty corresponds with the Difficulty enum .ordinal() method
+	 * @return an ArrayList of Maps of String to Strings so they can be efficiently displayed in a table
+	 * Map has keys "place", "name", "score" and "attime"
+	 */
 	private static ArrayList<Map<String, String>> getTopTenLeaders(int difficulty) {
 		ArrayList<Map<String, String>> data = new ArrayList<>(10);
 	    try {
@@ -83,10 +116,11 @@ public class DBConnector {
 			ResultSet result = queryStatement.executeQuery();
 			for (int i = 0; i < 10 && result.next(); i++) {
 				Map<String, String> row = new HashMap<>();
+				row.put("place", Integer.toString(i + 1));
 				row.put("name", result.getString("name"));
 				row.put("score", result.getString("score"));
-				row.put("difficulty", result.getString("difficulty"));
 				Date date = result.getTimestamp("attime");
+				// format date nicely
 				DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.getDefault());
 				int offset = TimeZone.getDefault().getOffset(date.getTime());
 				date.setTime(date.getTime() + offset);

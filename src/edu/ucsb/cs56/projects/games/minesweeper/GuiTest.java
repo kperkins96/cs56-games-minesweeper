@@ -13,13 +13,17 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 /**
- * Created by ryanwiener on 11/4/17.
+ * Class to test buttons on the GUI
+ * @author Ryan Wiener
  */
 
 public class GuiTest {
 
     private static Robot robot;
 
+    /**
+     * set up robot and gui for test
+     */
     @BeforeClass
     public static void setUpMainMenu() {
         try {
@@ -32,11 +36,17 @@ public class GuiTest {
         MineGUI.main(new String[0]);
     }
 
+    /**
+     * Test that initial state of gui is at the main menu
+     */
     @Test
     public void testInitialMainMenu() {
         assertTrue(MineGUI.getCurrentFrame() instanceof MainMenu);
     }
 
+    /**
+     * Test easy game button on main menu
+     */
     @Test
     public void testEasyGameButton() {
         MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
@@ -47,6 +57,9 @@ public class GuiTest {
         MineGUI.goToMainMenu();
     }
 
+    /**
+     * Test load game button on main menu
+     */
     @Test
     public void testLoadGameButtonEasy() {
         MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
@@ -56,6 +69,9 @@ public class GuiTest {
         MineGUI.goToMainMenu();
     }
 
+    /**
+     * Test medium game button on main menu
+     */
     @Test
     public void testMediumGameButton() {
         MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
@@ -66,6 +82,9 @@ public class GuiTest {
         MineGUI.goToMainMenu();
     }
 
+    /**
+     * Test load game button on main menu
+     */
     @Test
     public void testLoadGameButtonMedium() {
         MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
@@ -75,6 +94,9 @@ public class GuiTest {
         MineGUI.goToMainMenu();
     }
 
+    /**
+     * Test hard game button on main menu
+     */
     @Test
     public void testHardGameButton() {
         MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
@@ -85,6 +107,9 @@ public class GuiTest {
         MineGUI.goToMainMenu();
     }
 
+    /**
+     * Test load game button on main menu
+     */
     @Test
     public void testLoadGameButton() {
         MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
@@ -94,6 +119,9 @@ public class GuiTest {
         MineGUI.goToMainMenu();
     }
 
+    /**
+     * Test help button on main menu
+     */
     @Test
     public void testHelpButton() {
         MainMenu menu = (MainMenu) MineGUI.getCurrentFrame();
@@ -102,6 +130,9 @@ public class GuiTest {
         assertTrue(MineGUI.getCurrentFrame() instanceof HelpScreen);
     }
 
+    /**
+     * Test back button on help screen
+     */
     @Test
     public void testHelpBackButtonMain() {
         HelpScreen help = (HelpScreen) MineGUI.getCurrentFrame();
@@ -110,6 +141,9 @@ public class GuiTest {
         assertTrue(MineGUI.getCurrentFrame() instanceof MainMenu);
     }
 
+    /**
+     * Test right click to flag on game frame
+     */
     @Test
     public void testGameFrameGridFlag() {
         MineGUI.newGame(Constants.Difficulty.TEST);
@@ -119,6 +153,9 @@ public class GuiTest {
         assertTrue(((GameFrame) MineGUI.getCurrentFrame()).getGrid().isFlag(0, 0));
     }
 
+    /**
+     * Test right click to deflag on game frame
+     */
     @Test
     public void testGameFrameGridDeflag() {
         GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
@@ -127,6 +164,9 @@ public class GuiTest {
         assertTrue(!((GameFrame) MineGUI.getCurrentFrame()).getGrid().isFlag(0, 0));
     }
 
+    /**
+     * Test left click to open on game frame
+     */
     @Test
     public void testGameFrameGridOpen() {
         GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
@@ -135,6 +175,9 @@ public class GuiTest {
         assertTrue(((GameFrame) MineGUI.getCurrentFrame()).getGrid().isOpen(0, 1));
     }
 
+    /**
+     * Test refreah button on game frame
+     */
     @Test
     public void testGameFrameRefresh() {
         GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
@@ -155,6 +198,9 @@ public class GuiTest {
         assertFalse(open);
     }
 
+    /**
+     * Test help button game frame
+     */
     @Test
     public void testGameFrameHelp() {
         GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
@@ -163,6 +209,9 @@ public class GuiTest {
         assertTrue(MineGUI.getCurrentFrame() instanceof HelpScreen);
     }
 
+    /**
+     * Test back button on help screen
+     */
     @Test
     public void testHelpBackButtonGame() {
         HelpScreen help = (HelpScreen) MineGUI.getCurrentFrame();
@@ -171,6 +220,9 @@ public class GuiTest {
         assertTrue(MineGUI.getCurrentFrame() instanceof GameFrame);
     }
 
+    /**
+     * Test main menu button on game frame
+     */
     @Test
     public void testGameFrameMainMenu() {
         GameFrame game = (GameFrame) MineGUI.getCurrentFrame();
@@ -179,17 +231,17 @@ public class GuiTest {
         assertTrue(MineGUI.getCurrentFrame() instanceof MainMenu);
     }
 
-    public void leftClick() {
+    private void leftClick() {
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
     }
 
-    public void rightClick() {
+    private void rightClick() {
         robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
     }
 
-    public void typeKey(int keycode) {
+    private void typeKey(int keycode) {
         robot.keyPress(keycode);
         robot.keyRelease(keycode);
     }
