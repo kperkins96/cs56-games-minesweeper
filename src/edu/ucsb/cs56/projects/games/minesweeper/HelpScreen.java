@@ -4,10 +4,12 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-/** HelpScreen.java is a Panel that displays help messages and a button to return to the StartMenu
-
- @author Julian Gee
- @version 2015/03/04 for lab07, cs56, W15
+/**
+ * HelpScreen.java is a JFrame that displays help messages and a button to return to the StartMenu
+ * @author Julian Gee
+ * @version 2015/03/04 for lab07, cs56, W15
+ *
+ * @author Ryan Wiener
  */
 
 public class HelpScreen extends JFrame {
@@ -15,6 +17,9 @@ public class HelpScreen extends JFrame {
 	private JButton backButton;
 	private JTextArea helpText;
 
+	/**
+	 * Default constructor for help screen
+	 */
 	public HelpScreen() {
 		setSize(650, 600);
 		Container screen = getContentPane();
@@ -32,10 +37,18 @@ public class HelpScreen extends JFrame {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 	}
 
+	/**
+	 * get x coordinate of back button for robot testing
+	 * @return x coordinate of help screen back button
+	 */
 	public int getBackX() {
 		return backButton.getX();
 	}
 
+	/**
+	 * get y coordinate of back button for robot testing
+	 * @return y coordinate of help screen back button
+	 */
 	public int getBackY() {
 		return backButton.getY();
 	}
