@@ -150,9 +150,9 @@ public class MainMenu extends JFrame {
 		ArrayList<Map<String, String>> highScores = DBConnector.getTopTenEasy();
 		String display = "";
 		for (Map<String, String> row : highScores) {
+		    display += row.get("place") + " ";
 			display += row.get("name") + " ";
 			display += row.get("score") + " ";
-			display += Constants.Difficulty.values()[Integer.parseInt(row.get("difficulty"))] + " ";
 			display += row.get("attime") + " ";
 			display += '\n';
 		}
