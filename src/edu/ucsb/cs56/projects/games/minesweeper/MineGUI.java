@@ -21,6 +21,7 @@ public class MineGUI {
     private static MainMenu mainMenu;
 	private static GameFrame gameFrame;
 	private static HelpScreen helpScreen;
+	private static LeaderboardFrame leaderboardFrame;
 
 	/**
 	 * main function called upon start up
@@ -31,6 +32,7 @@ public class MineGUI {
 		System.out.println(DBConnector.getTopTenEasy());
 		mainMenu = new MainMenu();
 		helpScreen = new HelpScreen();
+		leaderboardFrame = new LeaderboardFrame();
 	}
 
 	/**
@@ -71,6 +73,7 @@ public class MineGUI {
 	public static void setHelpScreenVisible(boolean visible) {
 		helpScreen.setVisible(visible);
 	}
+	public static void setLeaderboardVisible(boolean visible) { leaderboardFrame.setVisible(visible); }
 
 	/**
 	 * Display prompt asking user to confirm that they want to quit
@@ -111,6 +114,8 @@ public class MineGUI {
 	public static JFrame getCurrentFrame() {
 		if (helpScreen.isVisible()) {
 			return helpScreen;
+		} else if(leaderboardFrame.isVisible()) {
+			return leaderboardFrame;
 		} else if (gameFrame != null && gameFrame.isVisible()) {
 			return gameFrame;
 		} else {

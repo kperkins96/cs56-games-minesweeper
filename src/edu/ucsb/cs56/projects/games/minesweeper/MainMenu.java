@@ -44,7 +44,7 @@ public class MainMenu extends JFrame {
 	private JButton load; //loads game
 	private JButton help;    //Main Menu Help Button
 	private JScrollPane scroller;
-	private JLabel highScore; // this label status displays the local high score.
+	private JButton highScore; // this label status displays the local high score.
 	private JTextArea highScoreList;
 
 	/**
@@ -62,7 +62,7 @@ public class MainMenu extends JFrame {
 		hardGame = new JButton("New Hard Game");
 		help = new JButton("Help");
 		load = new JButton("Load Last Game");
-		highScore = new JLabel("Leaderboards: "); // added another JLabel
+		highScore = new JButton("Leaderboards");
 		highScoreList = new JTextArea(getHighScores());
 		highScoreList.setEditable(false);
 		scroller = new JScrollPane(highScoreList);
@@ -86,6 +86,7 @@ public class MainMenu extends JFrame {
 		help.addActionListener((ActionEvent e) -> { MineGUI.setHelpScreenVisible(true); });
 		load.addActionListener((ActionEvent e) -> { MineGUI.newGame(Constants.Difficulty.LOAD); });
 		quitMine.addActionListener((ActionEvent e) -> { MineGUI.quitPrompt(); });
+		highScore.addActionListener((ActionEvent e) -> {MineGUI.setLeaderboardVisible(true); });
 		menu.add(easyGame);
 		menu.add(medGame);
 		menu.add(hardGame);
@@ -136,6 +137,10 @@ public class MainMenu extends JFrame {
     public int getHelpY() {
 		return help.getY();
 	}
+
+	public int getLeaderBoardX() { return highScore.getX(); }
+
+	public int getLeaderBoardY() { return highScore.getY(); }
 
 	public void refreshHighScoreChart() {
 		highScoreList.setText(getHighScores());
