@@ -56,7 +56,6 @@ public class MineGUI {
 	 * return to main menu from either the help screen or game frame
 	 */
 	public static void goToMainMenu() {
-		mainMenu.refreshHighScoreChart();
 		if (gameFrame != null) {
 			gameFrame.getGrid().save();
 			gameFrame.dispose();

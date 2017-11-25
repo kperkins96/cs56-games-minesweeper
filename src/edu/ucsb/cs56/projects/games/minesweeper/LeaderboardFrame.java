@@ -83,15 +83,10 @@ public class LeaderboardFrame extends JFrame {
         mediumBtn.addItemListener(itemListener);
         hardBtn.addItemListener(itemListener);
 
-
-
-        //highScoreList = new JTextArea(getHighScores(1));
-        //highScoreList.setEditable(false);
         scroller = new JScrollPane(highScoreTable);
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scroller.setViewportView(highScoreTable);
-
 
         menu.add(backBtn);
         menu.add(title);
@@ -129,7 +124,6 @@ public class LeaderboardFrame extends JFrame {
         return data;
 
     }
-
 
     public int getBackX() {
         return backBtn.getX();
