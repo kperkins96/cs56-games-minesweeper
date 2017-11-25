@@ -43,9 +43,7 @@ public class MainMenu extends JFrame {
 	private JButton hardGame;
 	private JButton load; //loads game
 	private JButton help;    //Main Menu Help Button
-	private JScrollPane scroller;
 	private JButton highScore; // this label status displays the local high score.
-	private JTextArea highScoreList;
 
 	/**
 	 * Default Constructor for main menu
@@ -63,11 +61,6 @@ public class MainMenu extends JFrame {
 		help = new JButton("Help");
 		load = new JButton("Load Last Game");
 		highScore = new JButton("Leaderboards");
-		highScoreList = new JTextArea(getHighScores());
-		highScoreList.setEditable(false);
-		scroller = new JScrollPane(highScoreList);
-		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		easyGame.addActionListener((ActionEvent e) -> {
 			if (MineGUI.overwriteSavePrompt()) {
 				MineGUI.newGame(Constants.Difficulty.EASY);
@@ -94,7 +87,6 @@ public class MainMenu extends JFrame {
 		menu.add(help);
 		menu.add(quitMine);
 		menu.add(highScore); // add new highScore feature to frame.
-		menu.add(scroller);
 		setVisible(true);
     }
 
@@ -142,20 +134,4 @@ public class MainMenu extends JFrame {
 
 	public int getLeaderBoardY() { return highScore.getY(); }
 
-	public void refreshHighScoreChart() {
-		highScoreList.setText(getHighScores());
-	}
-
-	public String getHighScores() {
-		ArrayList<Map<String, String>> highScores = DBConnector.getTopTenEasy();
-		String display = "";
-		for (Map<String, String> row : highScores) {
-		    display += row.get("place") + " ";
-			display += row.get("name") + " ";
-			display += row.get("score") + " ";
-			display += row.get("attime") + " ";
-			display += '\n';
-		}
-		return  display;
-	}
 }

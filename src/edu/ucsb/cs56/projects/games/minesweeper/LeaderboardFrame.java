@@ -56,9 +56,8 @@ public class LeaderboardFrame extends JFrame {
         group.add(hardBtn);
 
         String[] columnNames = {"Place", "Name", "Score", "At Time"};
-        Object rowData[][] = getHighScores(1);
-        highScoreTable = new JTable(rowData, columnNames);
-        tableModel = new DefaultTableModel();
+        highScoreTable = new JTable(getHighScores(1), columnNames);
+        //tableModel = new DefaultTableModel();
         ItemListener itemListener = new ItemListener() {
             String lastSelected;
             public void itemStateChanged(ItemEvent itemEvent) {
@@ -68,13 +67,13 @@ public class LeaderboardFrame extends JFrame {
                 String msgStart;
                 if (state == ItemEvent.SELECTED) {
                     if (label.equals("Easy")) {
-                        //highScoreList.setText(getHighScores(1));
+                        highScoreTable = new JTable(getHighScores(1), columnNames);
                     }
                     else if (label.equals("Medium")) {
-                        //highScoreList.setText(getHighScores(2));
+                        highScoreTable = new JTable(getHighScores(2), columnNames);
                     }
                     else {
-                        //highScoreList.setText(getHighScores(3));
+                        highScoreTable = new JTable(getHighScores(3), columnNames);
                     }
                 }
             }
@@ -91,7 +90,7 @@ public class LeaderboardFrame extends JFrame {
         scroller = new JScrollPane(highScoreTable);
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-
+        scroller.setViewportView(highScoreTable);
 
 
         menu.add(backBtn);
@@ -100,6 +99,7 @@ public class LeaderboardFrame extends JFrame {
         togglePanel.add(easyBtn);
         togglePanel.add(mediumBtn);
         togglePanel.add(hardBtn);
+        menu.add(highScoreTable.getTableHeader());
         menu.add(highScoreTable);
         menu.add(scroller);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -116,9 +116,9 @@ public class LeaderboardFrame extends JFrame {
         else { //hard difficulty
             highScores = DBConnector.getTopTenHard();
         }
-        Object [][] data = new Object[4][1];
+        Object [][] data = new Object[highScores.size()][4];
 
-        int i = 1;
+        int i = 0;
         for (Map<String, String> row : highScores) {
             data[i][0] = row.get("place");
             data[i][1] = row.get("name");
@@ -127,16 +127,7 @@ public class LeaderboardFrame extends JFrame {
             i++;
         }
         return data;
-        /*
-        String display = "";
-        for (Map<String, String> row : highScores) {
-            display += row.get("place") + "    ";
-            display += row.get("name") + "    ";
-            display += row.get("score") + "    ";
-            display += row.get("attime") + "    ";
-            display += '\n';
-        }
-        return  display;*/
+
     }
 
 
