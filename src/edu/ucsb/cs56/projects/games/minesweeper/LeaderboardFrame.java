@@ -1,5 +1,6 @@
 package edu.ucsb.cs56.projects.games.minesweeper;
 
+import javax.swing.JTable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -23,6 +24,7 @@ public class LeaderboardFrame extends JFrame {
     private JRadioButton easyBtn;
     private JRadioButton mediumBtn;
     private JRadioButton hardBtn;
+    private JTable highScoreTable;
     final ButtonGroup group = new ButtonGroup();
 
     public LeaderboardFrame() {
@@ -53,6 +55,10 @@ public class LeaderboardFrame extends JFrame {
         JRadioButton hardBtn = new JRadioButton("Hard");
         group.add(hardBtn);
 
+        String[] columnNames = {"Place", "Name", "Score", "At Time"};
+        Object rowData[][] = getHighScores(1);
+        highScoreTable = new JTable(rowData, columnNames);
+        tableModel = new DefaultTableModel();
         ItemListener itemListener = new ItemListener() {
             String lastSelected;
             public void itemStateChanged(ItemEvent itemEvent) {
@@ -62,13 +68,13 @@ public class LeaderboardFrame extends JFrame {
                 String msgStart;
                 if (state == ItemEvent.SELECTED) {
                     if (label.equals("Easy")) {
-                        highScoreList.setText(getHighScores(1));
+                        //highScoreList.setText(getHighScores(1));
                     }
                     else if (label.equals("Medium")) {
-                        highScoreList.setText(getHighScores(2));
+                        //highScoreList.setText(getHighScores(2));
                     }
                     else {
-                        highScoreList.setText(getHighScores(3));
+                        //highScoreList.setText(getHighScores(3));
                     }
                 }
             }
@@ -78,9 +84,11 @@ public class LeaderboardFrame extends JFrame {
         mediumBtn.addItemListener(itemListener);
         hardBtn.addItemListener(itemListener);
 
-        highScoreList = new JTextArea(getHighScores(1));
-        highScoreList.setEditable(false);
-        scroller = new JScrollPane(highScoreList);
+
+
+        //highScoreList = new JTextArea(getHighScores(1));
+        //highScoreList.setEditable(false);
+        scroller = new JScrollPane(highScoreTable);
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -92,12 +100,12 @@ public class LeaderboardFrame extends JFrame {
         togglePanel.add(easyBtn);
         togglePanel.add(mediumBtn);
         togglePanel.add(hardBtn);
-        menu.add(highScoreList);
+        menu.add(highScoreTable);
         menu.add(scroller);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
-    public String getHighScores(int difficulty) {
+    public Object[][] getHighScores(int difficulty) {
         ArrayList<Map<String, String>> highScores;
         if(difficulty == 1){
             highScores = DBConnector.getTopTenEasy();
@@ -108,6 +116,18 @@ public class LeaderboardFrame extends JFrame {
         else { //hard difficulty
             highScores = DBConnector.getTopTenHard();
         }
+        Object [][] data = new Object[4][1];
+
+        int i = 1;
+        for (Map<String, String> row : highScores) {
+            data[i][0] = row.get("place");
+            data[i][1] = row.get("name");
+            data[i][2] = row.get("score");
+            data[i][3] = row.get("attime");
+            i++;
+        }
+        return data;
+        /*
         String display = "";
         for (Map<String, String> row : highScores) {
             display += row.get("place") + "    ";
@@ -116,7 +136,7 @@ public class LeaderboardFrame extends JFrame {
             display += row.get("attime") + "    ";
             display += '\n';
         }
-        return  display;
+        return  display;*/
     }
 
 
