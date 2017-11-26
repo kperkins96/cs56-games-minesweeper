@@ -40,148 +40,95 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ImageIcon;
 
-/**
- * Created by ryanwiener on 11/3/17.
+/** The window that displays the game in the GUI
+ * @author Ryan Wiener
  */
 
 public class GameFrame extends JFrame {
 
-    private static final Color ZERO = new Color(0, 0, 128);
-    private static final Color NUMBER = new Color(0, 100, 0);
-    private Grid game;
-    private int status;
-    private JButton[][] buttons;
-	private String globalTE;
+	private static final Color ZERO = new Color(0, 0, 128);
+	private static final Color NUMBER = new Color(0, 100, 0);
+	private Grid game;
+	private JButton[][] buttons;
 	private JTextField timeDisplay;
-	private Timer timer;
 	private JButton refresh;
 	private JButton mainMenu;
 	private JButton quitMine;
 	private JButton inGameHelp;
 	private JButton flagBtn;
-	private JToolBar toolbar;
 	private JPanel grid;
-	private HelpScreen helpScreen;
 
-	GameFrame(int difficulty) {
+	/**
+	 * Constructs game from the given difficulty
+	 * @param difficulty difficulty of the game to be played
+	 * @throws IOException if loading fails
+	 * @throws ClassNotFoundException if loading fails
+	 */
+	GameFrame(Constants.Difficulty difficulty) throws IOException, ClassNotFoundException {
 		super(); // is this line necessary?  what does it do?
 		setSize(650, 600);
-		status = 0;
-        if (difficulty == -2) {
-			load();
+		if (difficulty == Constants.Difficulty.LOAD) {
+			game = Grid.loadGame();
 		} else {
 			game = new Grid(difficulty);  // the Interface game
 		}
-		helpScreen = null;
-		buttons = new JButton[game.getSize()][game.getSize()];
-		toolbar = new JToolBar("In-game toolbar");
+		JToolBar toolbar = new JToolBar("In-game toolbar");
 		createToolbar(toolbar);
 		getContentPane().add(toolbar, BorderLayout.NORTH); //puts the game toolbar at the top of the screen
-		globalTE = "0";
-		timer = new Timer();
-		timer.schedule(new Clock(), 0, 1000);
 		grid = new JPanel();
 		grid.setLayout(new GridLayout(game.getSize() ,0));
+		buttons = new JButton[game.getSize()][game.getSize()];
 		for (int i = 0; i < game.getSize(); i++) {
 			for (int j = 0; j < game.getSize(); j++) {
-				String label = String.format("%d", i * game.getSize() + j);
-				JButton jb = new JButton(label);
-				buttons[i][j] = jb;
-				jb.addMouseListener(new ButtonListener(i * game.getSize() + j));
-				jb.setFont(new Font("sansserif", Font.BOLD, 10));
-				jb.setText("");
-				jb.setIcon(null);
-				jb.addComponentListener(new SizeListener());
-				grid.add(jb);
+				buttons[i][j] = new JButton();
+				buttons[i][j].addMouseListener(new ButtonListener(i, j));
+				buttons[i][j].setFont(new Font("sansserif", Font.BOLD, 10));
+				buttons[i][j].setIcon(null);
+				grid.add(buttons[i][j]);
 			}
 		}
-		if (difficulty == -2) {
+		if (difficulty == Constants.Difficulty.LOAD) {
 			refresh();
 		}
 		getContentPane().add(grid);
+		getContentPane().addComponentListener(new SizeListener());
 	}
 
+	/**
+	 * Get x coordinate of a given grid button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @param i row of grid button
+	 * @param j column of grid button
+	 * @return x coordinate of grid button
+	 */
 	public int getGridButtonX(int i, int j) {
 		return grid.getX() + buttons[i][j].getX() + 10;
 	}
 
+	/**
+	 * Get y coordinate of a given grid button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @param i row of grid button
+	 * @param j column of grid button
+	 * @return y coordinate of grid button
+	 */
 	public int getGridButtonY(int i, int j) {
 		return grid.getY() + buttons[i][j].getY();
 	}
 
-	public void load() {
-		System.out.println("Loading...");
-		try {
-			FileInputStream fileStream = new FileInputStream("MyGame.ser");
-			ObjectInputStream os = new ObjectInputStream(fileStream);
-			Object one;
-			try {
-				one = os.readObject();
-				game = (Grid) one;
-				globalTE = game.saveTime;
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			os.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	/**
+	 * helper function for adding scores to database
+	 * @param name name of user
+	 * @param time how long it took the user to win
+	 */
+	public void saveHighest(String name, int time) {
+		DBConnector.addScore(name, time, game.getDifficulty().ordinal());
 	}
 
-	public void save() {
-		System.out.println("Saving...");
-		game.saveTime = globalTE;
-		try {
-			FileOutputStream fileStream = new FileOutputStream("MyGame.ser");
-			ObjectOutputStream os = new ObjectOutputStream(fileStream);
-			os.writeObject(game);
-			os.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-
-	//int lowestTime=1000;
-	public void saveHighest(String name, String time, int difficulty) { //will throw an exception if highscore.txt doesn't exist, but will create one when you win the game.
-		int t = Integer.parseInt(time);
-		String line="";
-		/*
-		//initialize count first.
-		try {
-			File myFile = new File("HighScore.txt");
-			FileReader filereader = new FileReader(myFile);
-			BufferedReader reader = new BufferedReader(filereader);
-			while ((line = reader.readLine()) != null) {
-				int c = Integer.parseInt(line);
-				if (c % 2 == 1 && c < 50) { //every odd entry
-					//count = Integer.parseInt(line); //UPDATES COUNT
-					count++;
-				}
-				reader.close();
-			}
-		}catch(IOException e){
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		// write to a file if the game is won, include timer for highest score.
-		System.out.println("Saving high score only if you WIN game");
-		//if (t < lowestTime) {
-		try (FileWriter fw = new FileWriter("HighScore.txt", true); BufferedWriter bw = new BufferedWriter(fw); PrintWriter out = new PrintWriter(bw)) { // variables in parenthesis will automatically close if try block fails
-			//String countString = Integer.toString(count);
-			// out.println(countString);
-			out.println(name + " finished " + difToString(difficulty) + " difficulty in " + time + " seconds!");
-			//lowestTime = t;
-			//count++;
-		} catch (IOException e) {
-			//exception handling left as an exercise for the reader
-		}
-	}
-
-
+	/**
+	 * Initializes toolbar at the top of the screen
+	 * @param toolbar toolbar to be initialized
+	 */
 	public void createToolbar(JToolBar toolbar) {
 		//make buttons
 		refresh = new JButton("Reset Game");
@@ -189,15 +136,25 @@ public class GameFrame extends JFrame {
 		quitMine = new JButton("Quit Minesweeper");
 		inGameHelp = new JButton("Help");
 		flagBtn = new JButton("Flag"); //new ImageIcon("resource/images/flag.png"));
-		Clock gClock = new Clock();
-		timeDisplay = new JTextField(globalTE);
+		timeDisplay = new JTextField(game.getGameTime());
 		timeDisplay.setColumns(4);
 		timeDisplay.setEditable(false);
-		addActionListener(refresh, "Reset Game");
-		addActionListener(mainMenu, "Main Menu");
-		addActionListener(inGameHelp, "Help");
-		addActionListener(quitMine, "Quit Minesweeper");
-		addActionListener(flagBtn, "Flag");
+		Timer t = new Timer();
+		t.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				timeDisplay.setText(Integer.toString(game.getGameTime()));
+			}
+		}, 0, 1);
+		refresh.addActionListener((ActionEvent e) -> {
+			if (MineGUI.overwriteSavePrompt()) {
+				resetGame();
+			}
+		});
+		mainMenu.addActionListener((ActionEvent e) -> { MineGUI.goToMainMenu(); });
+		inGameHelp.addActionListener((ActionEvent e) -> { MineGUI.setHelpScreenVisible(true); });
+		quitMine.addActionListener((ActionEvent e) -> { MineGUI.quitPrompt(); });
+		flagBtn.addActionListener((ActionEvent e) -> { flag(); });
 		toolbar.add(flagBtn);
 		toolbar.add(mainMenu);
 		toolbar.add(refresh);
@@ -208,252 +165,159 @@ public class GameFrame extends JFrame {
 		toolbar.setFloatable(false);
 	}
 
+	/**
+	 * Get x coordinate of a given refresh button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of refresh button
+	 */
 	public int getRefreshX() {
 		return refresh.getX();
 	}
 
+	/**
+	 * Get y coordinate of a given refresh button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of refresh button
+	 */
 	public int getRefreshY() {
 		return refresh.getY();
 	}
-	
+
+	/**
+	 * Get x coordinate of a given flag button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of flag button
+	 */
 	public int getFlagBtnX() {
 		return flagBtn.getX();
 	}
-	
+
+	/**
+	 * Get y coordinate of a given flag button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of flag button
+	 */
 	public int getFlagBtnY() {
 		return flagBtn.getY();
 	}
 
+	/**
+	 * Get x coordinate of a given main menu button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of main menu button
+	 */
 	public int getMainMenuX() {
 		return mainMenu.getX();
 	}
 
+	/**
+	 * Get y coordinate of a given main menu button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of main menu button
+	 */
 	public int getMainMenuY() {
 		return mainMenu.getY();
 	}
 
+	/**
+	 * Get x coordinate of a given help button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return x coordinate of help button
+	 */
 	public int getHelpX() {
 		return inGameHelp.getX();
 	}
 
+	/**
+	 * Get y coordinate of a given help button
+	 * used for GUITest to make Robot class move mouse button to correct coordinates
+	 * @return y coordinate of help button
+	 */
 	public int getHelpY() {
 		return inGameHelp.getY();
 	}
 
-	public void addActionListener(JButton button, String action) {
-		if (action == "Main Menu") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					MineGUI.goToMainMenu();
-				}
-			});
-		} else if (action == "Quit Minesweeper") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					quitPrompt();
-				}
-			});
-		} else if (action == "Reset Game") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (overwriteSavePrompt()) {
-						resetGame();
-					}
-				}
-			});
-		} else if (action == "Help") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					helpScreen = new HelpScreen();
-				}
-			});
-		} else if (action == "Load") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					load();
-				}
-			});
-		} else if (action == "Save") {
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					save();
-				}
-			});
-		} else { //flag button pressed
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					flag();
-				}
-			});
-		}
-	}
-
-	public void quitPrompt() {
-		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit the game?", "Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (response == JOptionPane.YES_OPTION) {
-			save();
-			System.out.println("Closing...");
-			System.exit(0);
-		} else {
-			this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		}
-	}
-	
+	/**
+	 * switch flag buttons selected property
+	 * if flag button is selected then left clicking flags boxes rather than opening them
+	 */
 	public void flag() {
-		if(flagBtn.isSelected() == true) {
-			flagBtn.setSelected(false);
-		}
-		else if(flagBtn.isSelected() == false) {
-			flagBtn.setSelected(true);
+		flagBtn.setSelected(!flagBtn.isSelected());
+	}
+
+	/**
+	 * plays a sound from the resources
+	 * @param dir name of the sound file to be played
+	 */
+	public void playSound(String dir) {
+		if (dir != null) {
+			try {
+				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(dir).getAbsoluteFile());
+				Clip clip = AudioSystem.getClip();
+				clip.open(audioInputStream);
+				clip.start();
+			} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public boolean overwriteSavePrompt() {
-		int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to do this? This will delete previous save data", "Overwriting Save", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (response == JOptionPane.YES_OPTION) {
-			return true;
-		} else {
-			this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-			return false;
-		}
-	}
-
-	public void playSound(String dir){
-		try {
-			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(dir).getAbsoluteFile());
-			Clip clip = AudioSystem.getClip();
-			clip.open(audioInputStream);
-			clip.start();
-		} catch (UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * Refreshed the grid to coincide with the game
+	 */
 	public void refresh() {
+		int fontSize = buttons[0][0].getSize().height / 2;
+		if (buttons[0][0].getSize().height / 2 > buttons[0][0].getSize().width / 4) {
+			fontSize = buttons[0][0].getSize().width / 4;
+		}
 		for (int i = 0; i < game.getSize(); i++) {
 			for (int j = 0; j < game.getSize(); j++) {
-				JButton jb = buttons[i][j];
+				buttons[i][j].setFont(new Font("sansserif", Font.BOLD, fontSize));
 				if (game.isOpen(i, j)) {
-					int fontSize = jb.getSize().height / 2;
-					if (jb.getSize().height / 2 > jb.getSize().width / 4) {
-						fontSize = jb.getSize().width / 4;
-					}
-					jb.setFont(new Font("sansserif", Font.BOLD, fontSize));
-					jb.setText(Character.toString(game.getCell(i, j)));
-					if (game.getCell(i, j) == '0') {
-						jb.setForeground(ZERO);
-					} else if (game.isFlag(i, j)) {
-						jb.setForeground(Color.RED);
-					} else if (game.getCell(i, j) == 'X') {
-						jb.setForeground(Color.BLACK);
+					if (game.isMine(i, j)) {
+						ImageIcon icon = new ImageIcon("resources/images/mine.jpg");
+						Image img = icon.getImage();
+						//resize icon to fit button
+						Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT) ;
+						icon = new ImageIcon(newImg);
+						buttons[i][j].setIcon(icon);
 					} else {
-						jb.setForeground(NUMBER);
+						if (game.getCell(i, j) == '0') {
+							buttons[i][j].setForeground(ZERO);
+						} else {
+							buttons[i][j].setForeground(NUMBER);
+						}
+						buttons[i][j].setText(Character.toString(game.getCell(i, j)));
 					}
+				} else if (game.isFlag(i, j)) {
+					ImageIcon icon = new ImageIcon("resources/images/flag.png");
+					Image img = icon.getImage();
+					//resize icon to fit button
+					Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT) ;
+					icon = new ImageIcon(newImg);
+					buttons[i][j].setIcon(icon);
+				} else {
+					buttons[i][j].setIcon(null);
+					buttons[i][j].setText("");
 				}
 			}
 		}
 	}
 
-	public void exposeMines() {
-		for (int i = 0; i < buttons.length; i++) {
-			for (int j = 0; j < buttons.length; j++) {
-				if (game.isMine(i * buttons.length + j)) {
-					ImageIcon mineImage = new ImageIcon("resources/images/mine.jpg")  ;
-
-					Image img = mineImage.getImage() ;  
-			        Image newimg = img.getScaledInstance(grid.getWidth()/game.getSize() - 10, grid.getHeight()/game.getSize() -10,  java.awt.Image.SCALE_DEFAULT ) ;  
-					mineImage = new ImageIcon( newimg );
-					buttons[i][j].setIcon(mineImage);
-					/*
-					buttons[i][j].setFont(new Font("sansserif", Font.PLAIN, 1));
-					buttons[i][j].setText("X");
-					*/
-					buttons[i][j].setForeground(new Color(255, 255, 255, 0));
-				}
-			}
-		}
-	}
-
-	public int getStatus(){
-		return status;
-	}
-
+	/**
+	 * Get the Grid object (the game itself)
+	 * @return the underlying Grid object (the game)
+	 */
 	public Grid getGrid(){
 		return game;
 	}
 
-	public HelpScreen getHelpScreen() {
-		return helpScreen;
-	}
-
-	public String difToString(int difficulty){
-		if (difficulty == 10) {
-			return "Easy";
-		} else if (difficulty == 15) {
-			return "Medium";
-		} else if (difficulty == 20) {
-			return "Hard";
-		}
-		return "";
-	}
-
+	/**
+	 * Reset the game with the same difficulty
+	 */
 	public void resetGame() {
-		stopTimer();
-		int diff = game.getSize();
-		if (diff == 10) {
-			MineGUI.newGame(0);
-		} else if (diff == 15) {
-			MineGUI.newGame(1);
-		} else if (diff == 20) {
-			MineGUI.newGame(2);
-		} else if (diff == 4) {
-			MineGUI.newGame(-1);
-		}
+		MineGUI.newGame(game.getDifficulty());
 	}
-
-	public void stopTimer() {
-		timer.cancel();
-		timer.purge();
-	}
-
-	public class Clock extends TimerTask {
-		private long currClock;
-		private long pClock;
-		private long endClock;
-		private long elapse;
-		private final long nano;
-		private long sec;
-		private long resClock;
-		private String timeElapsed;
-		private String leftOver;
-
-		public Clock(){
-			nano = 1000000000;
-			leftOver = globalTE;
-			globalTE = "0";
-			currClock = System.nanoTime();
-			pClock = 0;
-		}
-
-		public void updateTE(){
-			endClock = System.nanoTime();
-			elapse = endClock - currClock;
-			sec = Math.floorDiv(elapse, nano);
-			globalTE = String.valueOf(sec + Long.parseLong(leftOver));
-		}
-
-		public void pauseClock(){
-			game.saveTime = globalTE;
-		}
-
-		public void run() {
-			this.updateTE();
-			timeDisplay.setText(globalTE);
-			timeDisplay.repaint();
-		}
-	} // class Clock
 
 	/**
 	 * inner class, reponds to resizing of component to resize font
@@ -468,13 +332,13 @@ public class GameFrame extends JFrame {
 		public void componentMoved(ComponentEvent e) {
 		}
 
+		/**
+		 * refresh the screen when resizing the frame
+		 * @param e the ComponentEvent object (not used)
+		 */
 		@Override
 		public void componentResized(ComponentEvent e) {
-			int size = e.getComponent().getSize().height / 2;
-			if (e.getComponent().getSize().height / 2 > e.getComponent().getSize().width / 4) {
-				size = e.getComponent().getSize().width / 4;
-			}
-			e.getComponent().setFont(new Font("sansserif", Font.BOLD, size));
+			refresh();
 		}
 
 		@Override
@@ -483,125 +347,105 @@ public class GameFrame extends JFrame {
 		}
 	} // class SizeListener
 
-
 	/**
 	 * Inner Class, responds to the event source.
 	 */
 	class ButtonListener extends MouseAdapter {
 
-		private int num;
+		private int row;
+		private int col;
 
-		public ButtonListener(int i) {
+		/**
+		 * Constructs ButtonListener
+		 * @param i row value of the ButtonListener
+		 * @param j column value of the ButtonListener
+		 */
+		public ButtonListener(int i, int j) {
 			super();
-			this.num = i;
+			row = i;
+			col = j;
 		}
 
 		/**
-		 Places player's symbol on button, checks for a winner or tie
-		 @param event when a button is clicked
+		 * Places player's symbol on button, checks for a winner or tie
+		 * @param event when a button is clicked
 		 */
 		public void mouseReleased(MouseEvent event) {
-			Clip clip;
-			String soundName;
-			AudioInputStream audioInputStream;
-			if (game.gameStatus(status) == 0) {
-				//if you left click and the button is available (not a flag and not already opened)
-				if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(num) && !game.isOpen(num) && !flagBtn.isSelected()){
-					char box = game.searchBox(num);
-					if (box == 'X') {
+			String soundName = null;
+			if (game.getGameState() == Constants.GameState.PLAYING) {
+				if(event.getButton() == MouseEvent.BUTTON1 && !game.isFlag(row, col) && !game.isOpen(row, col) && !flagBtn.isSelected()){
+					//if you left click and the button is available (not a flag and not already opened)
+					char result = game.searchBox(row, col);
+					if (result == 'X') {
 						soundName = "resources/sounds/explosion.wav";
+						// will update gui when lost
 					} else {
 						soundName = "resources/sounds/clicked.wav";
-					}
-					playSound(soundName);
-					refresh();
-					status = game.gameStatus(status);
-					if (status == -1) {
-						// TODO: display mines
-						exposeMines();
-						stopTimer();
-						int response = JOptionPane.showOptionDialog(null, "You lose! Press 'Reset Game' to start a new game.", "Defeat!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-						if (response == JOptionPane.YES_OPTION) {
-							MineGUI.goToMainMenu();
+						if (result == '0') {
+							// need to update all cells since they opened up
+							refresh();
 						} else {
-							resetGame();
-						}
-					} else if (status == 1) {
-						soundName= "resources/sounds/win.wav";
-						playSound(soundName);
-						stopTimer();
-						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
-						if (user != null) {
-							int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-							if (response == JOptionPane.YES_OPTION) {
-								saveHighest(user, globalTE, game.getSize());
-								MineGUI.goToMainMenu();
-							} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-								saveHighest(user, globalTE, game.getSize());
-								resetGame();
-							} else {
-								//do nothing
-							}
+							// only need to update the current cell
+							buttons[row][col].setText(Character.toString(game.getCell(row, col)));
+							buttons[row][col].setForeground(NUMBER);
 						}
 					}
-				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(num) | game.isOpen(num)) && !flagBtn.isSelected()) {
+				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(row, col) | game.isOpen(row, col)) && !flagBtn.isSelected()) {
 					// If you left click and the button is a flag or has been opened
-					game.searchBox(num);
 					soundName = "resources/sounds/userError.wav";
-					playSound(soundName);
-				} else if (event.getButton() == MouseEvent.BUTTON3 || flagBtn.isSelected() == true) {
-					// If you right click
-					if (game.isFlag(num)) {
-						game.deflagBox(num);
-						JButton jb = buttons[num / game.getSize()][num % game.getSize()];
-						//jb.setFont(new Font("sansserif",Font.BOLD,12));
-						jb.setForeground(Color.BLACK);
-						jb.setText("");
-						jb.setIcon(null);
-					} else if (!game.isOpen(num)) {
+				} else if (event.getButton() == MouseEvent.BUTTON3 || flagBtn.isSelected()) {
+					// If you right click or have flag button selected
+					if (game.isFlag(row, col)) {
+						game.deflagBox(row, col);
+						buttons[row][col].setIcon(null);
+					} else if (!game.isOpen(row, col)) {
 						soundName = "resources/sounds/place_flag.wav";
-						playSound(soundName);
-						game.flagBox(num);
-						JButton jb = buttons[num / game.getSize()][num % game.getSize()];					
-						
-						ImageIcon flagImage = new ImageIcon("resources/images/flag.png");
-						Image img = flagImage.getImage() ;
+						game.flagBox(row, col);
+						ImageIcon icon = new ImageIcon("resources/images/flag.png");
+						Image img = icon.getImage();
 						//resize icon to fit button
-				        Image newimg = img.getScaledInstance( grid.getWidth()/game.getSize() - 10, grid.getHeight()/game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT ) ;  
-						
-				        flagImage = new ImageIcon( newimg );
-						jb.setIcon(flagImage);
-						//jb.setText("F");
-						jb.setForeground(new Color(255, 255, 255, 0));
-
+						Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT) ;
+						icon = new ImageIcon(newImg);
+						buttons[row][col].setIcon(icon);
 					} else {
-						game.flagBox(num);
 						soundName = "resources/sounds/userError.wav";
-						playSound(soundName);
 					}
-					int status = game.gameStatus(0);
-					if (status == 1) {
-						soundName= "resources/sounds/win.wav";
-						playSound(soundName);
-						exposeMines();
-						stopTimer();
-						String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
-						if (user != null) {
-							int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
-							if (response == JOptionPane.YES_OPTION) {
-								saveHighest(user, globalTE, game.getSize());
-								MineGUI.goToMainMenu();
-							} else if (response == JOptionPane.INFORMATION_MESSAGE) {
-								saveHighest(user, globalTE, game.getSize());
-								resetGame();
-							} else {
-								// do nothing
-							}
+				} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(row, col)){
+					soundName = "resources/sounds/userError.wav";
+				} else if (event.getButton() == MouseEvent.BUTTON2) {
+					if (game.searchSurrounding(row, col)) {
+						soundName = "resources/sounds/clicked.wav";
+						refresh();
+					} else {
+						soundName = "resources/sounds/userError.wav";
+					}
+				}
+				playSound(soundName);
+				if (game.getGameState() == Constants.GameState.LOST) {
+					// display mines
+					refresh();
+					int response = JOptionPane.showOptionDialog(null, "You lose! Press 'Reset Game' to start a new game.", "Defeat!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
+					if (response == JOptionPane.YES_OPTION) {
+						MineGUI.goToMainMenu();
+					} else {
+						resetGame();
+					}
+				} else if (game.getGameState() == Constants.GameState.WON) {
+					soundName = "resources/sounds/win.wav";
+					playSound(soundName);
+					String user = JOptionPane.showInputDialog(null, "You win! Enter your name for the leaderboard.", "Victory!", JOptionPane.QUESTION_MESSAGE);
+					if (user != null) {
+						int response = JOptionPane.showOptionDialog(null, "You win! Press 'Reset Game' to start a new game.", "Victory!", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Main Menu", "Reset Game"}, "default");
+						if (response == JOptionPane.YES_OPTION) {
+							saveHighest(user, game.getGameTime());
+							MineGUI.goToMainMenu();
+						} else if (response == JOptionPane.INFORMATION_MESSAGE) {
+							saveHighest(user, game.getGameTime());
+							resetGame();
+						} else {
+							//do nothing
 						}
 					}
-				} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(num)){
-					soundName = "resources/sounds/userError.wav";
-					playSound(soundName);
 				}
 			}
 		}
