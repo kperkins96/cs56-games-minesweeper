@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JRadioButton;
 
 import javax.swing.JToggleButton;
@@ -55,9 +56,9 @@ public class LeaderboardFrame extends JFrame {
         JRadioButton hardBtn = new JRadioButton("Hard");
         group.add(hardBtn);
 
-        String[] columnNames = {"Place", "Name", "Score", "At Time"};
+        String[] columnNames = {"Rank", "Name", "Score", "At Time"};
         highScoreTable = new JTable(getHighScores(1), columnNames);
-        //tableModel = new DefaultTableModel();
+
         ItemListener itemListener = new ItemListener() {
             String lastSelected;
             public void itemStateChanged(ItemEvent itemEvent) {
@@ -67,13 +68,13 @@ public class LeaderboardFrame extends JFrame {
                 String msgStart;
                 if (state == ItemEvent.SELECTED) {
                     if (label.equals("Easy")) {
-                        highScoreTable = new JTable(getHighScores(1), columnNames);
+                        highScoreTable.setModel(new DefaultTableModel(getHighScores(1), columnNames));
                     }
                     else if (label.equals("Medium")) {
-                        highScoreTable = new JTable(getHighScores(2), columnNames);
+                        highScoreTable.setModel(new DefaultTableModel(getHighScores(2), columnNames));
                     }
                     else {
-                        highScoreTable = new JTable(getHighScores(3), columnNames);
+                        highScoreTable.setModel(new DefaultTableModel(getHighScores(3), columnNames));
                     }
                 }
             }
