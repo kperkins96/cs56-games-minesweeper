@@ -65,13 +65,13 @@
 
 
 	<target name="mine" depends="compile" description="runs the class MineGUI for graphical minesweeper">
-		<java classname="edu.ucsb.cs56.projects.games.minesweeper.${MainClassGui}" fork="true">
+		<java classname="edu.ucsb.cs56.projects.games.minesweeper.gui.${MainClassGui}" fork="true">
 			<classpath refid="project.class.path"/>
 		</java>
 	</target>
 
 	<target name="textmine" depends="compile" description="runs the class TextGame for command-line minesweeper">
-		<java classname="edu.ucsb.cs56.projects.games.minesweeper.${MainClassText}" fork="true">
+		<java classname="edu.ucsb.cs56.projects.games.minesweeper.text.${MainClassText}" fork="true">
 			<classpath refid="project.class.path"/>
 		</java>
 	</target>
