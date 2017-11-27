@@ -12,67 +12,98 @@
 	<property name="javadocDest" value="${webRoot}/${project}/javadoc" />
 	<property name="javadocURL" value="${webBaseURL}/${project}/javadoc" />
 
+	<property name="classesDir" value="build/classes"/>
+	<property name="distDir" value="build/dist"/>
+	<property name="libDir" value="lib"/>
+
 	<property name="MainClassText" value="TextGame" />
 	<property name="MainClassGui" value="MineGUI" />
-	<property name="MainClassDB" value="DBConnector" />
 
-	<path id="project.class.path">
-		<pathelement location="build"/>
-		<pathelement location="lib/postgresql-42.1.4.jar"/>
-		<pathelement location="lib/junit-4.8.2.jar"/>
+	<path id="compile.path">
+		<fileset dir="${classesDir}"/>
+		<fileset dir="${libDir}"/>
+	</path>
+
+	<path id="run.path">
+		<fileset dir="${classesDir}">
+			<exclude name="**/*Test*"/>
+		</fileset>
+		<fileset dir="${libDir}">
+			<exclude name="junit*.jar"/>
+		</fileset>
 	</path>
 
 	<target name="compile" description="compile my code">
-		<mkdir dir="build" />
-		<javac srcdir="src" destdir="build" includeantruntime="false" debug="true" debuglevel="lines,vars,source">
-			<classpath refid="project.class.path"/>
+		<mkdir dir="${classesDir}"/>
+		<javac srcdir="src" destdir="${classesDir}" includeantruntime="false" debug="true" debuglevel="lines,vars,source">
+			<classpath refid="compile.path"/>
 		</javac>
 	</target>
 
 	<target name="clean" description="delete unnecessary files and directories">
-		<delete dir="build" quiet="true" />
-		<delete dir="javadoc" quiet="true" />
+		<delete dir="build" quiet="true"/>
+		<delete dir="javadoc" quiet="true"/>
 	</target>
 
 	<target name="javadoc" depends="compile" description="makes the javadoc descriptions">
-		<delete dir="javadoc" quiet="true" />
-		<javadoc  destdir="javadoc" author="true" version="true" use="true" >
+		<delete dir="javadoc" quiet="true"/>
+		<javadoc destdir="javadoc" author="true" version="true" use="true" >
 			<fileset dir="src" includes="**/*.java"/>
-			<classpath refid="project.class.path" />
+			<classpath refid="compile.path"/>
 		</javadoc>
-		<delete quiet="true" dir="${javadocDest}" />
-		<copy todir="${javadocDest}" >
+		<delete quiet="true" dir="${javadocDest}"/>
+		<copy todir="${javadocDest}">
 			<fileset dir="javadoc"/>
 		</copy>
-		<chmod dir="${javadocDest}" perm="755"  type="dir" includes="**" />
-		<chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*" />
+		<chmod dir="${javadocDest}" perm="755"  type="dir" includes="**"/>
+		<chmod dir="${javadocDest}" perm="755"  type="file" includes="**/*"/>
 		<echo>Javadoc deployed to ${javadocURL} if on CSIL</echo>
-		<echo> or if not on CSIL, try file:///${javadocDest}/index.html</echo>
+		<echo>or if not on CSIL, try file:///${javadocDest}/index.html</echo>
 	</target>
 
-	<target name="test" depends="compile" description="uses test class">
+	<target name="test" depends="compile" description="runs test classes">
 		<junit haltonerror="no" haltonfailure="no">
-			<classpath refid="project.class.path" />
+			<classpath refid="compile.path"/>
 			<batchtest>
-				<fileset dir="src">
-					<!-- this will pick up every class with a name ending in Test -->
-					<include name="**/*Test.java"/>
+				<fileset dir="src/">
+					<!-- this will pick up every class with a name including Test -->
+					<include name="**/*Test*"/>
 				</fileset>
 			</batchtest>
-			<formatter type="plain" usefile="false" />
+			<formatter type="plain" usefile="false"/>
 		</junit>
 	</target>
 
-
 	<target name="mine" depends="compile" description="runs the class MineGUI for graphical minesweeper">
 		<java classname="edu.ucsb.cs56.projects.games.minesweeper.gui.${MainClassGui}" fork="true">
-			<classpath refid="project.class.path"/>
+			<classpath refid="run.path"/>
 		</java>
 	</target>
 
 	<target name="textmine" depends="compile" description="runs the class TextGame for command-line minesweeper">
 		<java classname="edu.ucsb.cs56.projects.games.minesweeper.text.${MainClassText}" fork="true">
-			<classpath refid="project.class.path"/>
+			<classpath refid="run.path"/>
 		</java>
 	</target>
+
+	<target name="jartext" depends="compile" description="output text game as a jar">
+		<mkdir dir="${distDir}"/>
+		<jar destfile="${distDir}/textMinesweeper.jar" basedir="${classesDir}" excludes="**/*Test.class">	       
+			<zipgroupfileset dir="${libDir}" includes="*.jar" excludes="junit*.jar"/>
+			<manifest>
+				<attribute name="Main-Class" value="edu.ucsb.cs56.projects.games.minesweeper.text.${MainClassText}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="jargui" depends="compile" description="output text game as a jar">
+		<mkdir dir="${distDir}"/>
+		<jar destfile="${distDir}/guiMinesweeper.jar" basedir="${classesDir}" excludes="**/*Test.class">
+			<zipgroupfileset dir="${libDir}" includes="*.jar" excludes="junit*.jar"/>
+			<manifest>
+				<attribute name="Main-Class" value="edu.ucsb.cs56.projects.games.minesweeper.gui.${MainClassGui}"/>
+			</manifest>
+		</jar>
+	</target>
+
 </project>
