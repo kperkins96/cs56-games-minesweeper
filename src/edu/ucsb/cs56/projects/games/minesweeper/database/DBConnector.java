@@ -52,6 +52,10 @@ public class DBConnector {
 		}
 	}
 
+	/**
+	 * Check if database connection is working
+	 * @return a boolean value indicating whether the connection to the database is working
+	 */
 	public static boolean isConnected() {
 		if (connection == null) {
 			init();
