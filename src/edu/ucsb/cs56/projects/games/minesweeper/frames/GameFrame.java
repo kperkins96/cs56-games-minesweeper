@@ -36,6 +36,7 @@ import edu.ucsb.cs56.projects.games.minesweeper.gui.MineGUI;
 
 /** The window that displays the game in the GUI
  * @author Ryan Wiener
+ * @author Kate Perkins
  */
 
 public class GameFrame extends JFrame {

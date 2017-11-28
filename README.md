@@ -16,7 +16,7 @@ M16 hwangaustin | ije896 | saisrimat | W16 Athielk 4pm | athielk | W14 | calebne
 High-level description
 ======================
 
-This is a program that runs the game minesweeper. Currently, the game itself is able to be played. The game can be played via GUI or through text, depending on the user's preference. There is a start menu, with six buttons: new game (with three separate difficulties), help, load, and quit. Selecting new game will start a new game. Selecting help will bring the user to a page with instructions of how to play. Quit exits the program. During a game, the user can choose reset game, exit minesweeper, or main menu the in-game toolbar at the top of the game. Once the game is over, the user gets a message indicating whetheer he/she won or lost. The user can then choose an option from the toolbar to continue with their game.
+This is a program that runs the game minesweeper. Currently, the game itself is able to be played. The game can be played via GUI or through text, depending on the user's preference. There is a start menu, with seven buttons: new game (with three separate difficulties), help, load, leaderboard, and quit. Selecting new game will start a new game. Selecting help will bring the user to a page with instructions of how to play. Leaderboard will bring the user to the leaderboard containing top 10 scores for each difficulty. Quit exits the program. During a game, the user can choose reset game, exit minesweeper, or main menu the in-game toolbar at the top of the game. Once the game is over, the user gets a message indicating whether he/she won or lost. The user can then choose an option from the toolbar to continue with their game.
 
 Developer Notes/Documentation
 =============================
@@ -30,6 +30,8 @@ Grid is a class that is the foundation for minesweeper, applies mine locations, 
 HelpScreen.java is a panel that displays help messages and a button to return to the start menu. It is displayed only after the user clicks "Help" from either the start menu or the pause menu.
 
 MineComponent is a class that sets up the minesweeper Gui, ie. sets up the grid with numbered buttons.
+
+DBConnector is a class that allows the leaderboard to access the database holding high scores or users.
 
 How to Run
 ==========

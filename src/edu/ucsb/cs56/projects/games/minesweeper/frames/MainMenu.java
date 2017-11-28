@@ -14,6 +14,7 @@ import edu.ucsb.cs56.projects.games.minesweeper.gui.MineGUI;
 /**
  * Main Menu JFrame
  * @author Ryan Wiener
+ * @author Kate Perkins
  */
 
 public class MainMenu extends JFrame {
