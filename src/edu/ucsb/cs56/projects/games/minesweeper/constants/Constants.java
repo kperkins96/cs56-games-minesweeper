@@ -69,12 +69,25 @@ public class Constants {
 	/**
 	 * disable error outputs from DBConnector if not able to connect to the database
 	 */
-	public static void disableErrorOutput() {
-		/*		System.setErr(new PrintStream(new OutputStream() {
-			@Override
-			public void write(int i) throws IOException {
 
-			}
-			})); */
+	public static void disableErrorOutput() {
+		System.setErr(new PrintStream(new OutputStream() {
+				@Override
+				public void write(int i) throws IOException {
+					
+				}
+			})); 
 	}
+
+	public static final PrintStream saveErr = System.err;
+
+	/**
+	 * reenable error outputs from DBConnector if not able to connect to the database
+	 */
+	
+	public static void reenableErrorOutput() {
+		System.setErr(saveErr);
+	}
+
+
 }

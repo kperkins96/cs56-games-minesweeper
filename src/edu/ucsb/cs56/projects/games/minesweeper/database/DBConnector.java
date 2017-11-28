@@ -1,5 +1,7 @@
 package edu.ucsb.cs56.projects.games.minesweeper.database;
 
+import edu.ucsb.cs56.projects.games.minesweeper.constants.Constants;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.net.UnknownHostException;
 
 /**
  * Supplies an abstraction of connecting to the leaderboard stored on a remote database
@@ -53,13 +56,23 @@ public class DBConnector {
 		properties.setProperty("password", password);
 		properties.setProperty("ssl", "true");
 		properties.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
+
+		Constants.disableErrorOutput();
+
 		try {
 			connection = DriverManager.getConnection(host, properties);
 			insertionStatement = connection.prepareStatement("INSERT INTO scores (name, score, difficulty) VALUES (?, ?, ?);");
 			queryStatement = connection.prepareStatement("SELECT * FROM scores WHERE difficulty = ? ORDER BY score ASC LIMIT 10;");
 		} catch (SQLException e) {
+			System.err.println("Caught SQLException " + e); 
 			connection = null;
 		}
+		catch (Exception e) {
+			System.err.println("Caught exception " + e);							  
+			connection = null;
+		}
+		Constants.reenableErrorOutput();
+		
 	}
 
 	/**
