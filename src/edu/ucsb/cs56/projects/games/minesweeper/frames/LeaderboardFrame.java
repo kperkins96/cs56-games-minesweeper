@@ -13,7 +13,6 @@ import javax.swing.JRadioButton;
 import javax.swing.table.TableColumn;
 
 import edu.ucsb.cs56.projects.games.minesweeper.database.DBConnector;
-import javafx.scene.control.ToggleGroup;
 
 /**
  * Displays the leaderboard in a table using the javax.swing package
