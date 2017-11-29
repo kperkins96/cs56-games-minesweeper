@@ -36,8 +36,10 @@ DBConnector is a class that allows the leaderboard to access the database holdin
 How to Run
 ==========
 
-To run the GuiGame, use "ant mine".
-To run the TextGame, use "ant textmine".
+First set up your environment variables to connect to your postgrsql database then:
+
+* To run the GuiGame, use "ant mine".
+* To run the TextGame, use "ant textmine".
 
 W16 Final Remarks
 =================
