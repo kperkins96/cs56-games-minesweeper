@@ -1,5 +1,6 @@
 *.ser
 build/
+env.sh
 *.class
 *~
 .ant-targets-build.xml

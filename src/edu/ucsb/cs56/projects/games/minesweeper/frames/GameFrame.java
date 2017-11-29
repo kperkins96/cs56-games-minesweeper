@@ -255,7 +255,13 @@ public class GameFrame extends JFrame {
 	public void playSound(String dir) {
 		if (dir != null) {
 			try {
-				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(dir).getAbsoluteFile());
+				File resource = new File("resources" + dir);
+				AudioInputStream audioInputStream;
+				if (resource.exists()) {
+					audioInputStream = AudioSystem.getAudioInputStream(resource.getAbsoluteFile());
+				} else {
+					audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource(dir));
+				}
 				Clip clip = AudioSystem.getClip();
 				clip.open(audioInputStream);
 				clip.start();
@@ -263,6 +269,20 @@ public class GameFrame extends JFrame {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public ImageIcon getImageIcon(String resource) {
+	    File local = new File("resources/" + resource);
+	    ImageIcon icon;
+	    if (local.exists()) {
+			icon = new ImageIcon(local.getPath());
+		} else {
+	    	icon = new ImageIcon(getClass().getResource(resource));
+		}
+		Image img = icon.getImage();
+		//resize icon to fit button
+		Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT) ;
+		return new ImageIcon(newImg);
 	}
 
 	/**
@@ -278,12 +298,7 @@ public class GameFrame extends JFrame {
 				buttons[i][j].setFont(new Font("sansserif", Font.BOLD, fontSize));
 				if (game.isOpen(i, j)) {
 					if (game.isMine(i, j)) {
-						ImageIcon icon = new ImageIcon("resources/images/mine.jpg");
-						Image img = icon.getImage();
-						//resize icon to fit button
-						Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT) ;
-						icon = new ImageIcon(newImg);
-						buttons[i][j].setIcon(icon);
+						buttons[i][j].setIcon(getImageIcon("/images/mine.jpg"));
 					} else {
 						if (game.getCell(i, j) == '0') {
 							buttons[i][j].setForeground(ZERO);
@@ -293,12 +308,7 @@ public class GameFrame extends JFrame {
 						buttons[i][j].setText(Character.toString(game.getCell(i, j)));
 					}
 				} else if (game.isFlag(i, j)) {
-					ImageIcon icon = new ImageIcon("resources/images/flag.png");
-					Image img = icon.getImage();
-					//resize icon to fit button
-					Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT) ;
-					icon = new ImageIcon(newImg);
-					buttons[i][j].setIcon(icon);
+					buttons[i][j].setIcon(getImageIcon("/images/flag.png"));
 				} else {
 					buttons[i][j].setIcon(null);
 					buttons[i][j].setText("");
@@ -380,10 +390,10 @@ public class GameFrame extends JFrame {
 					//if you left click and the button is available (not a flag and not already opened)
 					char result = game.searchBox(row, col);
 					if (result == 'X') {
-						soundName = "resources/sounds/explosion.wav";
+						soundName = "/sounds/explosion.wav";
 						// will update gui when lost
 					} else {
-						soundName = "resources/sounds/clicked.wav";
+						soundName = "/sounds/clicked.wav";
 						if (result == '0') {
 							// need to update all cells since they opened up
 							refresh();
@@ -395,32 +405,27 @@ public class GameFrame extends JFrame {
 					}
 				} else if (event.getButton() == MouseEvent.BUTTON1 && (game.isFlag(row, col) | game.isOpen(row, col)) && !flagBtn.isSelected()) {
 					// If you left click and the button is a flag or has been opened
-					soundName = "resources/sounds/userError.wav";
+					soundName = "/sounds/userError.wav";
 				} else if (event.getButton() == MouseEvent.BUTTON3 || flagBtn.isSelected()) {
 					// If you right click or have flag button selected
 					if (game.isFlag(row, col)) {
 						game.deflagBox(row, col);
 						buttons[row][col].setIcon(null);
 					} else if (!game.isOpen(row, col)) {
-						soundName = "resources/sounds/place_flag.wav";
+						soundName = "/sounds/place_flag.wav";
 						game.flagBox(row, col);
-						ImageIcon icon = new ImageIcon("resources/images/flag.png");
-						Image img = icon.getImage();
-						//resize icon to fit button
-						Image newImg = img.getScaledInstance(grid.getWidth() / game.getSize() - 10, grid.getHeight() / game.getSize() - 10,  java.awt.Image.SCALE_DEFAULT) ;
-						icon = new ImageIcon(newImg);
-						buttons[row][col].setIcon(icon);
+						buttons[row][col].setIcon(getImageIcon("/images/flag.png"));
 					} else {
-						soundName = "resources/sounds/userError.wav";
+						soundName = "/sounds/userError.wav";
 					}
 				} else if (event.getButton() == MouseEvent.BUTTON1 && game.isOpen(row, col)){
-					soundName = "resources/sounds/userError.wav";
+					soundName = "/sounds/userError.wav";
 				} else if (event.getButton() == MouseEvent.BUTTON2) {
 					if (game.searchSurrounding(row, col)) {
-						soundName = "resources/sounds/clicked.wav";
+						soundName = "/sounds/clicked.wav";
 						refresh();
 					} else {
-						soundName = "resources/sounds/userError.wav";
+						soundName = "/sounds/userError.wav";
 					}
 				}
 				playSound(soundName);
