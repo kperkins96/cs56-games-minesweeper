@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -12,6 +13,7 @@ import javax.swing.JRadioButton;
 
 import javax.swing.table.TableColumn;
 
+import edu.ucsb.cs56.projects.games.minesweeper.constants.Constants;
 import edu.ucsb.cs56.projects.games.minesweeper.database.DBConnector;
 
 /**
@@ -28,6 +30,7 @@ public class LeaderboardFrame extends JFrame {
 	private JTable highScoreTable;
 	private String[] columnNames;
 	private ButtonGroup group;
+	private Constants.Difficulty difficulty;
 
 	public LeaderboardFrame() {
 		super();
@@ -62,7 +65,7 @@ public class LeaderboardFrame extends JFrame {
 		columnNames[1] = "Name";
 		columnNames[2] = "Score";
 		columnNames[3] = "At Time";
-		highScoreTable = new JTable(getHighScores(1), columnNames);
+		highScoreTable = new JTable(getHighScores(Constants.Difficulty.EASY), columnNames);
 		highScoreTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setUpColumnWidths();
 
@@ -71,14 +74,7 @@ public class LeaderboardFrame extends JFrame {
 			int state = itemEvent.getStateChange();
 			String label = aButton.getText();
 			if (state == ItemEvent.SELECTED) {
-				if (label.equals("Easy")) {
-					highScoreTable.setModel(new DefaultTableModel(getHighScores(1), columnNames));
-				} else if (label.equals("Medium")) {
-					highScoreTable.setModel(new DefaultTableModel(getHighScores(2), columnNames));
-				} else {
-					highScoreTable.setModel(new DefaultTableModel(getHighScores(3), columnNames));
-				}
-				setUpColumnWidths();
+				difficulty = Constants.Difficulty.valueOf(label.toUpperCase());
 			}
 		};
 
@@ -113,14 +109,21 @@ public class LeaderboardFrame extends JFrame {
 		column.setMinWidth(250);
 	}
 
-	public Object[][] getHighScores(int difficulty) {
+	public Object[][] getHighScores(Constants.Difficulty diff) {
 		ArrayList<Map<String, String>> highScores;
-		if (difficulty == 1) {
-			highScores = DBConnector.getTopTenEasy();
-		} else if (difficulty == 2) {
-			highScores = DBConnector.getTopTenMedium();
-		} else { //hard difficulty
-			highScores = DBConnector.getTopTenHard();
+		switch (diff) {
+			case EASY:
+				highScores = DBConnector.getTopTenEasy();
+				break;
+			case MEDIUM:
+				highScores = DBConnector.getTopTenMedium();
+				break;
+			case HARD:
+				highScores = DBConnector.getTopTenHard();
+				break;
+			default:
+				highScores = new ArrayList<Map<String, String>>();
+				break;
 		}
 		Object [][] data = new Object[highScores.size()][4];
 		int i = 0;
@@ -135,7 +138,20 @@ public class LeaderboardFrame extends JFrame {
 	}
 
 	public void refresh() {
-		
+		switch (difficulty) {
+			case EASY:
+				highScoreTable.setModel(new DefaultTableModel(getHighScores(Constants.Difficulty.EASY), columnNames));
+				break;
+			case MEDIUM:
+				highScoreTable.setModel(new DefaultTableModel(getHighScores(Constants.Difficulty.MEDIUM), columnNames));
+				break;
+			case HARD:
+				highScoreTable.setModel(new DefaultTableModel(getHighScores(Constants.Difficulty.HARD), columnNames));
+				break;
+			default:
+				break;
+		}
+		setUpColumnWidths();
 	}
 
 	public int getBackX() {
