@@ -29,7 +29,6 @@ public class TextGame {
 	 * @param args arguments passed into program call
 	 */
 	public static void main(String [] args) {
-		Constants.disableErrorOutput();
 		// set up input handler
 		sc = new Scanner(System.in);
 		// initialize database connection

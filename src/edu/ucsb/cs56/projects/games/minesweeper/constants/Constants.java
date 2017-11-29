@@ -66,6 +66,8 @@ public class Constants {
 		return gridSizes.get(difficulty);
 	}
 
+	private static final PrintStream ERR = System.err;
+
 	/**
 	 * disable error outputs from DBConnector if not able to connect to the database
 	 */
@@ -76,5 +78,9 @@ public class Constants {
 
 			}
 		}));
+	}
+
+	public static void enableErrorOutput() {
+		System.setErr(ERR);
 	}
 }

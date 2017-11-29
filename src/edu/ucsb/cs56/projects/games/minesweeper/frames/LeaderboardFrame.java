@@ -134,6 +134,10 @@ public class LeaderboardFrame extends JFrame {
 		return data;
 	}
 
+	public void refresh() {
+		
+	}
+
 	public int getBackX() {
 		return backBtn.getX();
 	}

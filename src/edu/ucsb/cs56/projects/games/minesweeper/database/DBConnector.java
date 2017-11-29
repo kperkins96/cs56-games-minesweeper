@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 
+import edu.ucsb.cs56.projects.games.minesweeper.constants.Constants;
+
 /**
  * Supplies an abstraction of connecting to the leaderboard stored on a remote database
  * @author Ryan Wiener
@@ -35,14 +37,15 @@ public class DBConnector {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		String host = "jdbc:postgresql://ec2-23-21-197-231.compute-1.amazonaws.com:5432/d5pb4fr0mh116p";
-		String username = "iynzxgmnmkikbp";
-		String password = "4fdb5c230919c81b2dc2daa12a3dd420c602a9154e3bcf2bf0b2d3d62be2f42c";
+		String host = System.getenv("DB_HOST");
+		String username = System.getenv("DB_USER");
+		String password = System.getenv("DB_PASSWORD");
 		Properties properties = new Properties();
 		properties.setProperty("user", username);
 		properties.setProperty("password", password);
 		properties.setProperty("ssl", "true");
 		properties.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
+		Constants.disableErrorOutput();
 		try {
 			connection = DriverManager.getConnection(host, properties);
 			insertionStatement = connection.prepareStatement("INSERT INTO scores (name, score, difficulty) VALUES (?, ?, ?);");
@@ -50,6 +53,7 @@ public class DBConnector {
 		} catch (SQLException e) {
 			connection = null;
 		}
+		Constants.enableErrorOutput();
 	}
 
 	/**
@@ -57,9 +61,15 @@ public class DBConnector {
 	 * @return a boolean value indicating whether the connection to the database is working
 	 */
 	public static boolean isConnected() {
-		if (connection == null) {
+		Constants.disableErrorOutput();
+		try {
+			if (connection == null || !connection.isValid(1)) {
+				init();
+			}
+		} catch (SQLException e) {
 			init();
 		}
+		Constants.enableErrorOutput();
 		return connection != null;
 	}
 
@@ -72,11 +82,7 @@ public class DBConnector {
 	 * @return boolean indicating whether score addition was successful or not
 	 */
 	public static boolean addScore(String name, int score, int difficulty) {
-		// if not connected try to connect
-		if (connection == null) {
-			init();
-		}
-		if (connection != null) {
+		if (isConnected()) {
 			try {
 				insertionStatement.setString(1, name);
 				insertionStatement.setInt(2, score);
@@ -128,11 +134,7 @@ public class DBConnector {
 	 */
 	private static ArrayList<Map<String, String>> getTopTenLeaders(int difficulty) {
 		ArrayList<Map<String, String>> data = new ArrayList<>(10);
-		// if not connected try to connect
-		if (connection == null) {
-			init();
-		}
-		if (connection != null) {
+		if (isConnected()) {
 			try {
 				queryStatement.setInt(1, difficulty);
 				ResultSet result = queryStatement.executeQuery();
@@ -144,8 +146,6 @@ public class DBConnector {
 					Date date = result.getTimestamp("attime");
 					// format date nicely
 					DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.getDefault());
-					int offset = TimeZone.getDefault().getOffset(date.getTime());
-					date.setTime(date.getTime() + offset);
 					dateFormat.setTimeZone(TimeZone.getDefault());
 					row.put("attime", dateFormat.format(date));
 					data.add(row);

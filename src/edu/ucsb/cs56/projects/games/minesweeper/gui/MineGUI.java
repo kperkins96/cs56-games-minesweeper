@@ -35,7 +35,6 @@ public class MineGUI {
 	 * @param args args passed into program call
 	 */
 	public static void main (String[] args) {
-		Constants.disableErrorOutput();
 		DBConnector.init();
 		mainMenu = new MainMenu();
 		helpScreen = new HelpScreen();
@@ -84,7 +83,10 @@ public class MineGUI {
 	 * set visibility of leaderboard screen
 	 * @param visible boolean indicating whether help screen should be visible or not
 	 */
-	public static void setLeaderboardVisible(boolean visible) { leaderboardFrame.setVisible(visible); }
+	public static void setLeaderboardVisible(boolean visible) {
+		leaderboardFrame.refresh();
+		leaderboardFrame.setVisible(visible);
+	}
 
 	/**
 	 * Display prompt asking user to confirm that they want to quit
