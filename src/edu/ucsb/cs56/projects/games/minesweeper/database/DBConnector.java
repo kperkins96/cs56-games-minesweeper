@@ -1,5 +1,7 @@
 package edu.ucsb.cs56.projects.games.minesweeper.database;
 
+import edu.ucsb.cs56.projects.games.minesweeper.constants.Constants;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
+import java.net.UnknownHostException;
 
 /**
  * Supplies an abstraction of connecting to the leaderboard stored on a remote database
@@ -24,32 +27,52 @@ public class DBConnector {
 	private static Connection connection;
 	private static PreparedStatement insertionStatement;
 	private static PreparedStatement queryStatement;
+	
 
+	
 	/**
 	 * Initialize connection to database
 	 * Should be called at the beginning of program execution
 	 */
 	public static void init() {
+
+       		
+		Map<String, String> env = System.getenv();
+		
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		String host = "jdbc:postgresql://ec2-23-21-197-231.compute-1.amazonaws.com:5432/d5pb4fr0mh116p";
-		String username = "iynzxgmnmkikbp";
-		String password = "4fdb5c230919c81b2dc2daa12a3dd420c602a9154e3bcf2bf0b2d3d62be2f42c";
+		String host = env.get("DB_HOST");
+		String username = env.get("DB_USER"); 
+		String password = env.get("DB_PASS");
+		if (host == null || username == null || password == null) {
+			System.err.println("Fatal error: You must define environment variables DB_HOST, DB_USER, and DB_PASS");
+			System.exit(1);
+		}
 		Properties properties = new Properties();
 		properties.setProperty("user", username);
 		properties.setProperty("password", password);
 		properties.setProperty("ssl", "true");
 		properties.setProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
+
+		Constants.disableErrorOutput();
+
 		try {
 			connection = DriverManager.getConnection(host, properties);
 			insertionStatement = connection.prepareStatement("INSERT INTO scores (name, score, difficulty) VALUES (?, ?, ?);");
 			queryStatement = connection.prepareStatement("SELECT * FROM scores WHERE difficulty = ? ORDER BY score ASC LIMIT 10;");
 		} catch (SQLException e) {
+			System.err.println("Caught SQLException " + e); 
 			connection = null;
 		}
+		catch (Exception e) {
+			System.err.println("Caught exception " + e);							  
+			connection = null;
+		}
+		Constants.reenableErrorOutput();
+		
 	}
 
 	/**
