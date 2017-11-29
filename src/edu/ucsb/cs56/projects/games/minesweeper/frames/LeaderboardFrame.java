@@ -35,6 +35,7 @@ public class LeaderboardFrame extends JFrame {
 	public LeaderboardFrame() {
 		super();
 		setSize(650, 600);
+		difficulty = Constants.Difficulty.EASY;
 		Container menu = getContentPane();
 		menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
 
@@ -75,6 +76,7 @@ public class LeaderboardFrame extends JFrame {
 			String label = aButton.getText();
 			if (state == ItemEvent.SELECTED) {
 				difficulty = Constants.Difficulty.valueOf(label.toUpperCase());
+				refresh();
 			}
 		};
 

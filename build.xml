@@ -15,6 +15,7 @@
 	<property name="classesDir" value="build/classes"/>
 	<property name="distDir" value="build/dist"/>
 	<property name="libDir" value="lib"/>
+	<property name="resourceDir" value="resources"/>
 
 	<property name="MainClassText" value="TextGame" />
 	<property name="MainClassGui" value="MineGUI" />
@@ -98,6 +99,7 @@
 		<mkdir dir="${distDir}"/>
 		<jar destfile="${distDir}/guiMinesweeper.jar" basedir="${classesDir}" excludes="**/*Test*">
 			<zipgroupfileset dir="${libDir}" includes="*.jar" excludes="junit*.jar"/>
+			<fileset dir="${resourceDir}"/>
 			<manifest>
 				<attribute name="Main-Class" value="edu.ucsb.cs56.projects.games.minesweeper.gui.${MainClassGui}"/>
 			</manifest>
