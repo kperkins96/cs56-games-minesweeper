@@ -40,6 +40,11 @@ public class DBConnector {
 		String host = System.getenv("DB_HOST");
 		String username = System.getenv("DB_USER");
 		String password = System.getenv("DB_PASSWORD");
+		if (host == null || username == null || password == null) {
+			System.out.println(Constants.ANSI_RED + "Please set your environment variables to connect to the database (DB_HOST, DB_USER AND DB_PASSWORD)" + Constants.ANSI_RESET);
+			connection = null;
+			return;
+		}
 		Properties properties = new Properties();
 		properties.setProperty("user", username);
 		properties.setProperty("password", password);
