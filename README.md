@@ -41,6 +41,18 @@ First set up your environment variables to connect to your postgrsql database th
 * To run the GuiGame, use "ant mine".
 * To run the TextGame, use "ant textmine".
 
+F17 Final Remarks
+=================
+The more complicated part of the code now is the database. To the connect to a database do the following steps:
+1. Create an account on Heroku
+2. Create a new server instance
+3. Go to add-ons and search for "Postgres Heroku"
+4. Once you add the database to your app click on it and go to view your database credentials
+5. copy sample.env.sh into a new file in the scripts folder called env.sh and replace the filler in it with your database credentials
+6. call ```source scripts/env.sh``` from the root directory (this will need to be done on every new shell)
+
+In the future, this process will hopefully be replaced by a server, where the server will handle the environment variables rather than the client
+
 W16 Final Remarks
 =================
 The coding style was not what I was accustom to so when I was reading through the code, I tabbed and rearranged stuff just so I could read it, however I didn't do that for all the code so beware there are atleast 2 styles here.   
