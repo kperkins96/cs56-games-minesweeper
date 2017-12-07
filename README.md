@@ -43,7 +43,14 @@ First set up your environment variables to connect to your postgrsql database th
 
 F17 Final Remarks
 =================
-The more complicated part of the code now is the database. To the connect to a database do the following steps:
+
+The text game is completely redone and refactored.
+There is now a leaderboard display for both versions of the game.
+Added images to the GUI version of the game.
+There isn't 100% test coverage so that might be good starting block for you to understand how the code works.
+One thing that might be benefitial to refactor is the ButtonListener inner class in the GameFrame.
+
+The more complicated part of the code is the database. To the connect to a database do the following steps:
 1. Create an account on Heroku
 2. Create a new server instance
 3. Go to add-ons and search for "Postgres Heroku"
